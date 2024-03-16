@@ -1,0 +1,81 @@
+simulation_direction: 
+  options: [1,-1]
+  value: -1
+  tooltip: 1 for forward simulation, -1 for backward simulation.
+output_every_seconds: 
+  value: 10800  
+  tooltip: Output every xxx seconds
+release_duration: 
+  value: 86400  
+  tooltip: seconds
+time_average_of_output_seconds: 
+  value: 10800  
+  tooltip: Time average of output (in seconds).
+sampling_rate_of_output: 
+  value: 60  
+  tooltip: Sampling rate of output (in seconds).
+particle_splitting_time_constant: 
+  value: 999999999  
+  tooltip: Time constant for particle splitting (in seconds).
+synchronisation_interval:
+  value: 60 
+  tooltip:  Synchronisation interval of flexpart (in seconds).
+smaller_than_tl_factor: 
+  value: 2.0  
+  tooltip:  Factor, by which time step must be smaller than TL.
+vertical_motion_time_decrease: 
+  value: 4  
+  tooltip: Decrease of time step for vertical motion by factor ifine.
+concentration_output: 
+  value: 9  
+  tooltip: Determines how the output shall be made concentration (ng/m3, Bq/m3), mixing ratio (pptv),
+           or both, or plume trajectory mode, or concentration + plume trajectory mode.
+           In plume trajectory mode, output is in the form of average trajectories.
+particle_dump: 
+  options: [1,2,3,4]
+  value: 4  
+  tooltip: Particle dump 0 no, 1 every output interval, 2 only at end, 4 when leaving domain.
+subgrid_terrain_effect_parameterization: 
+  value: True  
+  tooltip: Include ubgrid terrain effect parameterization.
+convection_parametrization: 
+  options: [0,1,2]
+  value: 1   
+  tooltip: Convection 2 tiedtke, 1 emanuel, 0 no.
+age_spectra: 
+  value: True  
+  tooltip: Switch on/off the calculation of age spectra if yes, the file AGECLASSES must be available.
+dumped_particle_data: 
+  value: False  
+  tooltip:  Continue simulation with dumped particle data.
+output_for_each_release: 
+  value: True  
+  tooltip: Create an ouput file for each release location.
+calculate_fluxes:
+  value: False  
+  tooltip: Calculate fluxes.
+domain_filling_trajectory: 
+  options: [0,1,2,3] 
+  value: 0  
+  tooltip:  Domain-filling trajectory option 1 yes, 0 no, 2 strat, 3 tracer.
+concentration_units_at_source: 
+  options: [1,2]
+  value: 1  
+  tooltip:  1=mass unit , 2=mass mixing ratio unit.
+concentration_units_at_receptor: 
+  options: [1,2]
+  value: 2 
+  tooltip:  1=mass unit , 2=mass mixing ratio unit.
+quasilagrangian_mode_to_track_particles: 
+  value: False 
+  tooltip: Quasilagrangian mode to track individual particles.
+cosmo_model_mixing_height: 
+  value: False  
+  tooltip: Shall cosmo model mixing height be used if present? 
+cosmo_grid_relaxation_zone_width: 
+  value: 50.0  
+  tooltip: Width of cosmo grid relaxation zone in km
+linit_cond: 
+  options: [0,1,2]
+  value: 0 
+  tooltip: IFS ONLY 

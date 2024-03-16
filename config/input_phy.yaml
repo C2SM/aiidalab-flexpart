@@ -1,0 +1,38 @@
+use2mTemperatures: 
+  value: False
+  tooltip: ''
+useLocalHmix: 
+  value: True
+  tooltip: ''
+localWadjust: 
+  value: False
+  tooltip: ''
+turbmesoscale: 
+  value: 0.0
+  tooltip: ''
+d_trop: 
+  value: 50.0
+  tooltip: ''
+d_strat: 
+  value: 0.5
+  tooltip: ''
+hmixmin: 
+  value: 50.0
+  tooltip: ''
+hmixmax:
+  value: 4500.0
+  tooltip: ''
+turb_scheme:
+  options: ['hanna82','cosmo1stlw','cosmo1','turboff']
+  value: 'hanna82'
+  tooltip: ''
+min_tlw:
+  value: 30
+  tooltip: ''
+min_tlu:
+  value: 10
+  tooltip: ''
+min_dt_tl:
+  value: 0.5
+  tooltip: ''
+

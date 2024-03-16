@@ -1,0 +1,57 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    background-color: #FFFFFF;
+    padding: 1%;
+    }
+.grid-item {
+    background-color: #FFFFFF;
+    padding: 5px;
+    font-size: 10px;
+    text-align: center;
+}
+.tltip {
+    position: relative;
+    display: inline-block;
+    }
+.tltip .shwtext {
+    visibility: hidden;
+    width: 60px;
+    background-color: #D5F5E3;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1; 
+    top: 100%;
+    border:1.2px solid black
+    }
+.tltip:hover .shwtext {
+    visibility: visible;
+    }
+table, th, td {
+    border:1.5px solid grey;
+    text-align: left;
+    border-collapse: collapse;
+    }
+table {
+    background: white;
+    }
+th {
+    color: #1e98ea;
+    background-color: #D5F5E3;
+    font-weight: bold;
+    padding-left: 5px;
+    width:50px;
+    height:10px;
+    }
+td {
+    font-weight: bold;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    line-height: 1.6;
+    }
+.block_box {
+        width: 35px;
+        height: 30px;
+    }
