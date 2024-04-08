@@ -142,7 +142,19 @@ The second step deals withthe various results of the post-processings produced p
       POST-PROCESSING_3 -->COLLECT_SENSITIVITIES;
       POST-PROCESSING_4 -->COLLECT_SENSITIVITIES;
 
-      COLLECT_SENSITIVITIES --> RESULTS;
+      COLLECT_SENSITIVITIES --> RESULTS(NetCFD);
+```
+
+Next:
+
+```mermaid
+   graph TD;
+     
+      NetCFD_1-- external --> INVERSION;
+      NetCFD_2-- observations --> INVERSION;
+      NetCFD_3-- FLEXPART --> INVERSION;
+    
+      INVERSION --> RESULTS;
 
 ```
 
@@ -154,6 +166,11 @@ Results will be stashed in `/store/empa/em05/{username}/aiida_stash` directory, 
 - `grid_time_*.nc`
 - `aiida.out`
 - `boundary_sensitivity_*.nc` (post-processsing only)
+
+And from the collect sensitivities calcjob:
+
+- `<LOCATION>_<DOMAIN>_<YYYYMM>.nc`
+- `aiida.out`
 
 ### Running the workflow with the launcher
 

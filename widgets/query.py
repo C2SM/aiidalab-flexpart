@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 from pathlib import Path
 
-from aiida import plugins, orm
+from aiida import plugins
 from utils import utils, make_query
 from widgets import filter
 
@@ -153,6 +153,7 @@ class SearchCalculations(widgets.VBox):
         #List of dates
         date_range_p = utils.simulation_dates_parser([self.date_range.value])
         input_phy_dict={}
+        release_dict={}
         #create the df
         if self.presettings.value != 'Default':
             dict_from_extra = make_query.get_extra_(self.presettings.value)
@@ -167,10 +168,11 @@ class SearchCalculations(widgets.VBox):
             if dict_from_extra['outgrid_nest']!='None':
                 self.outgrid_nest.value = list(dict_from_extra['outgrid_nest'].keys())[0]
 
-            #query_dict = make_query.make_dict_for_query(dict_from_extra['command'])
+            query_dict = make_query.make_dict_for_query(dict_from_extra['command']) 
             input_phy_dict = make_query.make_dict_for_query(dict_from_extra['input_phy'])
-            #release
+            release_dict = make_query.make_dict_for_query(dict_from_extra['release'])
         
+        #fill the dataframe with the values returned by the query
         df = make_query.all_in_query(model = self.model.value,
                                     model_offline = self.model_offline.value,
                                     locations = self.location.value,
@@ -178,9 +180,9 @@ class SearchCalculations(widgets.VBox):
                                     outgrid_nest = self.outgrid_nest.value,
                                     dates = date_range_p,
                                     command = query_dict,
-                                    input_phy = input_phy_dict
+                                    input_phy = input_phy_dict,
+                                    release = release_dict
         )
-
         #make remotes
         self.remotes = df[['w_hash','RemoteStash','date','location','model','outgrid']]
         self.w_options =  df['w_hash'].unique()
