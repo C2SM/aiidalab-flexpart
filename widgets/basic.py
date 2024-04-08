@@ -86,7 +86,7 @@ class Basic(widgets.VBox):
                                         ], 
                                )
         acc.set_title(0,'Locations')
-        acc.selected_index = None
+        acc.selected_index = 0
                                   
         self.children = [
                     widgets.VBox(children=[

@@ -6,7 +6,7 @@ cosmo1:
   sampling_rate_of_output: 10
   synchronisation_interval: 10
   convection_parametrization: 0
-kenda1:
+kenda1: 
   sampling_rate_of_output: 10
   synchronisation_interval: 10
   convection_parametrization: 0

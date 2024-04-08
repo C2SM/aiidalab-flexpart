@@ -60,7 +60,8 @@ def all_in_query(
     outgrid_nest, 
     dates, 
     command,
-    input_phy
+    input_phy,
+    release
 ) -> pd.DataFrame:
     """
     function that constructs the query and returns a dataframe with the
@@ -68,7 +69,7 @@ def all_in_query(
 
     Parameters
     ----------
-    model: str
+    model: str 
     modle_offline: str
     locations: list
     outgrid: str
@@ -136,15 +137,20 @@ def all_in_query(
 
     # Command, Release and Input_phy
     filter_commad_dict = {
-        "attributes.simulation_date": {"or": [{"==": i} for i in dates]}
+        "attributes.simulation_date": {"or": [{"==": i} for i in dates]},
+        
     }
-    filter_commad_dict.update(command)
+    command.update(filter_commad_dict)
+    command.pop('attributes.sampling_rate_of_output', None)
+    command.pop('attributes.synchronisation_interval', None)
+    command.pop('attributes.convection_parametrization', None)
+    command.pop('attributes.dumped_particle_data', None)
    
     qb.append(
         orm.Dict,
         with_outgoing="calcs",
         edge_filters={"label": {"like": "model_settings__command"}},
-        filters=filter_commad_dict,
+        filters=command,
         project="attributes.simulation_date",
     )
     qb.append(
@@ -153,17 +159,19 @@ def all_in_query(
         edge_filters={"label": {"like": "model_settings__input_phy"}},
         filters=input_phy,
     )
-    """qb.append(
+    qb.append(
         orm.Dict,
         with_outgoing="calcs",
         edge_filters={"label": {"like": "model_settings__release_settings"}},
-        filters=filter_commad_dict,
-    )"""
-
+        filters={'attributes.list_of_species':{'contains': ['24']},
+                 'attributes.mass_per_release':{'contains': ['1']}
+                 },
+    )
+    
     # Post-processing data
     qb.append(orm.RemoteStashFolderData, with_incoming="post", project="*")
     qb.append(orm.FolderData, with_incoming="post", project="id")
-
+    
     if outgrid_nest!='None':
         qb.append(
             orm.Dict,

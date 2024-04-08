@@ -8,6 +8,7 @@ from widgets import filter
 
 
 coll_sens = plugins.CalculationFactory('collect.sens')
+NetCDF = plugins.DataFactory('netcdf.data')
 
 style = {'description_width': 'initial'}
 ad_q = filter.ViewerWidget()
@@ -17,42 +18,34 @@ class SearchSens(widgets.VBox):
 
         self.date_range = widgets.Text(
             value='2020-09-01--2020-12-31',
-            placeholder='range_dates',
-            description='range_dates',
+            description='Range_dates',
             disabled=False,
             style=style 
         ) 
-        self.location = widgets.Dropdown(
-            placeholder='Choose location',
+        self.location = widgets.SelectMultiple(
             options=utils.fill_locations('/home/jovyan/apps/flexpart_aiidalab/config/locations.yaml'),
-            description='location:',
-            value='JFJ_5magl',
-            disabled=False,
+            description='Locations',
+            description_tooltip = 'Multiple values can be selected with "Shift" and/or "ctrl"(or "command")',
+            value=['JFJ_5magl'],
+            rows = 12,
             style=style
         )
-        self.model = widgets.Dropdown(
-            placeholder='model',
+        self.domain = widgets.Dropdown(
             options=[
-                     'cosmo7',
-                     'cosmo1',
-                     'kenda1',
-                     'IFS_GL_1',
-                     'IFS_GL_05',
-                     'IFS_EU_02',
-                     'IFS_EU_01',
+                     'EUROPE'
                      ],
-            description='model:',
+            description='Domain:',
             ensure_option=True, 
-            disabled=False,style=style
+            disabled=False, style=style
         )
         
         self.ind_title = widgets.HTML(
             value = """<hr>     
             """
         )
-        search_crit = widgets.HBox([self.date_range,
-                                    self.location, 
-                                    self.model
+        search_crit = widgets.HBox([self.location,
+                                    self.date_range,
+                                    self.domain
                                     ])
         button = widgets.Button(description="Search")
         self.results = widgets.HTML()
@@ -77,36 +70,27 @@ class SearchSens(widgets.VBox):
         
     def search(self):
         self.results.value = "searching..."
-
-        #list of dates
-        list_dates=[]
-        date_range_p = utils.simulation_dates_parser([self.date_range.value])
-        for i in date_range_p:
-             list_dates.append({'like':'remote__'+i[:10].replace('-','_')+self.location.value})
       
         qb = QueryBuilder()
-        qb.append(coll_sens, tag='sens',filters={'attributes.exit_status': 0}, project= ['id'])
-        qb.append(RemoteStashFolderData, with_outgoing='sens',    
-                  edge_filters={'label':{'or':list_dates}},
-                 )
-        qb.append(FolderData, with_incoming='sens', project='id')
+        qb.append(NetCDF, 
+          project=["attributes.filename", 
+                   'id'],
+          filters = {'attributes.global_attributes.domain' : "'EUROPE'"}
+          )
        
         html = """<style>
         table, th, td {
             border: 1px solid;
-            text-align: center;}</style>
+            text-align: center;
+            padding: 5px}</style>
         <table>
                 <tr>
                     <th>id</th>
-                    <th>Folder Data</th>
-                    <th>Output</th>
-
+                    <th>Name</th>
                 </tr>"""
         
         for i in qb.all():
-            node = load_node(i[1])
-            list_ = node.list_object_names()
-            html += f'<tr><td>{i[0]}</td><td>{i[1]}</td><td>{list_[0]}</td></tr>'
+            html += f'<tr><td>{i[1]}</td><td>{i[0]}</td></tr>'
         html+='</table>'
         
         self.results.value = html
