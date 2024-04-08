@@ -6,11 +6,6 @@ style = {'description_width': 'initial'}
 class Misc(widgets.VBox):
     def __init__(self):
 
-        self.username = widgets.Text(
-            value='',
-            description='Username',
-            disabled=False,style=style 
-        ) 
         self.prepend_text = widgets.Textarea(
             value = '#SBATCH --constraint=mc\n'+\
                     'export OMP_NUM_THREADS=36\n'+\
@@ -44,7 +39,7 @@ class Misc(widgets.VBox):
         comp_res = awb.ComputationalResourcesWidget(enable_quick_setup = False,
                                                     enable_detailed_setup = True)
                                   
-        self.children = [self.username,
+        self.children = [
                          self.wall_time_cosmo,
                          self.wall_time_ifs,
                          self.prepend_text,

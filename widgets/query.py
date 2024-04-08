@@ -23,14 +23,13 @@ class SearchCalculations(widgets.VBox):
             value='2020-09-01--2020-12-31',
             description='Dates',
             description_tooltip = 'range of dates to query',
-            disabled=False,
-            style=style 
+            style=style,
         ) 
         self.presettings = widgets.Dropdown(
             options = make_query.get_extra_(None),
-            description='Presettings',
+            description ='Presettings',
             description_tooltip = 'Query for a specific presetting',
-            style=style 
+            style = style 
         )
 
         self.location = widgets.SelectMultiple(
@@ -59,7 +58,7 @@ class SearchCalculations(widgets.VBox):
                      ],
             description='Model',
             ensure_option=True, 
-            disabled=False,style=style
+            style=style
         )
         self.model_offline = widgets.Dropdown(
             options=[
@@ -73,20 +72,20 @@ class SearchCalculations(widgets.VBox):
                      ],
             description='Model offline',
             ensure_option=True, 
-            disabled=False,style=style
+            style=style
         )
         self.outgrid = widgets.Dropdown(
             options=utils.fill_locations(path_to_out),
             description='Outgrid',
             ensure_option=True, 
-            disabled=False,style=style
+            style=style
         )
         self.outgrid_nest = widgets.Dropdown(
             options=utils.fill_locations(path_to_out)+['None'],
             description='Outgrid nest',
             value = 'None',
             ensure_option=True, 
-            disabled=False,style=style
+            style=style
         )
         self.w_options_buttons=widgets.RadioButtons(
             options=[],
