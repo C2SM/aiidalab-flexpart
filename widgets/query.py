@@ -34,7 +34,7 @@ class SearchCalculations(widgets.VBox):
         )
 
         self.location = widgets.SelectMultiple(
-            options=utils.fill_locations('/home/jovyan/apps/flexpart_aiidalab/config/locations.yaml'),
+            options=utils.fill_locations(Path.cwd() / 'config'/'locations.yaml'),
             description='Locations',
             description_tooltip = 'Multiple values can be selected with "Shift" and/or "ctrl"(or "command")',
             value=['JFJ_5magl'],

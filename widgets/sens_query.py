@@ -1,10 +1,11 @@
 import ipywidgets as widgets
 from IPython.display import clear_output
 
-from aiida.orm import QueryBuilder, RemoteStashFolderData, FolderData, load_node
+from aiida.orm import QueryBuilder
 from aiida import plugins
 from utils import utils
 from widgets import filter
+from pathlib import Path
 
 
 coll_sens = plugins.CalculationFactory('collect.sens')
@@ -23,7 +24,7 @@ class SearchSens(widgets.VBox):
             style=style 
         ) 
         self.location = widgets.SelectMultiple(
-            options=utils.fill_locations('/home/jovyan/apps/flexpart_aiidalab/config/locations.yaml'),
+            options=utils.fill_locations(Path.cwd() / 'config' / 'locations.yaml'),
             description='Locations',
             description_tooltip = 'Multiple values can be selected with "Shift" and/or "ctrl"(or "command")',
             value=['JFJ_5magl'],
