@@ -1,0 +1,6 @@
+collect_sens: collect-sensitivities@daint
+cosmo: flexpart_cosmo@daint
+cosmo_meteo: check-cosmo-data@daint-direct-106
+ifs: flexpart_ifs@daint
+ifs_meteo: check-ifs-data@daint-direct-106
+post: post-processing@daint
