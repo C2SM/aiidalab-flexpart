@@ -1,4 +1,5 @@
 import ipywidgets as widgets
+from widgets import add_location
 from utils import utils
 from pathlib import Path
 import yaml
@@ -18,6 +19,9 @@ class Locations(widgets.VBox):
         self.ind_title = widgets.HTML(
             value = "<b>ALL LOCATIONS</b>",
         )
+        self.hr = widgets.HTML(
+            value = "<hr>",
+        )
 
         with open(locations_groups_yaml_path) as finp:
             self.group_dict = yaml.safe_load(finp)
@@ -27,12 +31,19 @@ class Locations(widgets.VBox):
         for group in self.locations_g_w:
             group.observe(self.enable_locations_in_group, names="value")
         self.locations_w = utils.generate_locations(locations_yaml_path)
+
+        acc = widgets.Accordion(children=[add_location.AddLocation(),
+                                        ], 
+                               )
+        acc.set_title(0,'Add a new location')
        
         self.children=[
                        self.ind_title,
                        widgets.GridBox(self.locations_w, layout=layout),
                        self.groups_title,
-                       widgets.GridBox(self.locations_g_w, layout=layout),
+                       widgets.GridBox(self.locations_g_w, layout=layout), 
+                       self.hr,
+                       acc                
         ]
         super().__init__(children = self.children)
 

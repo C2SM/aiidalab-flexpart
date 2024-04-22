@@ -8,7 +8,7 @@ from widgets import filter
 from pathlib import Path
 
 
-coll_sens = plugins.CalculationFactory('collect.sens')
+coll_sens = plugins.CalculationFactory('collect.sensitivities')
 NetCDF = plugins.DataFactory('netcdf.data')
 
 style = {'description_width': 'initial'}
