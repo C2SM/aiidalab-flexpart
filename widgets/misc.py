@@ -25,9 +25,7 @@ class Misc(widgets.VBox):
 
         self.prepend_text = widgets.Textarea(
             value="export OMP_NUM_THREADS=36\n",
-            description="Prepend text:",
-            ensure_option=True,
-            disabled=False,
+            description="Prepend text",
             style=style,
         )
         self.account = widgets.Text(value="em05", description="Account", style=style)
@@ -35,10 +33,10 @@ class Misc(widgets.VBox):
             value="normal", description="Partition", style=style
         )
         self.wall_time_cosmo = widgets.IntText(
-            value=1800, description="Wall time cosmo:", disabled=False, style=style
+            value=1800, description="Wall time cosmo", style=style
         )
         self.wall_time_ifs = widgets.IntText(
-            value=1800, description="Wall time ifs:", disabled=False, style=style
+            value=1800, description="Wall time ifs", style=style
         )
         comp_res = awb.ComputationalResourcesWidget()
         comp_res.code_select_dropdown.layout.visibility = "hidden"
