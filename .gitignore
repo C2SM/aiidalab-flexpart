@@ -3,4 +3,3 @@
 
 .*.ipynb
 .ipynb_checkpoints
-.pre-commit-config.yaml
