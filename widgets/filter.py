@@ -4,18 +4,21 @@ import ipywidgets as ipw
 from utils import utils
 from pathlib import Path
 
-command_yaml_path = Path.cwd() / 'config' / 'command.yaml'
-input_yaml_path = '/home/jovyan/work/aiida-flexpart/examples/inputs/input_phy.yaml'
-release_yaml_path = '/home/jovyan/work/aiida-flexpart/examples/inputs/release.yaml'
+command_yaml_path = Path.cwd() / "config" / "command.yaml"
+input_yaml_path = Path.cwd() / "config" / "input_phy.yaml"
+release_yaml_path = Path.cwd() / "config" / "release.yaml"
+
 
 def fill_locations():
-        command = list(utils.read_yaml_data(command_yaml_path).keys())
-        input_phy = list(utils.read_yaml_data(input_yaml_path).keys())
-        release = list(utils.read_yaml_data(release_yaml_path).keys())
-        return command+input_phy+release
+    command = list(utils.read_yaml_data(command_yaml_path).keys())
+    input_phy = list(utils.read_yaml_data(input_yaml_path).keys())
+    release = list(utils.read_yaml_data(release_yaml_path).keys())
+    return command + input_phy + release
 
-def make_query(list_parameters:list)->list:
-        return ['attributes.'+i for i in list_parameters]
+
+def make_query(list_parameters: list) -> list:
+    return ["attributes." + i for i in list_parameters]
+
 
 class _BaseSelectionWidget(stack.HorizontalItemWidget):
     data = tl.Dict(allow_none=True)
@@ -32,7 +35,7 @@ class _BaseSelectionWidget(stack.HorizontalItemWidget):
         )
 
         self._value = ipw.Text(
-            value='0',
+            value="0",
             description="Value:",
             disabled=False,
             style={"description_width": "auto"},
@@ -45,6 +48,7 @@ class _BaseSelectionWidget(stack.HorizontalItemWidget):
                 self._value,
             ]
         )
+
 
 class _BaseStackWidget(stack.VerticalStackWidget):
     data = tl.Dict(allow_none=True)
@@ -60,11 +64,10 @@ class _BaseStackWidget(stack.VerticalStackWidget):
         tl.dlink((self, "options"), (self.items[-1], "options"))
         tl.dlink((self, "data"), (self.items[-1], "data"))
 
-class ViewerWidget(ipw.VBox):
-        def __init__(self):
-            self.parameters = _BaseStackWidget(
-                item_class=_BaseSelectionWidget, add_button_text="Add parameter"
-                )
-            super().__init__([self.parameters]
-            )
 
+class ViewerWidget(ipw.VBox):
+    def __init__(self):
+        self.parameters = _BaseStackWidget(
+            item_class=_BaseSelectionWidget, add_button_text="Add parameter"
+        )
+        super().__init__([self.parameters])

@@ -12,10 +12,12 @@ def make_dict_for_query(dict_):
     query_dict = {}
     if type(dict_) == tuple:
         for item in dict_:
-            query_dict['attributes.'+item.children[0].value] = eval(item.children[1].value)
+            query_dict["attributes." + item.children[0].value] = eval(
+                item.children[1].value
+            )
     else:
-        for k,v in dict_.items():
-            query_dict['attributes.'+k] = v
+        for k, v in dict_.items():
+            query_dict["attributes." + k] = v
 
     return query_dict
 
@@ -53,15 +55,15 @@ def get_extra_(name):
 
 
 def all_in_query(
-    model, 
-    model_offline, 
-    locations, 
-    outgrid, 
-    outgrid_nest, 
-    dates, 
+    model,
+    model_offline,
+    locations,
+    outgrid,
+    outgrid_nest,
+    dates,
     command,
     input_phy,
-    release
+    release,
 ) -> pd.DataFrame:
     """
     function that constructs the query and returns a dataframe with the
@@ -69,7 +71,7 @@ def all_in_query(
 
     Parameters
     ----------
-    model: str 
+    model: str
     modle_offline: str
     locations: list
     outgrid: str
@@ -81,7 +83,15 @@ def all_in_query(
     ------
         Pandas dataframe with the query results.
     """
-    columns = ["w_hash", "outgrid",'location', "model", "date", "RemoteStash", "FolderData_PK"]
+    columns = [
+        "w_hash",
+        "outgrid",
+        "location",
+        "model",
+        "date",
+        "RemoteStash",
+        "FolderData_PK",
+    ]
 
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
@@ -102,14 +112,14 @@ def all_in_query(
         filters={"attributes": {"has_key": outgrid}},
         project="attributes",
     )
-    
+
     # Locations
     qb.append(
         orm.Dict,
         with_outgoing="w",
         edge_filters={"label": {"like": "locations"}},
         filters={"attributes": {"or": [{"has_key": l} for l in locations]}},
-        project='attributes'
+        project="attributes",
     )
 
     # Models
@@ -122,7 +132,7 @@ def all_in_query(
         },
         project="attributes.list",
     )
-    if model_offline !='None':
+    if model_offline != "None":
         qb.append(
             orm.List,
             with_outgoing="w",
@@ -138,14 +148,13 @@ def all_in_query(
     # Command, Release and Input_phy
     filter_commad_dict = {
         "attributes.simulation_date": {"or": [{"==": i} for i in dates]},
-        
     }
     command.update(filter_commad_dict)
-    command.pop('attributes.sampling_rate_of_output', None)
-    command.pop('attributes.synchronisation_interval', None)
-    command.pop('attributes.convection_parametrization', None)
-    command.pop('attributes.dumped_particle_data', None)
-   
+    command.pop("attributes.sampling_rate_of_output", None)
+    command.pop("attributes.synchronisation_interval", None)
+    command.pop("attributes.convection_parametrization", None)
+    command.pop("attributes.dumped_particle_data", None)
+
     qb.append(
         orm.Dict,
         with_outgoing="calcs",
@@ -163,16 +172,17 @@ def all_in_query(
         orm.Dict,
         with_outgoing="calcs",
         edge_filters={"label": {"like": "model_settings__release_settings"}},
-        filters={'attributes.list_of_species':{'contains': ['24']},
-                 'attributes.mass_per_release':{'contains': ['1']}
-                 },
+        filters={
+            "attributes.list_of_species": {"contains": ["24"]},
+            "attributes.mass_per_release": {"contains": ["1"]},
+        },
     )
-    
+
     # Post-processing data
     qb.append(orm.RemoteStashFolderData, with_incoming="post", project="*")
     qb.append(orm.FolderData, with_incoming="post", project="id")
-    
-    if outgrid_nest!='None':
+
+    if outgrid_nest != "None":
         qb.append(
             orm.Dict,
             with_outgoing="w",
@@ -184,12 +194,12 @@ def all_in_query(
 
     # Dataframe construct
     df = pd.DataFrame(qb.all(), columns=columns)
-    df['location'] = df['location'].map(lambda x: list(x.keys())[0])
-    df['outgrid'] = df['outgrid'].map(lambda x: list(x.keys())[0])
-    df['model'] = df['model'].map(lambda x: ','.join(x))
-    if 'outgrid_n' in df.columns:
-            df['outgrid_n'] = df['outgrid_n'].map(lambda x: list(x.keys())[0])
-    df['w_hash'] = df['w_hash'].map(lambda x: x.get_hash())
-    df = df.drop_duplicates(subset=['w_hash', 'date','location'])
+    df["location"] = df["location"].map(lambda x: list(x.keys())[0])
+    df["outgrid"] = df["outgrid"].map(lambda x: list(x.keys())[0])
+    df["model"] = df["model"].map(lambda x: ",".join(x))
+    if "outgrid_n" in df.columns:
+        df["outgrid_n"] = df["outgrid_n"].map(lambda x: list(x.keys())[0])
+    df["w_hash"] = df["w_hash"].map(lambda x: x.get_hash())
+    df = df.drop_duplicates(subset=["w_hash", "date", "location"])
 
     return df

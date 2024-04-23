@@ -1,7 +1,7 @@
-particles_per_release: 
+particles_per_release:
   value: 50000
   tooltip: ''
-mass_per_release: 
+mass_per_release:
                 - 1.0
-list_of_species: 
+list_of_species:
                 - 24

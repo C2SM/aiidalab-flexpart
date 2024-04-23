@@ -1,0 +1,22 @@
+models:
+  - cosmo7
+  - cosmo2
+  - cosmo1
+  - kenda1
+  - cosmo7,cosmo1
+  - cosmo7,cosmo2
+  - cosmo7,kenda1
+  - IFS_GL_1
+  - IFS_GL_05
+  - IFS_EU_02
+  - IFS_EU_01
+  - IFS_GL_1,IFS_EU_02
+  - IFS_GL_05,IFS_EU_01
+models_offline:
+  - IFS_GL_1
+  - IFS_GL_05
+  - IFS_EU_02
+  - IFS_EU_01
+  - IFS_GL_1,IFS_EU_02
+  - IFS_GL_05,IFS_EU_01
+  - None

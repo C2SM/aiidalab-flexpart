@@ -1,4 +1,4 @@
-# Aiida FLEXPART plugin 
+# Aiida FLEXPART plugin
 An [AiiDA](http://aiida-core.readthedocs.io/) plugin for the Flexpart cosmo and ifs simulations.
 
 This plugin contains 4 types of calculations:
@@ -27,7 +27,7 @@ The workflow:
     - [Quering](#quering)
   - [Development guide](#development-guide)
 
-   
+
 
 ## Installation
 Install the plugins with:
@@ -36,7 +36,7 @@ pip install -e .
 ```
 Install [Aiida shell](https://aiida-shell.readthedocs.io/en/latest/):
 ```
-pip install aiida-shell 
+pip install aiida-shell
 ```
 Additional packages for Aiidalab:
 
@@ -112,7 +112,7 @@ verdi config set caching.default_enabled True
 
 ### Structure
 
-The following is the workflow structure. It will loop over all the given dates. If model offline is not none, integration_time_offline should be greater than zero. The available models for cosmo are: <i>cosmo7, cosmo1</i> and <i>kenda1</i>. And the ECMWF models: <i>IFS_GL_05, IFS_GL_1, IFS_EU_02</i> and <i>IFS_EU_01</i>. Both, model and model offline can be set as a list of the previous. 
+The following is the workflow structure. It will loop over all the given dates. If model offline is not none, integration_time_offline should be greater than zero. The available models for cosmo are: <i>cosmo7, cosmo1</i> and <i>kenda1</i>. And the ECMWF models: <i>IFS_GL_05, IFS_GL_1, IFS_EU_02</i> and <i>IFS_EU_01</i>. Both, model and model offline can be set as a list of the previous.
 
 ```mermaid
    graph TD;
@@ -125,18 +125,18 @@ The following is the workflow structure. It will loop over all the given dates. 
       subgraph IFS
       PREPARE_IFS_METEO_FILES-->RUN_FLEXPART_IFS;
       end
-      
+
       RUN_FLEXPART_COSMO-->id2{MODEL_OFFLINE};
       id2{MODEL_OFFLINE}--ecmwf models-->PREPARE_IFS_METEO_FILES;
       id2{MODEL_OFFLINE}--none -->POST-PROCESSING;
       RUN_FLEXPART_IFS-->POST-PROCESSING;
 ```
 
-The second step deals withthe various results of the post-processings produced previously. 
+The second step deals withthe various results of the post-processings produced previously.
 
 ```mermaid
    graph TD;
-     
+
       POST-PROCESSING_1 -->COLLECT_SENSITIVITIES;
       POST-PROCESSING_2 -->COLLECT_SENSITIVITIES;
       POST-PROCESSING_3 -->COLLECT_SENSITIVITIES;
@@ -149,11 +149,11 @@ Next:
 
 ```mermaid
    graph TD;
-     
+
       NetCFD_1-- external --> INVERSION;
       NetCFD_2-- observations --> INVERSION;
       NetCFD_3-- FLEXPART --> INVERSION;
-    
+
       INVERSION --> RESULTS;
 
 ```
@@ -189,7 +189,7 @@ The worflow can be monitored using
 ```hs
 verdi process list
 ```
- or 
+ or
 ```hs
 verdi process status PK
 ```
@@ -209,4 +209,3 @@ docker run -p 8888:8888 aiidalab/full-stack
 > NOTE
 
 ## Development guide
-

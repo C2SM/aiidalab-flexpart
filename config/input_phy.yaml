@@ -1,22 +1,22 @@
-use2mTemperatures: 
+use2mTemperatures:
   value: False
   tooltip: ''
-useLocalHmix: 
+useLocalHmix:
   value: True
   tooltip: ''
-localWadjust: 
+localWadjust:
   value: False
   tooltip: ''
-turbmesoscale: 
+turbmesoscale:
   value: 0.0
   tooltip: ''
-d_trop: 
+d_trop:
   value: 50.0
   tooltip: ''
-d_strat: 
+d_strat:
   value: 0.5
   tooltip: ''
-hmixmin: 
+hmixmin:
   value: 50.0
   tooltip: ''
 hmixmax:
@@ -35,4 +35,3 @@ min_tlu:
 min_dt_tl:
   value: 0.5
   tooltip: ''
-
