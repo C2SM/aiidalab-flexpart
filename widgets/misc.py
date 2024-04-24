@@ -17,14 +17,16 @@ def codes_list():
 
 
 def fix_values(name):
-    return utils.read_yaml_data(path_to_default_codes, names=[name])[name]
+    d = utils.read_yaml_data(path_to_default_codes, names=[name])[name]
+    return d if d in codes_list() else 'None'
 
 
 class Misc(widgets.VBox):
     def __init__(self):
 
         self.prepend_text = widgets.Textarea(
-            value="export OMP_NUM_THREADS=36\n",
+            value="#SBATCH --constraint=mc\n"+\
+                  "export OMP_NUM_THREADS=36\n",
             description="Prepend text",
             style=style,
         )
@@ -43,37 +45,37 @@ class Misc(widgets.VBox):
         self.computer = widgets.Text(value="daint", description="Computer", style=style)
         self.f_cosmo_code = widgets.Dropdown(
             description="cosmo",
-            options=codes_list(),
+            options=codes_list()+['None'],
             value=fix_values("cosmo"),
             style=style,
         )
         self.f_ifs_code = widgets.Dropdown(
             description="ifs",
-            options=codes_list(),
+            options=codes_list()+['None'],
             value=fix_values("ifs"),
             style=style,
         )
         self.f_post_code = widgets.Dropdown(
             description="post",
-            options=codes_list(),
+            options=codes_list()+['None'],
             value=fix_values("post"),
             style=style,
         )
         self.ifs_m_code = widgets.Dropdown(
             description="ifs_meteo",
-            options=codes_list(),
+            options=codes_list()+['None'],
             value=fix_values("ifs_meteo"),
             style=style,
         )
         self.cosmo_m_code = widgets.Dropdown(
             description="cosmo_meteo",
-            options=codes_list(),
+            options=codes_list()+['None'],
             value=fix_values("cosmo_meteo"),
             style=style,
         )
         self.collect_sens_code = widgets.Dropdown(
             description="collect_sens",
-            options=codes_list(),
+            options=codes_list()+['None'],
             value=fix_values("collect_sens"),
             style=style,
         )
