@@ -39,6 +39,7 @@ class Locations(widgets.VBox):
             ],
         )
         acc.set_title(0, "Add a new location")
+        acc.selected_index = None
 
         self.children = [
             self.ind_title,
