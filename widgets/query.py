@@ -32,6 +32,11 @@ class SearchCalculations(widgets.VBox):
             description_tooltip="Query for a specific presetting",
             style=style,
         )
+        self.workflow_p = widgets.Dropdown(
+            options=plugins.entry_point.get_entry_point_names("aiida.workflows"),
+            description="Workflow",
+            style=style,
+        )
 
         self.location = widgets.SelectMultiple(
             options=utils.fill_locations(Path.cwd() / "config" / "locations.yaml"),
@@ -129,7 +134,10 @@ class SearchCalculations(widgets.VBox):
         button.on_click(on_click)
 
         tabs = widgets.Tab(
-            children=[widgets.HBox([self.date_range, self.presettings]), search_crit]
+            children=[
+                widgets.HBox([self.date_range, self.presettings, self.workflow_p]),
+                search_crit,
+            ]
         )
         tabs.set_title(0, "Basic")
         tabs.set_title(1, "Advance")
@@ -178,6 +186,7 @@ class SearchCalculations(widgets.VBox):
 
         # fill the dataframe with the values returned by the query
         df = make_query.all_in_query(
+            w=self.workflow_p.value,
             model=self.model.value,
             model_offline=self.model_offline.value,
             locations=self.location.value,

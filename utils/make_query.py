@@ -55,6 +55,7 @@ def get_extra_(name):
 
 
 def all_in_query(
+    w,
     model,
     model_offline,
     locations,
@@ -92,10 +93,10 @@ def all_in_query(
         "RemoteStash",
         "FolderData_PK",
     ]
-
+    workflow_ = plugins.WorkflowFactory(w)
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
-    qb.append(workflow, tag="w", project=["*"], filters={"attributes.exit_status": 0})
+    qb.append(workflow_, tag="w", project=["*"], filters={"attributes.exit_status": 0})
     qb.append(
         [flexpart_cosmo, flexpart_ifs],
         with_incoming="w",
