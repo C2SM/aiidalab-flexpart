@@ -21,12 +21,6 @@ class Basic(widgets.VBox):
             description_tooltip='Format for one day: YYYY-MM-DD, for a range of dates use "--" and for a list of dates ",". Example: 2021-01-02--2021-01-10.',
             style=style,
         )
-        self.workflow_plugin = widgets.Dropdown(
-            options=plugins.entry_point.get_entry_point_names("aiida.workflows"),
-            description="Workflow",
-            style=style,
-        )
-
         self.model = widgets.Dropdown(
             options=utils.read_yaml_data(models_path)["models"],
             description="Model",
@@ -74,7 +68,6 @@ class Basic(widgets.VBox):
             widgets.VBox(
                 children=[
                     self.simulation_dates,
-                    self.workflow_plugin,
                     self.line,
                     widgets.HBox(
                         children=[

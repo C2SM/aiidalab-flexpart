@@ -7,7 +7,7 @@ from aiida import plugins
 from utils import utils
 from pathlib import Path
 
-# coll_sens = plugins.CalculationFactory("collect.sensitivities")
+coll_sens = plugins.CalculationFactory("collect.sens")
 NetCDF = plugins.DataFactory("netcdf.data")
 style = {"description_width": "initial"}
 
@@ -65,9 +65,8 @@ class SearchSens(widgets.VBox):
     def search(self):
         self.results.value = "searching..."
 
-        dates_list = utils.simulation_dates_parser(self.date_range.value)
-        reformated_dates = [i[:4] + i[5:7] for i in dates_list]
-
+        dates_list = utils.simulation_dates_parser([self.date_range.value])
+        reformated_dates =[i[:4] + i[5:7] for i in dates_list]
         qb = QueryBuilder()
         qb.append(
             NetCDF,
@@ -77,11 +76,14 @@ class SearchSens(widgets.VBox):
                 "id",
             ],
             filters={
-                "attributes.filename": {
+                "attributes.filename":{'and':[
+                    {
                     "or": [{"like": f"{l}%"} for l in self.location.value]
-                },
-                # "attributes.filename": {"like": f'{self.domain.value}%'},
-            },
+                    },
+                    #{"or": [{"like": f"{l}%"} for l in reformated_dates]},
+            ]
+            }
+            } ,
         )
 
         html = """<style>
@@ -102,7 +104,6 @@ class SearchSens(widgets.VBox):
                         <td>
                         {i[2]}
                         </td>
-
                         <td>{i[0]}</td>
                         <td>{i[1]}</td>
                         <td>external</td>

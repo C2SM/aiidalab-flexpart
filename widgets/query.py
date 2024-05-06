@@ -197,6 +197,7 @@ class SearchCalculations(widgets.VBox):
             input_phy=input_phy_dict,
             release=release_dict,
         )
+        print(df)
         # make remotes
         self.remotes = df[
             ["w_hash", "RemoteStash", "date", "location", "model", "outgrid"]
