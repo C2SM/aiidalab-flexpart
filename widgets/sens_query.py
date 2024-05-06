@@ -3,16 +3,13 @@ from IPython.display import clear_output
 
 from aiida.orm import QueryBuilder
 from aiida import plugins
+
 from utils import utils
-from widgets import filter
 from pathlib import Path
 
-
-coll_sens = plugins.CalculationFactory("collect.sensitivities")
+# coll_sens = plugins.CalculationFactory("collect.sensitivities")
 NetCDF = plugins.DataFactory("netcdf.data")
-
 style = {"description_width": "initial"}
-ad_q = filter.ViewerWidget()
 
 
 class SearchSens(widgets.VBox):
@@ -21,7 +18,6 @@ class SearchSens(widgets.VBox):
         self.date_range = widgets.Text(
             value="2020-09-01--2020-12-31",
             description="Range_dates",
-            disabled=False,
             style=style,
         )
         self.location = widgets.SelectMultiple(
@@ -36,7 +32,6 @@ class SearchSens(widgets.VBox):
             options=["EUROPE"],
             description="Domain:",
             ensure_option=True,
-            disabled=False,
             style=style,
         )
 
@@ -60,7 +55,6 @@ class SearchSens(widgets.VBox):
             [
                 search_crit,
                 self.ind_title,
-                ad_q,
                 button,
                 self.results,
                 self.info_out,
@@ -71,11 +65,23 @@ class SearchSens(widgets.VBox):
     def search(self):
         self.results.value = "searching..."
 
+        dates_list = utils.simulation_dates_parser(self.date_range.value)
+        reformated_dates = [i[:4] + i[5:7] for i in dates_list]
+
         qb = QueryBuilder()
         qb.append(
             NetCDF,
-            project=["attributes.filename", "id"],
-            filters={"attributes.global_attributes.domain": "'EUROPE'"},
+            project=[
+                "attributes.filename",
+                "attributes.global_attributes.created",
+                "id",
+            ],
+            filters={
+                "attributes.filename": {
+                    "or": [{"like": f"{l}%"} for l in self.location.value]
+                },
+                # "attributes.filename": {"like": f'{self.domain.value}%'},
+            },
         )
 
         html = """<style>
@@ -87,10 +93,20 @@ class SearchSens(widgets.VBox):
                 <tr>
                     <th>id</th>
                     <th>Name</th>
+                    <th>Created</th>
+                    <th>Procedence</th>
                 </tr>"""
 
         for i in qb.all():
-            html += f"<tr><td>{i[1]}</td><td>{i[0]}</td></tr>"
+            html += f"""<tr>
+                        <td>
+                        {i[2]}
+                        </td>
+
+                        <td>{i[0]}</td>
+                        <td>{i[1]}</td>
+                        <td>external</td>
+                        </tr>"""
         html += "</table>"
 
         self.results.value = html
