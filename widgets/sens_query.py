@@ -66,7 +66,7 @@ class SearchSens(widgets.VBox):
         self.results.value = "searching..."
 
         dates_list = utils.simulation_dates_parser([self.date_range.value])
-        reformated_dates =[i[:4] + i[5:7] for i in dates_list]
+        reformated_dates = [i[:4] + i[5:7] for i in dates_list]
         qb = QueryBuilder()
         qb.append(
             NetCDF,
@@ -76,14 +76,14 @@ class SearchSens(widgets.VBox):
                 "id",
             ],
             filters={
-                "attributes.filename":{'and':[
-                    {
-                    "or": [{"like": f"{l}%"} for l in self.location.value]
-                    },
-                    #{"or": [{"like": f"{l}%"} for l in reformated_dates]},
-            ]
-            }
-            } ,
+                "attributes.filename": {
+                    "and": [
+                        {"or": [{"like": f"{l}%"} for l in self.location.value]},
+                        {"or": [{"like": f"%{l}%"} for l in reformated_dates]},
+                    ]
+                },
+                "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
+            },
         )
 
         html = """<style>
@@ -102,7 +102,10 @@ class SearchSens(widgets.VBox):
         for i in qb.all():
             html += f"""<tr>
                         <td>
-                        {i[2]}
+                            <a href=http://127.0.0.1:8888/apps/apps/FLEXPART_AiiDAlab/ncdump.ipynb?id={i[2]}
+                                                        target="_blank">
+                                {i[2]}
+                            </a>
                         </td>
                         <td>{i[0]}</td>
                         <td>{i[1]}</td>
