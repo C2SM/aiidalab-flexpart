@@ -32,12 +32,6 @@ class SearchCalculations(widgets.VBox):
             description_tooltip="Query for a specific presetting",
             style=style,
         )
-        self.workflow_p = widgets.Dropdown(
-            options=plugins.entry_point.get_entry_point_names("aiida.workflows"),
-            description="Workflow",
-            style=style,
-        )
-
         self.location = widgets.SelectMultiple(
             options=utils.fill_locations(Path.cwd() / "config" / "locations.yaml"),
             description="Locations",
@@ -135,7 +129,7 @@ class SearchCalculations(widgets.VBox):
 
         tabs = widgets.Tab(
             children=[
-                widgets.HBox([self.date_range, self.presettings, self.workflow_p]),
+                widgets.HBox([self.date_range, self.presettings]),
                 search_crit,
             ]
         )
@@ -186,7 +180,6 @@ class SearchCalculations(widgets.VBox):
 
         # fill the dataframe with the values returned by the query
         df = make_query.all_in_query(
-            w=self.workflow_p.value,
             model=self.model.value,
             model_offline=self.model_offline.value,
             locations=self.location.value,
@@ -197,7 +190,6 @@ class SearchCalculations(widgets.VBox):
             input_phy=input_phy_dict,
             release=release_dict,
         )
-        print(df)
         # make remotes
         self.remotes = df[
             ["w_hash", "RemoteStash", "date", "location", "model", "outgrid"]
