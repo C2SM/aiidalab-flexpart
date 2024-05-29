@@ -12,17 +12,12 @@ locations_groups_yaml_path = Path.cwd() / "config" / "location_groups.yaml"
 
 
 class Locations(widgets.VBox):
-    def __init__(self):
 
-        self.groups_title = widgets.HTML(
-            value="<hr><b>GROUPS</b>",
-        )
-        self.ind_title = widgets.HTML(
-            value="<b>ALL LOCATIONS</b>",
-        )
-        self.hr = widgets.HTML(
-            value="<hr>",
-        )
+    groups_title = widgets.HTML(value="<hr><b>GROUPS</b>")
+    ind_title = widgets.HTML(value="<b>ALL LOCATIONS</b>")
+    hr = widgets.HTML(value="<hr>")
+
+    def __init__(self):
 
         with open(locations_groups_yaml_path) as finp:
             self.group_dict = yaml.safe_load(finp)

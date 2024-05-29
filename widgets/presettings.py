@@ -7,19 +7,18 @@ style = {"description_width": "initial"}
 box_layout = widgets.Layout(border="solid 0.5px grey", width="100%", padding="20px")
 
 class Presettings(widgets.VBox):
+    line = widgets.HTML(
+            value="<hr><br>Click on the red box below to delete the selected presetting. Reload to see the changes. "
+        )
+    warning_text = widgets.HTML(
+            value="⚠️<b>WARNING:</b> this action cannot be undone!"
+        )
     def __init__(self, command_file, input_phy, release, basic):
 
         self.command_file = command_file
         self.basic = basic
         self.input_phy = input_phy
         self.release = release
-
-        self.line = widgets.HTML(
-            value="<hr><br>Click on the red box below to delete the selected presetting. Reload to see the changes. "
-        )
-        self.warning_text = widgets.HTML(
-            value="⚠️<b>WARNING:</b> this action cannot be undone!"
-        )
 
         self.save_settings_b = widgets.Checkbox(
             value=False,

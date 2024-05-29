@@ -9,11 +9,13 @@ models_path = Path.cwd() / "config" / "models.yaml"
 
 
 class Basic(widgets.VBox):
+
+    line = widgets.HTML(value="<hr>")
+    out_title = widgets.HTML(value="<b>Outgrid</b>")
+    out_n_title = widgets.HTML(value="<b>Outgrid nest</b>")
+
     def __init__(self):
 
-        self.line = widgets.HTML(value="<hr>")
-        self.out_title = widgets.HTML(value="<b>Outgrid</b>")
-        self.out_n_title = widgets.HTML(value="<b>Outgrid nest</b>")
         self.simulation_dates = widgets.Text(
             value="2020-10-01",
             description="Simulation dates",

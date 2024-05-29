@@ -22,6 +22,13 @@ def fix_values(name):
 
 
 class Misc(widgets.VBox):
+    codes_title = widgets.HTML(value="<hr><b>Code selection</b>")
+    new_code_title = widgets.HTML(
+            value="""<hr><b>Create new codes</b><br>
+                       Click on the button below to create and setup new codes
+                       and or computers.""",
+        )
+
     def __init__(self):
 
         self.prepend_text = widgets.Textarea(
@@ -95,15 +102,6 @@ class Misc(widgets.VBox):
                 yaml.dump(d, f)
 
         button.on_click(on_click)
-
-        self.codes_title = widgets.HTML(
-            value="<hr><b>Code selection</b>",
-        )
-        self.new_code_title = widgets.HTML(
-            value="""<hr><b>Create new codes</b><br>
-                       Click on the button below to create and setup new codes
-                       and or computers.""",
-        )
 
         self.children = [
             self.computer,

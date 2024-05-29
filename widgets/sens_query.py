@@ -13,6 +13,8 @@ style = {"description_width": "initial"}
 
 
 class SearchSens(widgets.VBox):
+    ind_title = widgets.HTML(value="""<hr>""")
+    
     def __init__(self):
 
         self.date_range = widgets.Text(
@@ -55,10 +57,6 @@ class SearchSens(widgets.VBox):
             style=style,
         )
 
-        self.ind_title = widgets.HTML(
-            value="""<hr>
-            """
-        )
         search_crit = widgets.HBox(
             [
                 self.location,
