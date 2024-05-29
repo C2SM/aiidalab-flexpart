@@ -157,7 +157,6 @@ class SearchSens(widgets.VBox):
                     <th>Date</th>
                     <th>Name</th>
                     <th>Created</th>
-
                 </tr>"""
 
         dict_ = {}
@@ -175,7 +174,6 @@ class SearchSens(widgets.VBox):
                         <td>{m}</td>
                         <td>{dict_[m][0]}</td>
                         <td>{dict_[m][1]}</td>
-
                         </tr>"""
             else:
                 html += f"""<tr>

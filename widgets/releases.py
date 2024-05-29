@@ -2,7 +2,6 @@ import ipywidgets as widgets
 
 style = {"description_width": "initial"}
 
-
 class Releases(widgets.VBox):
     def __init__(self):
         self.particles_per_release = widgets.IntText(

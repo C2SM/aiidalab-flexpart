@@ -35,7 +35,7 @@ class VerticalStackWidget(ipw.VBox):
         self.items_output = ipw.VBox()
         tl.link((self, "items"), (self.items_output, "children"))
 
-        # Outputs.
+        # Outputs
         self.add_item_message = awb.utils.StatusHTML()
         super().__init__(
             children=[

@@ -17,7 +17,6 @@ style = {"description_width": "initial"}
 path_to_out = Path.cwd() / "config" / "outgrid.yaml"
 ad_q = filter.ViewerWidget()
 
-
 class SearchCalculations(widgets.VBox):
     def __init__(self):
         self.date_range = widgets.Text(
@@ -198,7 +197,6 @@ class SearchCalculations(widgets.VBox):
         self.w_checkboxes = [
             widgets.Checkbox(description=f"{i}", style=style) for i in self.w_options
         ]
-        # <mark style="background-color: #{i[:6]};">{i[:6]}</mark>
 
         # make calendar
         df_for_calendar = df[["date", "FolderData_PK", "w_hash"]]

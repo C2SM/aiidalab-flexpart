@@ -5,10 +5,8 @@ from pathlib import Path
 style = {"description_width": "initial"}
 path_test = Path.cwd() / "config/input_phy.yaml"
 
-
 class InputPhy(widgets.VBox):
     def __init__(self):
-
         self.params = utils.fill(path_test)
         super().__init__(children=self.params)
 

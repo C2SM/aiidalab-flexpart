@@ -2,7 +2,6 @@ import ipywidgets as widgets
 from widgets import locations, outgrid, outgrid_nest
 from pathlib import Path
 from utils import utils
-from aiida import plugins
 
 style = {"description_width": "initial"}
 box_layout = widgets.Layout(box_layout="padding 200px")

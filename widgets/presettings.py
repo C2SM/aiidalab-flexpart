@@ -6,7 +6,6 @@ workflow = plugins.WorkflowFactory("flexpart.multi_dates")
 style = {"description_width": "initial"}
 box_layout = widgets.Layout(border="solid 0.5px grey", width="100%", padding="20px")
 
-
 class Presettings(widgets.VBox):
     def __init__(self, command_file, input_phy, release, basic):
 
