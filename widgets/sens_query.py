@@ -11,6 +11,19 @@ coll_sens = plugins.CalculationFactory("collect.sens")
 NetCDF = plugins.DataFactory("netcdf.data")
 style = {"description_width": "initial"}
 
+def search_locations():
+    available_locations = []
+    qb = QueryBuilder()
+    qb.append(NetCDF,project="attributes.filename")
+    for i in qb.all():
+        available_locations.append(i[0].split('_')[0])
+    return list(set(available_locations))
+
+def search_species():
+    qb = QueryBuilder()
+    qb.append(NetCDF,project="attributes.global_attributes.species")
+    return list(set([x[0] for x in qb.all()]))
+
 
 class SearchSens(widgets.VBox):
     ind_title = widgets.HTML(value="""<hr>""")
@@ -23,10 +36,9 @@ class SearchSens(widgets.VBox):
             style=style,
         )
         self.location = widgets.SelectMultiple(
-            options=utils.fill_locations(Path.cwd() / "config" / "locations.yaml"),
+            options=search_locations(),
             description="Locations",
             description_tooltip='Multiple values can be selected with "Shift" and/or "ctrl"(or "command")',
-            value=["JFJ_5magl"],
             rows=12,
             style=style,
         )
@@ -49,9 +61,7 @@ class SearchSens(widgets.VBox):
             style=style,
         )
         self.species = widgets.Dropdown(
-            options=[
-                "inert",
-            ],
+            options=search_species(),
             description="Species",
             ensure_option=True,
             style=style,
@@ -115,7 +125,7 @@ class SearchSens(widgets.VBox):
         for _, v in list_locations.items():
             self.acc.set_title(i, f"{v[1]}" + icons[not v[0]])
             i += 1
-
+            
     def search(self, n_location):
         missing_dates = []
         dates_list = utils.simulation_dates_parser([self.date_range.value])
@@ -139,7 +149,7 @@ class SearchSens(widgets.VBox):
                 "attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
                 # "attributes.global_attributes.model_version": {"ilike": f"'{self.model_version.value}'"},
                 "attributes.global_attributes.species": {
-                    "ilike": f"'{self.species.value}'"
+                    "ilike": f"{self.species.value}"
                 },
             },
         )

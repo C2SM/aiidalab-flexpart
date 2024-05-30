@@ -23,18 +23,31 @@ def str_to_dict(s: str) -> dict:
     return d
 
 
-class AddLocation(widgets.HBox):
+class AddLocation(widgets.VBox):
+
+    text_info = widgets.HTML(
+            """ To <b>delete or modify</b> an existing location,<br>
+                 Click on File Manager (in the home page) and navigate to:<br>
+                 <i>apps/flexpart_aiidalab/config/locations.yaml </i>
+                                 """
+    )
+
+    rel_h_info = widgets.HTML("""Release height in meters with respect to chosen release coordinate.<br>
+              Different values for different input meteorologies can be given as a comma separated list <br>
+              (e.g.: cosmo1 100, cosmo7 50)
+                """)
+    
+    rel_coor_info =widgets.HTML("""1 for meters above ground, 2 for meters above sea level.<br>
+                                    Different values for different input meteorologies can be given as a comma separated list<br>
+                                    (e.g.: cosmo1 2, cosmo7 1)""")
+
+
     def __init__(self):
         self.name = widgets.Text(description="Name", style=style)
         self.longitude = widgets.FloatText(description="Longitude", style=style)
         self.latitude = widgets.FloatText(description="Latitude", style=style)
-        self.level = widgets.Textarea(
-            description="Level",
-            style=style,
-            tooltip="""Example format:
-                         cosmo1 1,cosmo7 2""",
-        )
-        self.level_type = widgets.Textarea(description="Level type", style=style)
+        self.level = widgets.Text(description="Release height",style=style,)
+        self.level_type = widgets.Text(description="Release coordinate",style=style)
         self.update_b = widgets.Button(
             description="Add",
             button_style="info",
@@ -53,27 +66,18 @@ class AddLocation(widgets.HBox):
 
         self.update_b.on_click(on_click)
 
-        text_info = widgets.HTML(
-            """ To <b>delete or modify</b> an existing location,<br>
-                                     Click on File Manager (in the home page) and navigate to:<br>
-                                     <i>apps/flexpart_aiidalab/config/locations.yaml </i><br><br>
-                                     Format example for level and level type:<br>
-                                     cosmo1 2,cosmo7 2
-
-                                 """
-        )
         super().__init__(
             children=[
-                widgets.VBox(
-                    children=[
                         self.name,
                         self.longitude,
                         self.latitude,
+                        self.rel_h_info,
                         self.level,
+                        self.rel_coor_info,
                         self.level_type,
                         self.update_b,
+                        self.text_info,
                     ]
                 ),
-                text_info,
-            ]
-        )
+            
+        
