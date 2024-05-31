@@ -9,6 +9,12 @@ from importlib import resources
 style = {"description_width": "initial"}
 style_calendar = resources.read_text(static, "style.css")
 
+def store_dictionary(dict_, group_label):
+    # utility function to store dictionary under a given group.
+    d = orm.Dict(dict_)
+    d.store()
+    group = orm.Group.get(label=group_label)
+    group.add_nodes(d)
 
 def read_yaml_data(data_filename: str, names=None) -> dict:
     """Read in a YAML data file as a dictionary"""
@@ -120,19 +126,27 @@ def generate_locations(path_yaml: str) -> list:
 
 def generate_outgrid(path_yaml: str, outgrid_nest: bool) -> list:
     list_locations = fill_locations(path_yaml)
+    list_locations += [next(iter(x)) for x in get_dicts_in_group('outgrid')]
     if outgrid_nest:
         list_locations.append("None")
         list_widgets_loc = widgets.ToggleButtons(
             options=list_locations,
             value="None",
-            tooltips=[read_description(path_yaml, loc) for loc in list_locations],
+            #tooltips=[read_description(path_yaml, loc) for loc in list_locations],
         )
     else:
         list_widgets_loc = widgets.ToggleButtons(
             options=list_locations,
-            tooltips=[read_description(path_yaml, loc) for loc in list_locations],
+            #tooltips=[read_description(path_yaml, loc) for loc in list_locations],
         )
     return list_widgets_loc
+
+def get_dicts_in_group(group_name:str) -> list:
+    # Finds all Dictionaries under given group
+    q = orm.QueryBuilder()
+    q.append(orm.Group, filters ={'label':group_name}, tag = 'g')
+    q.append(orm.Dict, project = ['attributes'], with_group = 'g')
+    return [x[0] for x in q.all()]
 
 
 def fill(path_file: str) -> list:

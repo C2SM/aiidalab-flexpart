@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from widgets import locations, outgrid, outgrid_nest
+from widgets import locations, outgrid, outgrid_nest, add_outgrid
 from pathlib import Path
 from utils import utils
 
@@ -13,6 +13,7 @@ class Basic(widgets.VBox):
     line = widgets.HTML(value="<hr>")
     out_title = widgets.HTML(value="<b>Outgrid</b>")
     out_n_title = widgets.HTML(value="<b>Outgrid nest</b>")
+    add_outgrid = add_outgrid.AddOugrid()
 
     def __init__(self):
 
@@ -57,13 +58,17 @@ class Basic(widgets.VBox):
         self.outgrid = outgrid.Outgrid()
         self.outgrid_nest = outgrid_nest.OutgridNest()
 
-        acc = widgets.Accordion(
+        acc_loc = widgets.Accordion(
             children=[
                 self.locations,
             ],
         )
-        acc.set_title(0, "Locations")
-        acc.selected_index = 0
+        acc_out = widgets.Accordion(children = [self.add_outgrid])
+
+        acc_loc.set_title(0, "Locations")
+        acc_loc.selected_index = 0
+        acc_out.set_title(0, "Add Outgrid")
+        acc_out.selected_index = None
 
         self.children = [
             widgets.VBox(
@@ -91,11 +96,12 @@ class Basic(widgets.VBox):
             ),
             widgets.VBox(
                 children=[
-                    acc,
+                    acc_loc,
                     self.out_title,
                     self.outgrid,
                     self.out_n_title,
                     self.outgrid_nest,
+                    acc_out
                 ],
                 layout=box_layout,
             ),
