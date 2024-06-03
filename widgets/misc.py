@@ -18,22 +18,16 @@ def codes_list():
 
 def fix_values(name):
     d = utils.read_yaml_data(path_to_default_codes, names=[name])[name]
-    return d if d in codes_list() else 'None'
+    return d if d in codes_list() else "None"
 
 
 class Misc(widgets.VBox):
     codes_title = widgets.HTML(value="<hr><b>Code selection</b>")
-    new_code_title = widgets.HTML(
-            value="""<hr><b>Create new codes</b><br>
-                       Click on the button below to create and setup new codes
-                       and or computers.""",
-        )
 
     def __init__(self):
 
         self.prepend_text = widgets.Textarea(
-            value="#SBATCH --constraint=mc\n"+\
-                  "export OMP_NUM_THREADS=36\n",
+            value="#SBATCH --constraint=mc\n" + "export OMP_NUM_THREADS=36\n",
             description="Prepend text",
             style=style,
         )
@@ -47,42 +41,40 @@ class Misc(widgets.VBox):
         self.wall_time_ifs = widgets.IntText(
             value=1800, description="Wall time ifs", style=style
         )
-        comp_res = awb.ComputationalResourcesWidget()
-        comp_res.code_select_dropdown.layout.visibility = "hidden"
         self.computer = widgets.Text(value="daint", description="Computer", style=style)
         self.f_cosmo_code = widgets.Dropdown(
             description="cosmo",
-            options=codes_list()+['None'],
+            options=codes_list() + ["None"],
             value=fix_values("cosmo"),
             style=style,
         )
         self.f_ifs_code = widgets.Dropdown(
             description="ifs",
-            options=codes_list()+['None'],
+            options=codes_list() + ["None"],
             value=fix_values("ifs"),
             style=style,
         )
         self.f_post_code = widgets.Dropdown(
             description="post",
-            options=codes_list()+['None'],
+            options=codes_list() + ["None"],
             value=fix_values("post"),
             style=style,
         )
         self.ifs_m_code = widgets.Dropdown(
             description="ifs_meteo",
-            options=codes_list()+['None'],
+            options=codes_list() + ["None"],
             value=fix_values("ifs_meteo"),
             style=style,
         )
         self.cosmo_m_code = widgets.Dropdown(
             description="cosmo_meteo",
-            options=codes_list()+['None'],
+            options=codes_list() + ["None"],
             value=fix_values("cosmo_meteo"),
             style=style,
         )
         self.collect_sens_code = widgets.Dropdown(
             description="collect_sens",
-            options=codes_list()+['None'],
+            options=codes_list() + ["None"],
             value=fix_values("collect_sens"),
             style=style,
         )
@@ -118,8 +110,6 @@ class Misc(widgets.VBox):
             self.f_post_code,
             self.collect_sens_code,
             button,
-            self.new_code_title,
-            comp_res,
         ]
 
         super().__init__(children=self.children)

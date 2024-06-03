@@ -89,12 +89,17 @@ def all_in_query(
     ]
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
-    qb.append(WORKFLOW, tag="w", project=["*"], filters={"attributes.exit_status": 0})
+    qb.append(
+        WORKFLOW,
+        tag="w",
+        project=["*"],
+        # filters={"attributes.exit_status": 0}
+    )
     qb.append(
         [COSMO, IFS],
         with_incoming="w",
         tag="calcs",
-        filters={"attributes.exit_status": 0},
+        # filters={"attributes.exit_status": 0},
     )
     qb.append(POST, with_ancestors="calcs", tag="post")
 
@@ -136,7 +141,7 @@ def all_in_query(
                     "and": [{"contains": [i]} for i in model_offline.split(",")]
                 }
             },
-            project="attributes.list",
+            # project="attributes.list",
         )
 
     # Command, Release and Input_phy
@@ -188,6 +193,7 @@ def all_in_query(
 
     # Dataframe construct
     df = pd.DataFrame(qb.all(), columns=columns)
+    print(df)
     df["location"] = df["location"].map(lambda x: list(x.keys())[0])
     df["outgrid"] = df["outgrid"].map(lambda x: list(x.keys())[0])
     df["model"] = df["model"].map(lambda x: ",".join(x))
