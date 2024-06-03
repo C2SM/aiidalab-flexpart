@@ -1,18 +1,18 @@
 import ipywidgets as widgets
 from aiida import plugins, orm
 from utils import make_query
+from settings import *
 
-workflow = plugins.WorkflowFactory("flexpart.multi_dates")
 style = {"description_width": "initial"}
 box_layout = widgets.Layout(border="solid 0.5px grey", width="100%", padding="20px")
 
+
 class Presettings(widgets.VBox):
     line = widgets.HTML(
-            value="<hr><br>Click on the red box below to delete the selected presetting. Reload to see the changes. "
-        )
-    warning_text = widgets.HTML(
-            value="⚠️<b>WARNING:</b> this action cannot be undone!"
-        )
+        value="<hr><br>Click on the red box below to delete the selected presetting. Reload to see the changes. "
+    )
+    warning_text = widgets.HTML(value="⚠️<b>WARNING:</b> this action cannot be undone!")
+
     def __init__(self, command_file, input_phy, release, basic):
 
         self.command_file = command_file
@@ -36,7 +36,7 @@ class Presettings(widgets.VBox):
         def on_click_d(b):
             qb = orm.QueryBuilder()
             qb.append(
-                workflow,
+                WORKFLOW,
                 project=["id"],
                 filters={"extras": {"has_key": self.settings.value}},
             )

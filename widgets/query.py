@@ -4,18 +4,13 @@ import pandas as pd
 from datetime import datetime
 from pathlib import Path
 
-from aiida import plugins
 from utils import utils, make_query
 from widgets import filter
-
-flexpart_cosmo = plugins.CalculationFactory("flexpart.cosmo")
-flexpart_ifs = plugins.CalculationFactory("flexpart.ifs")
-flexpart_post = plugins.CalculationFactory("flexpart.post")
-workflow = plugins.WorkflowFactory("flexpart.multi_dates")
 
 style = {"description_width": "initial"}
 path_to_out = Path.cwd() / "config" / "outgrid.yaml"
 ad_q = filter.ViewerWidget()
+
 
 class SearchCalculations(widgets.VBox):
     def __init__(self):
@@ -32,7 +27,7 @@ class SearchCalculations(widgets.VBox):
             style=style,
         )
         self.location = widgets.SelectMultiple(
-            options=utils.fill_locations(Path.cwd() / "config" / "locations.yaml"),
+            options=utils.get_names_in_group("locations"),
             description="Locations",
             description_tooltip='Multiple values can be selected with "Shift" and/or "ctrl"(or "command")',
             value=["JFJ_5magl"],
@@ -74,13 +69,13 @@ class SearchCalculations(widgets.VBox):
             style=style,
         )
         self.outgrid = widgets.Dropdown(
-            options=utils.fill_locations(path_to_out),
+            options=utils.get_names_in_group("outgrid"),
             description="Outgrid",
             ensure_option=True,
             style=style,
         )
         self.outgrid_nest = widgets.Dropdown(
-            options=utils.fill_locations(path_to_out) + ["None"],
+            options=utils.get_names_in_group("outgrid") + ["None"],
             description="Outgrid nest",
             value="None",
             ensure_option=True,

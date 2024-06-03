@@ -2,32 +2,31 @@ import ipywidgets as widgets
 from IPython.display import clear_output
 
 from aiida.orm import QueryBuilder
-from aiida import plugins
 
 from utils import utils
-from pathlib import Path
+from settings import NETCDF
 
-coll_sens = plugins.CalculationFactory("collect.sens")
-NetCDF = plugins.DataFactory("netcdf.data")
 style = {"description_width": "initial"}
+
 
 def search_locations():
     available_locations = []
     qb = QueryBuilder()
-    qb.append(NetCDF,project="attributes.filename")
+    qb.append(NETCDF, project="attributes.filename")
     for i in qb.all():
-        available_locations.append(i[0].split('_')[0])
+        available_locations.append(i[0].split("_")[0])
     return list(set(available_locations))
+
 
 def search_species():
     qb = QueryBuilder()
-    qb.append(NetCDF,project="attributes.global_attributes.species")
+    qb.append(NETCDF, project="attributes.global_attributes.species")
     return list(set([x[0] for x in qb.all()]))
 
 
 class SearchSens(widgets.VBox):
     ind_title = widgets.HTML(value="""<hr>""")
-    
+
     def __init__(self):
 
         self.date_range = widgets.Text(
@@ -125,14 +124,14 @@ class SearchSens(widgets.VBox):
         for _, v in list_locations.items():
             self.acc.set_title(i, f"{v[1]}" + icons[not v[0]])
             i += 1
-            
+
     def search(self, n_location):
         missing_dates = []
         dates_list = utils.simulation_dates_parser([self.date_range.value])
         reformated_dates = list(set([i[:4] + i[5:7] for i in dates_list]))
         qb = QueryBuilder()
         qb.append(
-            NetCDF,
+            NETCDF,
             project=[
                 "attributes.filename",
                 "attributes.global_attributes.created",

@@ -1,11 +1,6 @@
-from aiida import plugins, orm
+from aiida import orm
 import pandas as pd
-
-# Plugins
-workflow = plugins.WorkflowFactory("flexpart.multi_dates")
-flexpart_cosmo = plugins.CalculationFactory("flexpart.cosmo")
-flexpart_ifs = plugins.CalculationFactory("flexpart.ifs")
-flexpart_post = plugins.CalculationFactory("flexpart.post")
+from settings import *
 
 
 def make_dict_for_query(dict_):
@@ -40,12 +35,12 @@ def get_extra_(name):
     qb = orm.QueryBuilder()
     if name:
         qb.append(
-            workflow,
+            WORKFLOW,
             project=["extras." + name],
             filters={"attributes.exit_status": 0, "extras": {"has_key": name}},
         )
         return qb.all()[0][0]
-    qb.append(workflow, project=["extras"], filters={"attributes.exit_status": 0})
+    qb.append(WORKFLOW, project=["extras"], filters={"attributes.exit_status": 0})
     name_list = []
     for dict_ in qb.all():
         for n in dict_[0].keys():
@@ -94,14 +89,14 @@ def all_in_query(
     ]
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
-    qb.append(workflow, tag="w", project=["*"], filters={"attributes.exit_status": 0})
+    qb.append(WORKFLOW, tag="w", project=["*"], filters={"attributes.exit_status": 0})
     qb.append(
-        [flexpart_cosmo, flexpart_ifs],
+        [COSMO, IFS],
         with_incoming="w",
         tag="calcs",
         filters={"attributes.exit_status": 0},
     )
-    qb.append(flexpart_post, with_ancestors="calcs", tag="post")
+    qb.append(POST, with_ancestors="calcs", tag="post")
 
     # Outgrid and Outgrid Nest
     qb.append(

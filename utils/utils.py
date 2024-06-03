@@ -9,15 +9,17 @@ from importlib import resources
 style = {"description_width": "initial"}
 style_calendar = resources.read_text(static, "style.css")
 
-def store_dictionary(dict_, group_label):
-    # utility function to store dictionary under a given group.
+
+def store_dictionary(dict_: dict, group_label: str) -> None:
+    # utility function to store a dictionary under a given group.
     d = orm.Dict(dict_)
     d.store()
     group = orm.Group.get(label=group_label)
     group.add_nodes(d)
 
+
 def read_yaml_data(data_filename: str, names=None) -> dict:
-    """Read in a YAML data file as a dictionary"""
+    # Read in a YAML data file as a dictionary
     data_path = pathlib.Path(data_filename)
     with data_path.open("r", encoding="utf-8") as fp:
         yaml_data = yaml.safe_load(fp)
@@ -27,6 +29,17 @@ def read_yaml_data(data_filename: str, names=None) -> dict:
         if names
         else yaml_data
     )
+
+
+def initialize_group(path_to_outgrids: str, group_name: str) -> None:
+
+    q = orm.QueryBuilder().append(orm.Group, filters={"label": group_name})
+    if not q.all():
+        group = orm.Group(label=group_name)
+        group.store()
+        d = read_yaml_data(path_to_outgrids)
+        for k in d.keys():
+            store_dictionary({k: d[k]}, group_name)
 
 
 def simulation_dates_parser(date_list: list) -> list:
@@ -62,14 +75,23 @@ def simulation_dates_parser(date_list: list) -> list:
     return orm.List(list=dates)
 
 
-def fill_locations(path_loc: str):
-    return list(read_yaml_data(path_loc).keys())
-
-
 def read_description(path_loc: str, key_: str) -> str:
     if key_ == "None":
         return ""
     dict_ = read_yaml_data(path_loc, names=[key_])
+    string = ""
+    if type(dict_[key_]) == list:
+        string = "\n".join(dict_[key_])
+    else:
+        for k, v in dict_[key_].items():
+            string += k + " : " + str(v) + "\n"
+    return string
+
+
+def parse_description(dict_: dict) -> str:
+    key_ = next(iter(dict_))
+    if key_ == "None":
+        return ""
     string = ""
     if type(dict_[key_]) == list:
         string = "\n".join(dict_[key_])
@@ -111,42 +133,49 @@ def reformat_locations(dict_, model):
 
 def generate_locations(path_yaml: str) -> list:
     list_widgets_loc = []
-    list_locations = fill_locations(path_yaml)
-    for loc in list_locations:
+    d = get_dicts_in_group("locations")
+    names = [next(iter(x)) for x in d]
+    for loc in names:
         list_widgets_loc.append(
             widgets.ToggleButton(
                 value=False,
                 description=loc,
                 button_style="",
-                tooltip=read_description(path_yaml, loc),
+                # tooltip=parse_description(d[loc]),
             )
         )
     return list_widgets_loc
 
 
-def generate_outgrid(path_yaml: str, outgrid_nest: bool) -> list:
-    list_locations = fill_locations(path_yaml)
-    list_locations += [next(iter(x)) for x in get_dicts_in_group('outgrid')]
+def generate_outgrids_buttons(outgrid_nest: bool) -> list:
+    # generates list of widgets for outgrids
+    d = get_dicts_in_group("outgrid")
+    names = [next(iter(x)) for x in d]
     if outgrid_nest:
-        list_locations.append("None")
-        list_widgets_loc = widgets.ToggleButtons(
-            options=list_locations,
+        names.append("None")
+        list_widgets = widgets.ToggleButtons(
+            options=names,
             value="None",
-            #tooltips=[read_description(path_yaml, loc) for loc in list_locations],
+            tooltips=[parse_description(i) for i in d],
         )
     else:
-        list_widgets_loc = widgets.ToggleButtons(
-            options=list_locations,
-            #tooltips=[read_description(path_yaml, loc) for loc in list_locations],
+        list_widgets = widgets.ToggleButtons(
+            options=names,
+            tooltips=[parse_description(i) for i in d],
         )
-    return list_widgets_loc
+    return list_widgets
 
-def get_dicts_in_group(group_name:str) -> list:
-    # Finds all Dictionaries under given group
+
+def get_dicts_in_group(group_name: str) -> list:
+    # Finds all Dictionaries in a given group
     q = orm.QueryBuilder()
-    q.append(orm.Group, filters ={'label':group_name}, tag = 'g')
-    q.append(orm.Dict, project = ['attributes'], with_group = 'g')
+    q.append(orm.Group, filters={"label": group_name}, tag="g")
+    q.append(orm.Dict, project=["attributes"], with_group="g")
     return [x[0] for x in q.all()]
+
+
+def get_names_in_group(group_name: str) -> list:
+    return [next(iter(x)) for x in get_dicts_in_group(group_name)]
 
 
 def fill(path_file: str) -> list:
