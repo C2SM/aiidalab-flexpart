@@ -17,7 +17,10 @@ def codes_list():
 
 
 def fix_values(name):
-    d = utils.read_yaml_data(path_to_default_codes, names=[name])[name]
+    try:
+        d = utils.read_yaml_data(path_to_default_codes, names=[name])[name]
+    except:
+        return "None"
     return d if d in codes_list() else "None"
 
 
