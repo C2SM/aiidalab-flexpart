@@ -156,12 +156,13 @@ def all_in_query(
         filters=command,
         project="attributes.simulation_date",
     )
-    qb.append(
-        orm.Dict,
-        with_outgoing="calcs",
-        edge_filters={"label": {"like": "model_settings__input_phy"}},
-        filters=input_phy,
-    )
+    if input_phy != 'None':
+        qb.append(
+            orm.Dict,
+            with_outgoing="calcs",
+            edge_filters={"label": {"like": "model_settings__input_phy"}},
+            filters=input_phy,
+        )
     qb.append(
         orm.Dict,
         with_outgoing="calcs",

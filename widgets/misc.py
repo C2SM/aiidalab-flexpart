@@ -23,7 +23,6 @@ def fix_values(name):
         return "None"
     return d if d in codes_list() else "None"
 
-
 class Misc(widgets.VBox):
     codes_title = widgets.HTML(value="<hr><b>Code selection</b>")
 
@@ -35,6 +34,9 @@ class Misc(widgets.VBox):
             style=style,
         )
         self.account = widgets.Text(value="em05", description="Account", style=style)
+        self.stash_address = widgets.Text(value="/store/empa/em05/", 
+                                          description="Stash address", 
+                                          style=style)
         self.partition = widgets.Text(
             value="normal", description="Partition", style=style
         )
@@ -105,6 +107,7 @@ class Misc(widgets.VBox):
             self.account,
             self.partition,
             self.prepend_text,
+            self.stash_address,
             self.codes_title,
             self.f_cosmo_code,
             self.cosmo_m_code,

@@ -165,11 +165,12 @@ class SearchCalculations(widgets.VBox):
                 self.outgrid_nest.value = list(dict_from_extra["outgrid_nest"].keys())[
                     0
                 ]
-
             query_dict = make_query.make_dict_for_query(dict_from_extra["command"])
             input_phy_dict = make_query.make_dict_for_query(
-                dict_from_extra["input_phy"]
-            )
+                    dict_from_extra["input_phy"]
+                )
+            if 'IFS' in model:
+                input_phy_dict  ='None'
             release_dict = make_query.make_dict_for_query(dict_from_extra["release"])
 
         # fill the dataframe with the values returned by the query

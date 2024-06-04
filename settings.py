@@ -11,4 +11,4 @@ POST = plugins.CalculationFactory("flexpart.post")
 COLLECT_SENS = plugins.CalculationFactory("collect.sensitivities")
 
 # Data
-NETCDF = plugins.DataFactory("netcdf.data")
+#NETCDF = plugins.DataFactory("netcdf.data")
