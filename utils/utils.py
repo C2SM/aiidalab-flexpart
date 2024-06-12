@@ -262,14 +262,14 @@ def generate_html_calendar(range_date, a_dates):
                     if len(pk_list) > 1:
                         for i in pk_list[1:]:
                             multiple_w_list += f"""
-                                                      <a href=http://127.0.0.1:8888/apps/apps/FLEXPART_AiiDAlab/plot.ipynb?id={i[0]}
+                                                      <a href=./plot.ipynb?id={i[0]}
                                                       target="_blank">
                                                       <mark style="background-color: #{i[1][:6]}; color:#ffffff">{i[1][:6]}</mark>
                                                       </a>
                                                       """
                         html += f"""<td>
                                         {m[k].day}<br><div class='block_box'>
-                                        <a href=http://127.0.0.1:8888/apps/apps/FLEXPART_AiiDAlab/plot.ipynb?id={pk_list[0][0]}
+                                        <a href=./plot.ipynb?id={pk_list[0][0]}
                                                       target="_blank">
                                         <mark style="background-color: #{pk_list[0][1][:6]}; color:#ffffff">{pk_list[0][1][:6]}</mark>
                                         </a>
@@ -282,7 +282,7 @@ def generate_html_calendar(range_date, a_dates):
                     else:
                         html += f"""<td>
                                         {m[k].day}<br><div class='block_box'>
-                                        <a href=http://127.0.0.1:8888/apps/apps/FLEXPART_AiiDAlab/plot.ipynb?id={pk_list[0][0]}
+                                        <a href=./plot.ipynb?id={pk_list[0][0]}
                                                       target="_blank">
                                         <mark style="background-color: #{pk_list[0][1][:6]}; color:#ffffff">{pk_list[0][1][:6]}</mark>
                                         </a></div></td>"""

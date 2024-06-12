@@ -15,6 +15,12 @@ def codes_list():
         for c in orm.QueryBuilder().append(orm.Code).all()
     ]
 
+def computer_list():
+    return  [c[0].label 
+             for c in orm.QueryBuilder().append(orm.Computer).all() 
+             if c[0].label != 'localhost']
+
+
 
 def fix_values(name):
     try:
@@ -46,7 +52,10 @@ class Misc(widgets.VBox):
         self.wall_time_ifs = widgets.IntText(
             value=1800, description="Wall time ifs", style=style
         )
-        self.computer = widgets.Text(value="daint", description="Computer", style=style)
+        self.computer = widgets.Dropdown(
+            options=computer_list(),
+            description="Computer", 
+            style=style)
         self.f_cosmo_code = widgets.Dropdown(
             description="cosmo",
             options=codes_list() + ["None"],
