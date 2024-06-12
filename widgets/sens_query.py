@@ -1,6 +1,6 @@
 import ipywidgets as widgets
 import re
-from IPython.display import clear_output,display
+from IPython.display import clear_output, display
 
 from aiida.orm import QueryBuilder
 
@@ -9,18 +9,21 @@ from settings import NETCDF
 
 style = {"description_width": "initial"}
 
+
 def search_locations(a_obs):
     available_locations = []
     qb = QueryBuilder()
-    qb.append(NETCDF, 
-              filters = {'attributes.filename':
-                        {"or": [{"like": f"{l}%"} for l in a_obs]},
-                        #'attributes.global_attributes.model': {'==': 'NAME'}
-               },
-              project="attributes.filename")
+    qb.append(
+        NETCDF,
+        filters={
+            "attributes.filename": {"or": [{"like": f"{l}%"} for l in a_obs]},
+            #'attributes.global_attributes.model': {'==': 'NAME'}
+        },
+        project="attributes.filename",
+    )
     for i in qb.all():
-        s = re.split('_|-',i[0])
-        available_locations.append(s[0]+'-'+s[1])
+        s = re.split("_|-", i[0])
+        available_locations.append(s[0] + "-" + s[1])
     return list(set(available_locations))
 
 
@@ -30,19 +33,21 @@ def search_species():
     qb.append(NETCDF, project="attributes.global_attributes.species")
     for i in qb.all():
         if i[0]:
-            values = i[0].split(';')
-            if len(values)>1:
+            values = i[0].split(";")
+            if len(values) > 1:
                 for j in range(len(values)):
-                    available_species.append(re.sub("'", '',values[j]))
+                    available_species.append(re.sub("'", "", values[j]))
             else:
-                available_species.append(re.sub("'", '',values[0]))
+                available_species.append(re.sub("'", "", values[0]))
     return list(set(available_species))
 
 
 class SearchSens(widgets.VBox):
     ind_title = widgets.HTML(value="""<hr>""")
     species_title = widgets.HTML(value="""<b>1. Observations</b><br>Species """)
-    locations_title = widgets.HTML(value="""<b>2. Locations</b><br>Choose from the list of locations where observations are available.""")
+    locations_title = widgets.HTML(
+        value="""<b>2. Locations</b><br>Choose from the list of locations where observations are available."""
+    )
     info = widgets.HTML(value='<p style="color:green;">Available: ')
 
     def __init__(self):
@@ -53,54 +58,46 @@ class SearchSens(widgets.VBox):
             style=style,
         )
         self.location = widgets.TagsInput(
-            allowed_tags=search_locations(['JFJ']),
+            allowed_tags=search_locations(["JFJ"]),
             allow_duplicates=False,
             style=style,
         )
         self.domain = widgets.Dropdown(
             options=["EUROPE"],
             description="Domain",
-            ensure_option=True,
             style=style,
         )
         self.time_step = widgets.Dropdown(
-            options=['3hourly','4hourly','6hourly','12hourly','24hourly'],
+            options=["3hourly", "4hourly", "6hourly", "12hourly", "24hourly"],
             description="Time steps",
-            ensure_option=True,
             style=style,
         )
         self.model = widgets.Dropdown(
             options=["NAME", "FLEXPART"],
             description="Model",
-            ensure_option=True,
             style=style,
         )
         self.model_version = widgets.Dropdown(
             options=["NAME III (version 7.2)", "FLEXPART IFS (version 9.1_Empa)"],
             description="Model version",
-            ensure_option=True,
             style=style,
         )
         self.species = widgets.TagsInput(
-            value=['inert'], 
-            allowed_tags = search_species(),
+            allowed_tags=search_species(),
             allow_duplicates=False,
             style=style,
         )
 
-        self.time_step.observe(self.available_observations,names="value")
-        self.species.observe(self.available_observations,names="value")
-        self.available_obs_list = []
-        
+        self.time_step.observe(self.available_observations, names="value")
+        self.species.observe(self.available_observations, names="value")
+        self.available_obs_list = {"names": [], "remotes": []}
+        self.list_remotes = []
 
         search_crit = widgets.VBox(
             [
-                widgets.VBox([
-                              self.species_title,
-                              self.species,
-                              self.time_step,
-                              self.domain],
-                              ),
+                widgets.VBox(
+                    [self.species_title, self.species, self.time_step, self.domain],
+                ),
                 self.info,
                 self.ind_title,
                 self.locations_title,
@@ -139,24 +136,28 @@ class SearchSens(widgets.VBox):
             ]
         )
 
-    def available_observations(self,change=None):
+    def available_observations(self, change=None):
         self.info.value = '<p style="color:green;">Available: '
         available_locations = []
         qb = QueryBuilder()
-        qb.append(NETCDF, 
-                filters={
+        qb.append(
+            NETCDF,
+            filters={
                 "attributes.filename": {"ilike": f"%{self.time_step.value}%"},
-                "attributes.global_attributes.species":
-                    {"or": [{"like": f"'%{s}%'"} for s in self.species.value]},
+                "attributes.global_attributes.species": {
+                    "or": [{"like": f"'%{s}%'"} for s in self.species.value]
                 },
-                project="attributes.filename")
+            },
+            project=["attributes.filename", "attributes.remote_path"],
+        )
         for i in qb.all():
-            s = re.split('_|-',i[0])
+            s = re.split("_|-", i[0])
             available_locations.append(s[0])
-        self.info.value += ', '.join(available_locations)
-        self.info.value += '</p>'
-        self.available_obs_list = available_locations
-        self.location.allowed_tags = search_locations(self.available_obs_list)
+            self.available_obs_list["remotes"].append(i[1])
+        self.info.value += ", ".join(available_locations)
+        self.info.value += "</p>"
+        self.available_obs_list["names"] = available_locations
+        self.location.allowed_tags = search_locations(self.available_obs_list["names"])
 
     def accordions(self):
         icons = {True: "  ✅", False: "  ❌"}
@@ -180,7 +181,6 @@ class SearchSens(widgets.VBox):
             i += 1
 
     def search(self, n_location):
-        
         missing_dates = []
         dates_list = utils.simulation_dates_parser([self.date_range.value])
         reformated_dates = list(set([i[:4] + i[5:7] for i in dates_list]))
@@ -191,20 +191,21 @@ class SearchSens(widgets.VBox):
                 "attributes.filename",
                 "attributes.global_attributes.created",
                 "id",
+                "attributes.remote_path",
             ],
             filters={
                 "attributes.filename": {
                     "and": [
                         {"or": [{"like": f"{n_location}%"}]},
-                        #{"or": [{"like": f"%{l}%"} for l in reformated_dates]},
+                        # {"or": [{"like": f"%{l}%"} for l in reformated_dates]},
                     ]
                 },
                 # "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
-                #"attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
+                # "attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
                 # "attributes.global_attributes.model_version": {"ilike": f"'{self.model_version.value}'"},
-                "attributes.global_attributes.species": {
-                    "ilike": f"{self.species.value}"
-                },
+                # "attributes.global_attributes.species": {
+                #    "ilike": f"{self.species.value}"
+                # },
             },
         )
 
@@ -237,6 +238,7 @@ class SearchSens(widgets.VBox):
                         <td>{dict_[m][0]}</td>
                         <td>{dict_[m][1]}</td>
                         </tr>"""
+                self.list_remotes.append(dict_[m][3] + "/" + dict_[m][0])
             else:
                 html += f"""<tr>
                         <td><mark style='color: red;'>Missing</mark></td>
