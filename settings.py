@@ -2,7 +2,7 @@ from aiida import plugins
 
 # Workflows
 WORKFLOW = plugins.WorkflowFactory("flexpart.multi_dates")
-INSPECT = plugins.WorkflowFactory("inspect.workflow")
+#INSPECT = plugins.WorkflowFactory("inspect.workflow")
 
 # Calculations
 COSMO = plugins.CalculationFactory("flexpart.cosmo")
@@ -11,4 +11,4 @@ POST = plugins.CalculationFactory("flexpart.post")
 COLLECT_SENS = plugins.CalculationFactory("collect.sensitivities")
 
 # Data
-NETCDF = plugins.DataFactory("netcdf.data")
+#NETCDF = plugins.DataFactory("netcdf.data")
