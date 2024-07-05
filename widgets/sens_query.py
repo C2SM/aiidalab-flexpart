@@ -39,7 +39,10 @@ def search_species():
                     available_species.append(re.sub("'", "", values[j]))
             else:
                 available_species.append(re.sub("'", "", values[0]))
-    return list(set(available_species))
+    s = set(available_species)
+    s.remove('Inert')
+    s.remove('inert')
+    return list(s)
 
 
 class SearchSens(widgets.VBox):
@@ -53,7 +56,7 @@ class SearchSens(widgets.VBox):
     def __init__(self):
 
         self.date_range = widgets.Text(
-            value="2020-09-01--2020-12-31",
+            value="2020-01-01--2020-12-31",
             description="Range_dates",
             style=style,
         )

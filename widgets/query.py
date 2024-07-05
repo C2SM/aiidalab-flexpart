@@ -15,7 +15,7 @@ ad_q = filter.ViewerWidget()
 class SearchCalculations(widgets.VBox):
     def __init__(self):
         self.date_range = widgets.Text(
-            value="2020-09-01--2020-12-31",
+            value="2020-01-01--2020-12-31",
             description="Dates",
             description_tooltip="range of dates to query",
             style=style,
