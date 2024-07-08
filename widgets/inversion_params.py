@@ -6,6 +6,9 @@ style = {"description_width": "initial"}
 class InversionParams(widgets.VBox):
 
     def __init__(self):
+
+        #   GENERAL 
+        ####################################
         self.inv_name = widgets.Text(description = 'Inversion name',
                                      style=style)
         self.project = widgets.Text(description = 'Project',
@@ -14,29 +17,42 @@ class InversionParams(widgets.VBox):
         self.institute = widgets.Text(description = 'Institute',
                                       value = 'Empa, Switzerland',
                                      style=style)
-        self.iterations = widgets.IntText(description = 'Iterations',
-                                      value = 4,
-                                      style=style)
-        self.contributions = widgets.TagsInput(
-            allowed_tags=["mod", "instr", "bg", "var"],
-            allow_duplicates=False,
-            style=style,
-        )
-        self.u_model = widgets.Checkbox( value=True,
-                                        description='Model component',
-                                        style=style)
-        self.plot = widgets.Checkbox( value=True,
-                                        description='Plot',
-                                        style=style)
         
-        basic = widgets.VBox(children = [self.project,
-                                        self.institute,
-                                        self.inv_name,
-                                        self.iterations,
-                                        self.contributions,
-                                        self.u_model,
-                                        self.plot])
+        general = widgets.VBox(children = [self.project,
+                                           self.institute,
+                                           self.inv_name,
+                                    ])
         
+        #  INPUT LOCATIONS
+        ########################################
+        self.ftp_dir= widgets.Text(description = 'ftp_dir',
+                               value= "/scratch/snx3000/shenne/tmp")
+        self.pop_data_dir= widgets.Text(description = 'pop_data_dir',
+                                    value= "/store/empa/em05/input/GIS/population")
+        self.res_dir= widgets.Text(description = 'res_dir',
+                               value= "/scratch/snx3000/shenne/HFO_inversions/results_202406/")
+        self.bot_up_file= widgets.Text(description = 'bot_up_file',
+                                   value= "/project/s1302/shenne/PARIS/HFO_inversions/code/invSettings/bot.up.uniform.csv")
+        self.cmask_file= widgets.Text(description = 'cmask_file',
+                                  value=  "/project/s1302/shenne/PARIS/CH4_inversions/Country_masks/country_EUROPE_EEZ_PARIS_gapfilled_fractional.nc")
+        input_loc = widgets.VBox(children = [
+            self.ftp_dir,
+            self.pop_data_dir,
+            self.res_dir,
+            self.bot_up_file,
+            self.cmask_file
+        ])
+
+        #   SITES
+        #######################################
+        #   INVERSION GRID 
+        #######################################
+        self.igr_method = widgets.Dropdown(description = 'igr_method',
+                                           options = ["fromAverage","load"])
+        inv_grid = widgets.VBox(children = [self.igr_method])
+        
+        #   APRIORI 
+        ####################################### 
         self.EDGAR_dir = widgets.Text(description = 'EDGAR_dir',
                                  value = "/store/empa/em05/input/EDGAR" )
         self.edgar_version =  widgets.Text(description = 'edgar_version',
@@ -86,8 +102,53 @@ class InversionParams(widgets.VBox):
                 clear_output()
         x = widgets.interactive(select_option,name = ['EDGAR', 'load', 'homo'])
 
-        sites_info = None
+        #   APRIORI COVARIANCE
+        ########################################   
+        self.u_apriori0 =  widgets.FloatText(description='u_apriori0',
+                                   value = 3,
+                                   )
+        self.max_dist = widgets.FloatText(description='max_dist',
+                                   value = 500.0,
+                                   )
+        self.tau_bg = widgets.FloatText(description='tau_bg',
+                                   value = 60.0,
+                                   )
+        self.u_outer = widgets.FloatText(description='tau_bg',
+                                    value = 0.2,
+                                    )
+        ap_cov = widgets.VBox(children = [
+            self.u_apriori0,
+            self.max_dist,
+            self.tau_bg,
+            self.u_outer
+        ])
 
+        #   PLOT OPTIONS
+        #########################################   
+        self.zlim=widgets.Text(description = 'map_db',
+                          value = '1.0, 1.0e+04')
+        self.ts_units = widgets.Dropdown(description = 'ts_units',
+                                    options = ['ppt', 'ppb', 'ppm'] )
+        self.frmt = widgets.Dropdown(description = 'frmt',
+                                    options = ["png16m","eps"] )
+        self.map_db = widgets.Text(description = 'map_db',
+                              value = "world.TM")
+
+        self.map_source = widgets.Text(description = 'map_source',
+                              value = "myRplots")
+ 
+        self.cities = widgets.Checkbox(description = 'cities',
+                                  value = False)   
+        plot_op  = widgets.VBox(children=[self.zlim,
+                                               self.ts_units,
+                                               self.frmt,
+                                               self.map_db,
+                                               self.map_source,
+                                               self.cities   
+                                          ])          
+
+        #       INVERSION SETTINGS
+        #########################################
         use_covariances = widgets.Checkbox(description = 'use_covariances',
                                           value= True) 
         positive = widgets.Text(description ='positive',
@@ -112,6 +173,8 @@ class InversionParams(widgets.VBox):
                                       value = False)
         bg_fac = widgets.Checkbox(description = 'bg_fac',
                                   value = False)
+        incl_outer = widgets.Checkbox(description = 'incl_outer',
+                                  value = True)
 
         inv_settings = widgets.VBox(children = [use_covariances,
                                                 positive,
@@ -125,20 +188,42 @@ class InversionParams(widgets.VBox):
                                                 bg_type,
                                                 bg_by_site,
                                                 bg_fac,
-                                                x])
-        inv_grid = None
-        plot_opt = None
-
+                                                incl_outer
+                                                ])
+        #   MODEL-DATA-MISMATCH COVARIANCE 
+        ############################################
+        self.contributions = widgets.TagsInput(
+            allowed_tags=["mod", "instr", "bg", "var"],
+            allow_duplicates=False,
+            style=style,
+        )
+        self.iterations = widgets.IntText(description = 'Iterations',
+                                      value = 4,
+                                      style=style)
+        
+        self.u_model = widgets.Checkbox( value=True,
+                                        description='Model component',
+                                        style=style)
+        self.plot = widgets.Checkbox( value=True,
+                                        description='Plot',
+                                        style=style)
+        model_mis =  widgets.VBox(children = [self.contributions,
+                                              self.iterations,
+                                              self.u_model,
+                                              self.plot
+                                              ])
+        
+        ############################################
         tab = widgets.Tab()
-        tab.children = [basic,
-                        basic,
+        tab.children = [general,
+                        input_loc,
+                        general,
+                        inv_grid,
                         inv_settings,
-                        basic,
-                        basic,
-                        basic,
+                        model_mis,
                         x,
-                        basic,
-                        basic
+                        ap_cov,
+                        plot_op
                         ]
         tab.titles=['General',
                     'Input locations',
@@ -149,5 +234,4 @@ class InversionParams(widgets.VBox):
                     'Apriori',
                     'Apriori covariance',
                     'Plot options']
-
         super().__init__([tab])
