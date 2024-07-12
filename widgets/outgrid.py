@@ -35,9 +35,11 @@ class Outgrid(widgets.VBox):
         super().__init__(children=self.children)
 
     def selected_outgrid(self):
-        selected = self.children[0].value
-        return selected
+        return self.out_loc.value
 
+    def selected_outgrid_nest(self):
+        return self.out_n_loc.value
+    
     # TODO tooltips missing
     def update_outgrids(self, change=None):
         self.out_loc.options = utils.generate_outgrids_buttons(

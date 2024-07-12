@@ -64,4 +64,4 @@ class Locations(widgets.VBox):
         self.locations_widget.children = utils.generate_locations()
 
     def fill(self):
-        return [x.description for x in self.locations_w if x.value == True]
+        return [x.description for x in self.locations_widget.children if x.value == True]

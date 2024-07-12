@@ -1,7 +1,7 @@
 from aiida import plugins
 
 # Workflows
-WORKFLOW = plugins.WorkflowFactory("flexpart.multi_dates")
+WORKFLOW = plugins.WorkflowFactory("flexpart.multi_workflow")
 INSPECT = plugins.WorkflowFactory("inspect.workflow")
 
 # Calculations
