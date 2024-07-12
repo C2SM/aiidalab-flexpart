@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 import aiidalab_widgets_base as awb
 from aiida import orm
@@ -15,11 +16,13 @@ def codes_list():
         for c in orm.QueryBuilder().append(orm.Code).all()
     ]
 
-def computer_list():
-    return  [c[0].label 
-             for c in orm.QueryBuilder().append(orm.Computer).all() 
-             if c[0].label != 'localhost']
 
+def computer_list():
+    return [
+        c[0].label
+        for c in orm.QueryBuilder().append(orm.Computer).all()
+        if c[0].label != "localhost"
+    ]
 
 
 def fix_values(name):
@@ -29,9 +32,8 @@ def fix_values(name):
         return "None"
     return d if d in codes_list() else "None"
 
-class Misc(widgets.VBox):
-    codes_title = widgets.HTML(value="<hr><b>Code selection</b>")
 
+class Misc(widgets.VBox):
     def __init__(self):
 
         self.prepend_text = widgets.Textarea(
@@ -40,9 +42,9 @@ class Misc(widgets.VBox):
             style=style,
         )
         self.account = widgets.Text(value="em05", description="Account", style=style)
-        self.stash_address = widgets.Text(value="/store/empa/em05/", 
-                                          description="Stash address", 
-                                          style=style)
+        self.stash_address = widgets.Text(
+            value="/store/empa/em05/", description="Stash address", style=style
+        )
         self.partition = widgets.Text(
             value="normal", description="Partition", style=style
         )
@@ -53,9 +55,8 @@ class Misc(widgets.VBox):
             value=1800, description="Wall time ifs", style=style
         )
         self.computer = widgets.Dropdown(
-            options=computer_list(),
-            description="Computer", 
-            style=style)
+            options=computer_list(), description="Computer", style=style
+        )
         self.f_cosmo_code = widgets.Dropdown(
             description="cosmo",
             options=codes_list() + ["None"],
@@ -117,7 +118,7 @@ class Misc(widgets.VBox):
             self.partition,
             self.prepend_text,
             self.stash_address,
-            self.codes_title,
+            widgets.HTML(value="<hr><b>Code selection</b>"),
             self.f_cosmo_code,
             self.cosmo_m_code,
             self.f_ifs_code,

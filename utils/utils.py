@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 import yaml
 import pathlib
@@ -32,7 +33,8 @@ def read_yaml_data(data_filename: str, names=None) -> dict:
 
 
 def initialize_group(path_to_outgrids: str, group_name: str) -> None:
-
+    # Creates a group (if it donst exits) and stores the dictionaries from
+    # the given yaml file.
     q = orm.QueryBuilder().append(orm.Group, filters={"label": group_name})
     if not q.all():
         group = orm.Group(label=group_name)
@@ -131,7 +133,9 @@ def reformat_locations(dict_, model):
     return dict_
 
 
-def generate_locations(path_yaml: str) -> list:
+def generate_locations() -> list:
+    # returns a list of Togglebuttons for each location in
+    # locations group
     list_widgets_loc = []
     d = get_dicts_in_group("locations")
     names = [next(iter(x)) for x in d]

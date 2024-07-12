@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from utils import utils
 
 style = {"description_width": "initial"}
 
 
-class AddOugrid(widgets.HBox):
+class AddOutgrid(widgets.HBox):
 
     text_info = widgets.HTML(
         """<ul>

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
-from widgets import locations, outgrid, outgrid_nest, add_outgrid
+from widgets import locations, outgrid
 from pathlib import Path
 from utils import utils
 
@@ -9,12 +10,6 @@ models_path = Path.cwd() / "config" / "models.yaml"
 
 
 class Basic(widgets.VBox):
-
-    line = widgets.HTML(value="<hr>")
-    out_title = widgets.HTML(value="<b>Outgrid</b>")
-    out_n_title = widgets.HTML(value="<b>Outgrid nest</b>")
-    add_outgrid = add_outgrid.AddOugrid()
-
     def __init__(self):
 
         self.simulation_dates = widgets.Text(
@@ -56,25 +51,16 @@ class Basic(widgets.VBox):
         )
         self.locations = locations.Locations()
         self.outgrid = outgrid.Outgrid()
-        self.outgrid_nest = outgrid_nest.OutgridNest()
 
-        acc_loc = widgets.Accordion(
-            children=[
-                self.locations,
-            ],
-        )
-        acc_out = widgets.Accordion(children = [self.add_outgrid])
-
+        acc_loc = widgets.Accordion(children=[self.locations])
         acc_loc.set_title(0, "Locations")
         acc_loc.selected_index = 0
-        acc_out.set_title(0, "Add Outgrid")
-        acc_out.selected_index = None
 
         self.children = [
             widgets.VBox(
                 children=[
                     self.simulation_dates,
-                    self.line,
+                    widgets.HTML(value="<hr>"),
                     widgets.HBox(
                         children=[
                             widgets.VBox(children=[self.model, self.integration_time]),
@@ -91,17 +77,13 @@ class Basic(widgets.VBox):
                             ),
                         ]
                     ),
-                    self.line,
+                    widgets.HTML(value="<hr>"),
                 ]
             ),
             widgets.VBox(
                 children=[
                     acc_loc,
-                    self.out_title,
                     self.outgrid,
-                    self.out_n_title,
-                    self.outgrid_nest,
-                    acc_out
                 ],
                 layout=box_layout,
             ),

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from widgets import add_location
 from utils import utils
@@ -12,26 +13,27 @@ locations_groups_yaml_path = Path.cwd() / "config" / "location_groups.yaml"
 
 
 class Locations(widgets.VBox):
-
-    groups_title = widgets.HTML(value="<hr><b>GROUPS</b>")
-    ind_title = widgets.HTML(value="<b>ALL LOCATIONS</b>")
-    hr = widgets.HTML(value="<hr>")
-
     def __init__(self):
+
+        # Creates the locations group and stores the default locations
         utils.initialize_group(locations_yaml_path, group_name="locations")
+
         with open(locations_groups_yaml_path) as finp:
             self.group_dict = yaml.safe_load(finp)
         self.locations_g_w = [
             widgets.Checkbox(description=g) for g in self.group_dict.keys()
         ]
+
         for group in self.locations_g_w:
             group.observe(self.enable_locations_in_group, names="value")
 
-        self.locations_w = utils.generate_locations(locations_yaml_path)
+        self.locations_widget = widgets.GridBox(
+            utils.generate_locations(), layout=layout
+        )
 
+        # Adds accordion for adding new location
         add_locations = add_location.AddLocation()
-        add_locations.update_b.observe(self.update_locations)
-
+        add_locations.update_b.on_click(self.update_locations)
         acc = widgets.Accordion(
             children=[
                 add_locations,
@@ -41,11 +43,11 @@ class Locations(widgets.VBox):
         acc.selected_index = None
 
         self.children = [
-            self.ind_title,
-            widgets.GridBox(self.locations_w, layout=layout),
-            self.groups_title,
+            widgets.HTML(value="<b>ALL LOCATIONS</b>"),
+            self.locations_widget,
+            widgets.HTML(value="<hr><b>GROUPS</b>"),
             widgets.GridBox(self.locations_g_w, layout=layout),
-            self.hr,
+            widgets.HTML(value="<hr>"),
             acc,
         ]
         super().__init__(children=self.children)
@@ -54,12 +56,12 @@ class Locations(widgets.VBox):
         value = change["new"]
         group_name = change["owner"].description
         list_of_locations = set(self.group_dict[group_name])
-        for location in self.locations_w:
+        for location in self.locations_widget.children:
             if location.description in list_of_locations:
                 location.value = value
 
     def update_locations(self, change=None):
-        self.locations_w += utils.generate_locations(locations_yaml_path)
+        self.locations_widget.children = utils.generate_locations()
 
     def fill(self):
         return [x.description for x in self.locations_w if x.value == True]

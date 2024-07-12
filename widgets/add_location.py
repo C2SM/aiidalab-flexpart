@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from utils import utils
 
@@ -13,19 +14,17 @@ def str_to_dict(s: str) -> dict:
     return None
 
 
-class AddLocation(widgets.VBox):
+class AddLocation(widgets.HBox):
 
-    rel_h_info = widgets.HTML(
-        """Release height in meters with respect to chosen release coordinate.<br>
-              Different values for different input meteorologies can be given as a comma separated list <br>
-              (e.g.: cosmo1 100, cosmo7 50)
-                """
-    )
-
-    rel_coor_info = widgets.HTML(
-        """1 for meters above ground, 2 for meters above sea level.<br>
+    text_info = widgets.HTML(
+        """<ul>
+               <li><b>Release height</b>: in meters with respect to chosen release coordinate.<br>
+               Different values for different input meteorologies can be given as a comma separated list<br>
+              (e.g.: cosmo1 100, cosmo7 50)</li>
+               <li><b>Release coordinate</b>:1 for meters above ground, 2 for meters above sea level.<br>
                                     Different values for different input meteorologies can be given as a comma separated list<br>
-                                    (e.g.: cosmo1 2, cosmo7 1)"""
+                                    (e.g.: cosmo1 2, cosmo7 1)</li>
+            </ul>"""
     )
 
     def __init__(self):
@@ -57,13 +56,16 @@ class AddLocation(widgets.VBox):
 
         super().__init__(
             children=[
-                self.name,
-                self.longitude,
-                self.latitude,
-                self.rel_h_info,
-                self.level,
-                self.rel_coor_info,
-                self.level_type,
-                self.update_b,
+                widgets.VBox(
+                    children=[
+                        self.name,
+                        self.longitude,
+                        self.latitude,
+                        self.level,
+                        self.level_type,
+                        self.update_b,
+                    ]
+                ),
+                self.text_info,
             ]
         ),
