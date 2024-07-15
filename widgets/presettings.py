@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from aiida import plugins, orm
+from aiida import orm
 from utils import make_query
 from settings import *
 
@@ -87,12 +87,12 @@ class Presettings(widgets.VBox):
             # basic
             self.basic.outgrid.out_loc.value = list(prev_dict["outgrid"].keys())[0]
             if prev_dict["outgrid_nest"] == "None":
-                self.basic.outgrid_nest.out_loc.value = prev_dict["outgrid_nest"]
+                self.basic.outgrid.out_n_loc.value = prev_dict["outgrid_nest"]
             else:
-                self.basic.outgrid_nest.out_loc.value = list(
+                self.basic.outgrid.out_n_loc.value = list(
                     prev_dict["outgrid_nest"].keys()
                 )[0]
-            for x in self.basic.locations.locations_w:
+            for x in self.basic.locations.locations_widget.children:
                 if x.description in prev_dict["locations"]:
                     x.value = True
                 else:

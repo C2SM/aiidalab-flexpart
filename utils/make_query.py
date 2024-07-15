@@ -1,6 +1,7 @@
 from aiida import orm
 import pandas as pd
 from settings import *
+from aiida_flexpart.workflows.child_sim_workflow import FlexpartSimWorkflow
 
 
 def make_dict_for_query(dict_):
@@ -90,14 +91,18 @@ def all_in_query(
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
     qb.append(WORKFLOW, tag="w", project=["*"], filters={"attributes.exit_status": 0})
+    qb.append(FlexpartSimWorkflow,
+                with_incoming="w",
+                tag='child_w',
+                filters={"attributes.exit_status": 0})
     qb.append(
         [COSMO, IFS],
-        with_incoming="w",
+        with_incoming="child_w",
         tag="calcs",
         filters={"attributes.exit_status": 0},
     )
     qb.append(POST, with_ancestors="calcs", tag="post")
-
+ 
     # Outgrid and Outgrid Nest
     qb.append(
         orm.Dict,
