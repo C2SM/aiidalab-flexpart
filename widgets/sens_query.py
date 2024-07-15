@@ -1,6 +1,6 @@
 import ipywidgets as widgets
 import re
-from IPython.display import clear_output, display
+from IPython.display import clear_output
 
 from aiida.orm import QueryBuilder
 
@@ -11,6 +11,8 @@ style = {"description_width": "initial"}
 
 
 def search_locations(a_obs):
+    #Search for observations that match the available
+    #observations names.
     available_locations = []
     qb = QueryBuilder()
     qb.append(
@@ -46,7 +48,6 @@ def search_species():
 
 
 class SearchSens(widgets.VBox):
-    ind_title = widgets.HTML(value="""<hr>""")
     species_title = widgets.HTML(value="""<b>1. Observations</b><br>Species """)
     locations_title = widgets.HTML(
         value="""<b>2. Locations</b><br>Choose from the list of locations where observations are available."""
@@ -102,10 +103,10 @@ class SearchSens(widgets.VBox):
                     [self.species_title, self.species, self.time_step, self.domain],
                 ),
                 self.info,
-                self.ind_title,
+                widgets.HTML(value="""<hr>"""),
                 self.locations_title,
                 self.location,
-                self.ind_title,
+                widgets.HTML(value="""<hr>"""),
                 widgets.GridBox(
                     [
                         self.date_range,
@@ -131,11 +132,11 @@ class SearchSens(widgets.VBox):
         super().__init__(
             [
                 search_crit,
-                self.ind_title,
+                widgets.HTML(value="""<hr>"""),
                 button,
                 self.acc,
                 self.info_out,
-                self.ind_title,
+                widgets.HTML(value="""<hr>"""),
             ]
         )
 

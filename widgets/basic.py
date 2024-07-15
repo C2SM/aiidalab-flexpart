@@ -15,7 +15,7 @@ class Basic(widgets.VBox):
         self.simulation_dates = widgets.Text(
             value="2020-10-01",
             description="Simulation dates",
-            description_tooltip='Format for one day: YYYY-MM-DD, for a range of dates use "--" and for a list of dates ",". Example: 2021-01-02--2021-01-10.',
+            tooltip ='Format for one day: YYYY-MM-DD, for a range of dates use "--" and for a list of dates ",". Example: 2021-01-02--2021-01-10.',
             style=style,
         )
         self.model = widgets.Dropdown(
