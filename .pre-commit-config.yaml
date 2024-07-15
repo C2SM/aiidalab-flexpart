@@ -3,7 +3,6 @@ repos:
     rev: v2.3.0
     hooks:
     -   id: check-yaml
-    -   id: double-quote-string-fixer
     -   id: end-of-file-fixer
     -   id: fix-encoding-pragma
     -   id: trailing-whitespace

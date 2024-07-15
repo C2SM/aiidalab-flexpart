@@ -14,6 +14,9 @@ def str_to_dict(s: str) -> dict:
     return None
 
 
+output2 = widgets.Output()
+
+
 class AddLocation(widgets.HBox):
 
     text_info = widgets.HTML(
@@ -26,6 +29,7 @@ class AddLocation(widgets.HBox):
                                     (e.g.: cosmo1 2, cosmo7 1)</li>
             </ul>"""
     )
+    warning_message = widgets.HTML("")
 
     def __init__(self):
         self.name = widgets.Text(description="Name", style=style)
@@ -42,15 +46,21 @@ class AddLocation(widgets.HBox):
         )
 
         def on_click(b):
-            new_loc = {
-                self.name.value: {
-                    "longitude": self.longitude.value,
-                    "latitude": self.latitude.value,
-                    "level": str_to_dict(self.level.value),
-                    "level_type": str_to_dict(self.level_type.value),
+            if self.name.value in utils.get_names_in_group("locations"):
+                self.warning_message.value = (
+                    '<p style="color:red;">A location already exist with that name.</p>'
+                )
+            else:
+                new_loc = {
+                    self.name.value: {
+                        "longitude": self.longitude.value,
+                        "latitude": self.latitude.value,
+                        "level": str_to_dict(self.level.value),
+                        "level_type": str_to_dict(self.level_type.value),
+                    }
                 }
-            }
-            utils.store_dictionary(new_loc, group_label="locations")
+                utils.store_dictionary(new_loc, group_label="locations")
+                self.warning_message.value = ""
 
         self.update_b.on_click(on_click)
 
@@ -64,6 +74,7 @@ class AddLocation(widgets.HBox):
                         self.level,
                         self.level_type,
                         self.update_b,
+                        self.warning_message,
                     ]
                 ),
                 self.text_info,

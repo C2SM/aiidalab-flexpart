@@ -19,6 +19,7 @@ class AddOutgrid(widgets.HBox):
                <li><b>heights_of_levels</b>: List of heights of leves (upper boundary).</li>
             </ul>"""
     )
+    warning_message = widgets.HTML("")
 
     def __init__(self):
 
@@ -54,19 +55,25 @@ class AddOutgrid(widgets.HBox):
         )
 
         def on_click(b):
-            new_outgrid = {
-                self.name.value: {
-                    "output_grid_type": self.output_grid_type.value,
-                    "longitude_of_output_grid": self.longitude_of_output_grid.value,
-                    "latitude_of_output_grid": self.latitude_of_output_grid.value,
-                    "number_of_grid_points_x": self.number_of_grid_points_x.value,
-                    "number_of_grid_points_y": self.number_of_grid_points_y.value,
-                    "grid_distance_x": self.heights_of_levels.value,
-                    "grid_distance_y": self.heights_of_levels.value,
-                    "heights_of_levels": self.heights_of_levels.value,
+            if self.name.value in utils.get_names_in_group("outgrid"):
+                self.warning_message.value = (
+                    '<p style="color:red;">An outgrid already exist with that name.</p>'
+                )
+            else:
+                new_outgrid = {
+                    self.name.value: {
+                        "output_grid_type": self.output_grid_type.value,
+                        "longitude_of_output_grid": self.longitude_of_output_grid.value,
+                        "latitude_of_output_grid": self.latitude_of_output_grid.value,
+                        "number_of_grid_points_x": self.number_of_grid_points_x.value,
+                        "number_of_grid_points_y": self.number_of_grid_points_y.value,
+                        "grid_distance_x": self.heights_of_levels.value,
+                        "grid_distance_y": self.heights_of_levels.value,
+                        "heights_of_levels": self.heights_of_levels.value,
+                    }
                 }
-            }
-            utils.store_dictionary(new_outgrid, "outgrid")
+                utils.store_dictionary(new_outgrid, "outgrid")
+                self.warning_message.value = ""
 
         self.update_b.on_click(on_click)
 
@@ -84,6 +91,7 @@ class AddOutgrid(widgets.HBox):
                         self.grid_distance_y,
                         self.heights_of_levels,
                         self.update_b,
+                        self.warning_message,
                     ]
                 ),
                 self.text_info,
