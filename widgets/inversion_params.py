@@ -1,29 +1,32 @@
 # -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from IPython.display import display, clear_output
+from widgets import sens_query
 
 style = {"description_width": "initial"}
-
+sens = sens_query.SearchSens()
 
 class InversionParams(widgets.VBox):
+
+
     def __init__(self):
 
         #   GENERAL
         ####################################
-        self.inv_name = widgets.Text(description="Inversion name", style=style)
+        self.inv_name = widgets.Text(description="name", style=style)
         self.project = widgets.Text(
-            description="Project", value="HFO-Europe", style=style
+            description="project", value="HFO-Europe", style=style
         )
         self.institute = widgets.Text(
-            description="Institute", value="Empa, Switzerland", style=style
+            description="institute", value="Empa, Switzerland", style=style
         )
-
-        general = widgets.VBox(
-            children=[
+        self.general_settings = [
+                self.inv_name,
                 self.project,
                 self.institute,
-                self.inv_name,
             ]
+        general = widgets.VBox(
+            children=self.general_settings
         )
 
         #  INPUT LOCATIONS
@@ -46,24 +49,28 @@ class InversionParams(widgets.VBox):
             description="cmask_file",
             value="/project/s1302/shenne/PARIS/CH4_inversions/Country_masks/country_EUROPE_EEZ_PARIS_gapfilled_fractional.nc",
         )
-        input_loc = widgets.VBox(
-            children=[
+        self.input_locations = [
                 self.ftp_dir,
                 self.pop_data_dir,
                 self.res_dir,
                 self.bot_up_file,
                 self.cmask_file,
             ]
+        input_loc = widgets.VBox(
+            children=self.input_locations
         )
 
         #   SITES
         #######################################
+        #TODO
+
         #   INVERSION GRID
         #######################################
         self.igr_method = widgets.Dropdown(
             description="igr_method", options=["fromAverage", "load"]
         )
-        inv_grid = widgets.VBox(children=[self.igr_method])
+        self.inversion_grid = [self.igr_method]
+        inv_grid = widgets.VBox(children=self.inversion_grid)
 
         #   APRIORI
         #######################################
@@ -76,13 +83,14 @@ class InversionParams(widgets.VBox):
         self.edgar_year = widgets.IntText(description="edgar_year", value=2020)
         self.rescale_EDGAR = widgets.Checkbox(description="rescale_EDGAR", value=False)
 
-        edgar = widgets.VBox(
-            children=[
+        self.apriori_edgar = [
                 self.EDGAR_dir,
                 self.edgar_version,
                 self.edgar_year,
                 self.rescale_EDGAR,
             ]
+        edgar = widgets.VBox(
+            children=self.apriori_edgar
         )
 
         self.apriori_dir = widgets.Text(
@@ -92,14 +100,15 @@ class InversionParams(widgets.VBox):
         self.apriori_str = widgets.Text(
             description="apriori_str", value="<para>_EUROPE_<year>.nc"
         )
-        load = widgets.VBox(children=[self.apriori_dir, self.apriori_str])
+        self.apriori_load = [self.apriori_dir, self.apriori_str]
+        load = widgets.VBox(children=self.apriori_load)
 
         self.apriori_lsm = widgets.Checkbox(description="apriori_lsm", value=True)
         self.homo_by_country = widgets.Checkbox(
             description="homo_by_country", value=False
         )
-
-        homo = widgets.VBox(children=[self.apriori_lsm, self.homo_by_country])
+        self.apriori_homo = [self.apriori_lsm, self.homo_by_country]
+        homo = widgets.VBox(children=self.apriori_homo)
 
         def select_option(name):
             if name == "EDGAR":
@@ -114,7 +123,7 @@ class InversionParams(widgets.VBox):
             else:
                 clear_output()
 
-        x = widgets.interactive(select_option, name=["EDGAR", "load", "homo"])
+        self.x = widgets.interactive(select_option, name=["EDGAR", "load", "homo"])
 
         #   APRIORI COVARIANCE
         ########################################
@@ -134,8 +143,9 @@ class InversionParams(widgets.VBox):
             description="tau_bg",
             value=0.2,
         )
+        self.apriori_covariance = [self.u_apriori0, self.max_dist, self.tau_bg, self.u_outer]
         ap_cov = widgets.VBox(
-            children=[self.u_apriori0, self.max_dist, self.tau_bg, self.u_outer]
+            children=self.apriori_covariance
         )
 
         #   PLOT OPTIONS
@@ -150,8 +160,7 @@ class InversionParams(widgets.VBox):
         self.map_source = widgets.Text(description="map_source", value="myRplots")
 
         self.cities = widgets.Checkbox(description="cities", value=False)
-        plot_op = widgets.VBox(
-            children=[
+        self.plot_options = [
                 self.zlim,
                 self.ts_units,
                 self.frmt,
@@ -159,9 +168,11 @@ class InversionParams(widgets.VBox):
                 self.map_source,
                 self.cities,
             ]
+        plot_op = widgets.VBox(
+            children=self.plot_options
         )
 
-        #       INVERSION SETTINGS
+        #    INVERSION SETTINGS
         #########################################
         use_covariances = widgets.Checkbox(description="use_covariances", value=True)
         positive = widgets.Text(description="positive", value="Thacker_complete")
@@ -176,9 +187,7 @@ class InversionParams(widgets.VBox):
         bg_by_site = widgets.Checkbox(description="bg_by_site", value=False)
         bg_fac = widgets.Checkbox(description="bg_fac", value=False)
         incl_outer = widgets.Checkbox(description="incl_outer", value=True)
-
-        inv_settings = widgets.VBox(
-            children=[
+        self.inversion_settings=[
                 use_covariances,
                 positive,
                 maxit,
@@ -193,24 +202,29 @@ class InversionParams(widgets.VBox):
                 bg_fac,
                 incl_outer,
             ]
+        inv_settings = widgets.VBox(
+            children=self.inversion_settings
         )
         #   MODEL-DATA-MISMATCH COVARIANCE
         ############################################
         self.contributions = widgets.TagsInput(
+            description = 'contributions',
             allowed_tags=["mod", "instr", "bg", "var"],
+            value = 'mod',
             allow_duplicates=False,
             style=style,
         )
         self.iterations = widgets.IntText(
-            description="Iterations", value=4, style=style
+            description="iterations", value=4, style=style
         )
 
         self.u_model = widgets.Checkbox(
-            value=True, description="Model component", style=style
+            value=True, description="model_component", style=style
         )
-        self.plot = widgets.Checkbox(value=True, description="Plot", style=style)
+        self.plot = widgets.Checkbox(value=True, description="plot", style=style)
+        self.model_data_mismatch = [self.contributions, self.iterations, self.u_model, self.plot]
         model_mis = widgets.VBox(
-            children=[self.contributions, self.iterations, self.u_model, self.plot]
+            children=self.model_data_mismatch
         )
 
         ############################################
@@ -222,7 +236,7 @@ class InversionParams(widgets.VBox):
             inv_grid,
             inv_settings,
             model_mis,
-            x,
+            self.x,
             ap_cov,
             plot_op,
         ]
@@ -238,3 +252,26 @@ class InversionParams(widgets.VBox):
             "Plot options",
         ]
         super().__init__([tab])
+
+    def construct_dict(self):
+
+        big_list = [*self.inversion_settings,
+                    *self.general_settings,
+                    *self.input_locations,
+                    *self.inversion_grid,
+                    *self.model_data_mismatch,
+                    *self.plot_options,
+                    *self.apriori_covariance
+                    ]
+        
+        if self.x.children[0].value == "EDGAR":
+                big_list+=self.apriori_edgar
+        elif self.x.children[0].value == "load":
+                big_list+=self.apriori_load
+        elif self.x.children[0].value == "homo":
+                big_list+=self.apriori_homo
+
+        sites_dict = {'sites': sens.available_obs_list} 
+        d = {x.description: x.value for x in big_list}
+        d.update(sites_dict)
+        return d
