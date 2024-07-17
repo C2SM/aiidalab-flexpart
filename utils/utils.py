@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import ipywidgets as widgets
+from collections import ChainMap
 import yaml
 import pathlib
 import datetime
@@ -138,6 +139,7 @@ def generate_locations() -> list:
     # locations group
     list_widgets_loc = []
     d = get_dicts_in_group("locations")
+    # data = dict(ChainMap(*d))
     names = [next(iter(x)) for x in d]
     for loc in names:
         list_widgets_loc.append(
@@ -145,7 +147,7 @@ def generate_locations() -> list:
                 value=False,
                 description=loc,
                 button_style="",
-                # tooltip=parse_description(d[loc]),
+                # tooltip=parse_description(data[loc]),
             )
         )
     return list_widgets_loc

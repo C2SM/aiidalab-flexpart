@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 import re
 from IPython.display import clear_output
@@ -10,16 +11,15 @@ from settings import NETCDF
 style = {"description_width": "initial"}
 
 
-def search_locations(a_obs):
-    #Search for observations that match the available
-    #observations names.
+def search_locations(a_obs: list) -> list:
+    # Search for observations that match the available
+    # observations names.
     available_locations = []
     qb = QueryBuilder()
     qb.append(
         NETCDF,
         filters={
             "attributes.filename": {"or": [{"like": f"{l}%"} for l in a_obs]},
-            #'attributes.global_attributes.model': {'==': 'NAME'}
         },
         project="attributes.filename",
     )
@@ -42,8 +42,8 @@ def search_species():
             else:
                 available_species.append(re.sub("'", "", values[0]))
     s = set(available_species)
-    s.remove('Inert')
-    s.remove('inert')
+    s.remove("Inert")
+    s.remove("inert")
     return list(s)
 
 
@@ -187,7 +187,7 @@ class SearchSens(widgets.VBox):
     def search(self, n_location):
         missing_dates = []
         dates_list = utils.simulation_dates_parser([self.date_range.value])
-        reformated_dates = list(set([i[:4] + i[5:7] for i in dates_list]))
+        reformated_dates = sorted(list(set([i[:4] + i[5:7] for i in dates_list])))
         qb = QueryBuilder()
         qb.append(
             NETCDF,
@@ -205,7 +205,7 @@ class SearchSens(widgets.VBox):
                     ]
                 },
                 # "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
-                # "attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
+                "attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
                 # "attributes.global_attributes.model_version": {"ilike": f"'{self.model_version.value}'"},
                 # "attributes.global_attributes.species": {
                 #    "ilike": f"{self.species.value}"
