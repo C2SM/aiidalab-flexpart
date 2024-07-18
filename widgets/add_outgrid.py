@@ -67,8 +67,8 @@ class AddOutgrid(widgets.HBox):
                         "latitude_of_output_grid": self.latitude_of_output_grid.value,
                         "number_of_grid_points_x": self.number_of_grid_points_x.value,
                         "number_of_grid_points_y": self.number_of_grid_points_y.value,
-                        "grid_distance_x": self.heights_of_levels.value,
-                        "grid_distance_y": self.heights_of_levels.value,
+                        "grid_distance_x": self.grid_distance_x.value,
+                        "grid_distance_y": self.grid_distance_y.value,
                         "heights_of_levels": self.heights_of_levels.value,
                     }
                 }
