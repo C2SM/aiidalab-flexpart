@@ -20,13 +20,16 @@ class InversionParams(widgets.VBox):
         self.institute = widgets.Text(
             description="institute", value="Empa, Switzerland", style=style
         )
+        self.chunk = widgets.IntText(description = 'chunk', style=style)
+        self.chunk_w =  widgets.IntText(description = 'chunk_w', style=style)
         self.general_settings = [
                 self.inv_name,
                 self.project,
                 self.institute,
             ]
         general = widgets.VBox(
-            children=self.general_settings
+            children=self.general_settings+[self.chunk,
+                                            self.chunk_w]
         )
 
         #  INPUT LOCATIONS
@@ -59,11 +62,6 @@ class InversionParams(widgets.VBox):
         input_loc = widgets.VBox(
             children=self.input_locations
         )
-
-        #   SITES
-        #######################################
-        #TODO
-
         #   INVERSION GRID
         #######################################
         self.igr_method = widgets.Dropdown(
@@ -232,7 +230,6 @@ class InversionParams(widgets.VBox):
         tab.children = [
             general,
             input_loc,
-            general,
             inv_grid,
             inv_settings,
             model_mis,
@@ -243,7 +240,6 @@ class InversionParams(widgets.VBox):
         tab.titles = [
             "General",
             "Input locations",
-            "Sites",
             "Inversion grid",
             "Inversion settings",
             "MODEL-DATA-MISMATCH COVARIANCE",

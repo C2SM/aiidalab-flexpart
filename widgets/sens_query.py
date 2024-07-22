@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 import re
 from IPython.display import clear_output
@@ -10,6 +9,11 @@ from settings import NETCDF
 
 style = {"description_width": "initial"}
 
+def parse_dict(d_):
+    html = ''
+    for k,v in d_.items():
+        html+=f'<b>{k}: </b>{v}<br>'
+    return html
 
 def search_locations(a_obs: list) -> list:
     # Search for observations that match the available
@@ -62,7 +66,7 @@ class SearchSens(widgets.VBox):
             style=style,
         )
         self.location = widgets.TagsInput(
-            allowed_tags=search_locations(["JFJ"]),
+            allowed_tags=['LUT'],#search_locations(["JFJ"]),
             allow_duplicates=False,
             style=style,
         )
@@ -94,8 +98,10 @@ class SearchSens(widgets.VBox):
 
         self.time_step.observe(self.available_observations, names="value")
         self.species.observe(self.available_observations, names="value")
-        self.available_obs_list = {"names": [], "remotes": []}
-        self.list_remotes = []
+        self.available_obs_list = {}
+        self.selected_obs = {}
+        self.list_remotes = {}
+        self.list_info_obs = []
 
         search_crit = widgets.VBox(
             [
@@ -121,11 +127,13 @@ class SearchSens(widgets.VBox):
         self.info_out = widgets.Output()
 
         self.acc = widgets.Accordion()
-
+        self.accordion_sites = widgets.Accordion()
         def on_click(b):
             with self.info_out:
                 clear_output()
                 self.accordions()
+                self.filter_observations()
+                self.accordions_sites()
 
         button.on_click(on_click)
 
@@ -134,15 +142,23 @@ class SearchSens(widgets.VBox):
                 search_crit,
                 widgets.HTML(value="""<hr>"""),
                 button,
+                widgets.HTML(value ='<hr> <b>Sensitivites</b>'),
                 self.acc,
+                widgets.HTML(value ='<hr> <b>Observations</b>'),
+                self.accordion_sites,
                 self.info_out,
                 widgets.HTML(value="""<hr>"""),
             ]
         )
+    
+    def filter_observations(self):
+        self.selected_obs = {}
+        for i in [re.split("_|-", x)[0] for x in self.location.value]:
+            if i in self.available_obs_list.keys():
+                self.selected_obs[i] =  self.available_obs_list[i]
 
     def available_observations(self, change=None):
         self.info.value = '<p style="color:green;">Available: '
-        available_locations = []
         qb = QueryBuilder()
         qb.append(
             NETCDF,
@@ -152,16 +168,39 @@ class SearchSens(widgets.VBox):
                     "or": [{"like": f"'%{s}%'"} for s in self.species.value]
                 },
             },
-            project=["attributes.filename", "attributes.remote_path"],
+            project=["attributes.filename",'*'],
         )
         for i in qb.all():
-            s = re.split("_|-", i[0])
-            available_locations.append(s[0])
-            self.available_obs_list["remotes"].append(i[1])
-        self.info.value += ", ".join(available_locations)
+            self.available_obs_list[re.split("_|-", i[0])[0]]=i[1]
+        self.info.value += ", ".join(list(self.available_obs_list.keys()))
         self.info.value += "</p>"
-        self.available_obs_list["names"] = available_locations
-        self.location.allowed_tags = search_locations(self.available_obs_list["names"])
+        self.location.allowed_tags = search_locations(list(self.available_obs_list.keys()))
+
+    def accordions_sites(self):
+        self.list_info_obs = []
+        for k,v in self.selected_obs.items():
+            filename = v.attributes['filename']
+            x = v.attributes['global_attributes']
+            d_= {"name":k,
+                "id":k,
+                "flex.id":filename,
+                "rel.com":filename,
+                "ft.type":"ncdf_monthly",
+                "site.obs.fn":v.attributes['remote_path'],
+                "val.ts": False,
+                "x":x['station_longitude'],
+                "y":x['station_latitude'],
+                "ex.hours": "~",
+                "sig.srr": ".na",
+                "sig.min": ".na"
+                }
+            self.list_info_obs.append(d_)
+
+        self.accordion_sites.children = [widgets.HTML(value=parse_dict(i)) for i in self.list_info_obs]
+        i = 0
+        for k in self.selected_obs.keys():
+            self.accordion_sites.set_title(i, k)
+            i += 1
 
     def accordions(self):
         icons = {True: "  ✅", False: "  ❌"}
@@ -177,7 +216,6 @@ class SearchSens(widgets.VBox):
                     )
                 )
             list_locations[widgets.VBox(children=children)] = (is_complete, i)
-
         self.acc.children = list(list_locations.keys())
         i = 0
         for _, v in list_locations.items():
@@ -196,6 +234,7 @@ class SearchSens(widgets.VBox):
                 "attributes.global_attributes.created",
                 "id",
                 "attributes.remote_path",
+                "*"
             ],
             filters={
                 "attributes.filename": {
@@ -242,7 +281,7 @@ class SearchSens(widgets.VBox):
                         <td>{dict_[m][0]}</td>
                         <td>{dict_[m][1]}</td>
                         </tr>"""
-                self.list_remotes.append(dict_[m][3] + "/" + dict_[m][0])
+                self.list_remotes[dict_[m][0]]=dict_[m][4]
             else:
                 html += f"""<tr>
                         <td><mark style='color: red;'>Missing</mark></td>
