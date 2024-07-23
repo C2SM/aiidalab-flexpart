@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from utils import utils
+import re
 
 style = {"description_width": "initial"}
 
@@ -46,10 +47,20 @@ class AddLocation(widgets.HBox):
         )
 
         def on_click(b):
-            if self.name.value in utils.get_names_in_group("locations"):
+            if (
+                self.name.value in utils.get_names_in_group("locations")
+                or self.name.value == ""
+            ):
                 self.warning_message.value = (
-                    '<p style="color:red;">A location already exist with that name.</p>'
+                    '<p style="color:red;">Name is empty or already exists</p>'
                 )
+            elif not re.search("\w+\s\d+", self.level.value) or not re.search(
+                "\w+\s\d+", self.level_type.value
+            ):
+                self.warning_message.value = (
+                    '<p style="color:red;">Releases not in the right format</p>'
+                )
+
             else:
                 new_loc = {
                     self.name.value: {

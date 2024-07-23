@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from utils import utils
+import re
 
 style = {"description_width": "initial"}
 
@@ -55,9 +56,17 @@ class AddOutgrid(widgets.HBox):
         )
 
         def on_click(b):
-            if self.name.value in utils.get_names_in_group("outgrid"):
+            if (
+                self.name.value in utils.get_names_in_group("outgrid")
+                or self.name.value == ""
+            ):
                 self.warning_message.value = (
-                    '<p style="color:red;">An outgrid already exist with that name.</p>'
+                    '<p style="color:red;">Name is empty or already exists</p>'
+                )
+
+            elif not re.search("\[(.*?)\]", self.heights_of_levels.value):
+                self.warning_message.value = (
+                    '<p style="color:red;">Heights of levels improper format</p>'
                 )
             else:
                 new_outgrid = {

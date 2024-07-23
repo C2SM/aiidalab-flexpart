@@ -5,6 +5,7 @@ import yaml
 import pathlib
 import datetime
 import static
+import re
 from aiida import orm
 from importlib import resources
 
@@ -89,6 +90,16 @@ def read_description(path_loc: str, key_: str) -> str:
         for k, v in dict_[key_].items():
             string += k + " : " + str(v) + "\n"
     return string
+
+
+def validate_dates(date):
+    dates = re.split(",|--", date)
+    if not all(
+        re.search(r"^([0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01]))$", i)
+        for i in dates
+    ):
+        return True
+    return False
 
 
 def parse_description(dict_: dict) -> str:

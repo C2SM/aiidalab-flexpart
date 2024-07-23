@@ -3,6 +3,7 @@ import ipywidgets as widgets
 from widgets import locations, outgrid
 from pathlib import Path
 from utils import utils
+import re
 
 style = {"description_width": "initial"}
 box_layout = widgets.Layout(box_layout="padding 200px")
@@ -11,11 +12,10 @@ models_path = Path.cwd() / "config" / "models.yaml"
 
 class Basic(widgets.VBox):
     def __init__(self):
-
         self.simulation_dates = widgets.Text(
             value="2020-10-01",
             description="Simulation dates",
-            tooltip ='Format for one day: YYYY-MM-DD, for a range of dates use "--" and for a list of dates ",". Example: 2021-01-02--2021-01-10.',
+            tooltip='Format for one day: YYYY-MM-DD, for a range of dates use "--" and for a list of dates ",". Example: 2021-01-02--2021-01-10.',
             style=style,
         )
         self.model = widgets.Dropdown(
@@ -60,7 +60,9 @@ class Basic(widgets.VBox):
             widgets.VBox(
                 children=[
                     self.simulation_dates,
-                    widgets.HTML(value="<hr>"),
+                    widgets.HTML(
+                        value="<i>for a range of dates use '--' and for a list of dates ',' without spaces</i><br><hr>"
+                    ),
                     widgets.HBox(
                         children=[
                             widgets.VBox(children=[self.model, self.integration_time]),
