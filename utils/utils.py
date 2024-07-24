@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import ipywidgets as widgets
-from collections import ChainMap
 import yaml
 import pathlib
 import datetime
@@ -35,7 +34,7 @@ def read_yaml_data(data_filename: str, names=None) -> dict:
 
 
 def initialize_group(path_to_outgrids: str, group_name: str) -> None:
-    # Creates a group (if it donst exits) and stores the dictionaries from
+    # Creates a group (if it does not exist) and stores the dictionaries from
     # the given yaml file.
     q = orm.QueryBuilder().append(orm.Group, filters={"label": group_name})
     if not q.all():
@@ -92,7 +91,9 @@ def read_description(path_loc: str, key_: str) -> str:
     return string
 
 
-def validate_dates(date):
+def validate_dates(date: str) -> bool:
+    # True if date is in the right format
+    # False otherwise
     dates = re.split(",|--", date)
     if not all(
         re.search(r"^([0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01]))$", i)
@@ -150,15 +151,16 @@ def generate_locations() -> list:
     # locations group
     list_widgets_loc = []
     d = get_dicts_in_group("locations")
-    # data = dict(ChainMap(*d))
-    names = [next(iter(x)) for x in d]
+    names = get_names_in_group("locations")
+    s_d = {next(iter(i)): i[next(iter(i))] for i in d}
+
     for loc in names:
         list_widgets_loc.append(
             widgets.ToggleButton(
                 value=False,
                 description=loc,
                 button_style="",
-                # tooltip=parse_description(data[loc]),
+                tooltip=str(s_d[loc]),
             )
         )
     return list_widgets_loc
