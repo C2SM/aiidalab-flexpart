@@ -20,8 +20,8 @@ class InversionParams(widgets.VBox):
         self.institute = widgets.Text(
             description="institute", value="Empa, Switzerland", style=style
         )
-        self.chunk = widgets.IntText(description = 'chunk', style=style)
-        self.chunk_w =  widgets.IntText(description = 'chunk_w', style=style)
+        self.chunk = widgets.Text(description = 'chunk',value = 'year', style=style)
+        self.chunk_w =  widgets.Text(description = 'chunk_w', value = 'year',style=style)
         self.general_settings = [
                 self.inv_name,
                 self.project,
@@ -40,10 +40,6 @@ class InversionParams(widgets.VBox):
         self.pop_data_dir = widgets.Text(
             description="pop_data_dir", value="/store/empa/em05/input/GIS/population"
         )
-        self.res_dir = widgets.Text(
-            description="res_dir",
-            value="/scratch/snx3000/shenne/HFO_inversions/results_202406/",
-        )
         self.bot_up_file = widgets.Text(
             description="bot_up_file",
             value="/project/s1302/shenne/PARIS/HFO_inversions/code/invSettings/bot.up.uniform.csv",
@@ -55,7 +51,6 @@ class InversionParams(widgets.VBox):
         self.input_locations = [
                 self.ftp_dir,
                 self.pop_data_dir,
-                self.res_dir,
                 self.bot_up_file,
                 self.cmask_file,
             ]
@@ -205,8 +200,8 @@ class InversionParams(widgets.VBox):
         )
         #   MODEL-DATA-MISMATCH COVARIANCE
         ############################################
-        self.contributions = widgets.TagsInput(
-            description = 'contributions',
+        self.obs_mod_unc_contrs = widgets.TagsInput(
+            description = 'obs_mod_unc_contrs',
             allowed_tags=["mod", "instr", "bg", "var"],
             value = 'mod',
             allow_duplicates=False,
@@ -220,7 +215,7 @@ class InversionParams(widgets.VBox):
             value=True, description="model_component", style=style
         )
         self.plot = widgets.Checkbox(value=True, description="plot", style=style)
-        self.model_data_mismatch = [self.contributions, self.iterations, self.u_model, self.plot]
+        self.model_data_mismatch = [self.obs_mod_unc_contrs, self.iterations, self.u_model, self.plot]
         model_mis = widgets.VBox(
             children=self.model_data_mismatch
         )

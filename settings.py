@@ -10,7 +10,7 @@ COSMO = plugins.CalculationFactory("flexpart.cosmo")
 IFS = plugins.CalculationFactory("flexpart.ifs")
 POST = plugins.CalculationFactory("flexpart.post")
 COLLECT_SENS = plugins.CalculationFactory("collect.sensitivities")
-# INVERSION = plugins.CalculationFactory("inversion.calc")
+INVERSION = plugins.CalculationFactory("inversion.calc")
 
 # Data
 NETCDF = plugins.DataFactory("netcdf.data")

@@ -183,20 +183,24 @@ class SearchSens(widgets.VBox):
             x = v.attributes['global_attributes']
             d_= {"name":k,
                 "id":k,
-                "flex.id":filename,
-                "rel.com":filename,
-                "ft.type":"ncdf_monthly",
-                "site.obs.fn":v.attributes['remote_path'],
-                "val.ts": False,
+                "flex_id":filename,
+                "rel_com":filename,
+                "ft_type":"ncdf_monthly",
+                "site_obs_fn":v.attributes['remote_path'],
+                "val_ts": False,
                 "x":x['station_longitude'],
                 "y":x['station_latitude'],
-                "ex.hours": "~",
-                "sig.srr": ".na",
-                "sig.min": ".na"
+                "ex_hours": '~',
+                "sig_srr": ".na",
+                "sig_min": ".na",
                 }
             self.list_info_obs.append(d_)
 
-        self.accordion_sites.children = [widgets.HTML(value=parse_dict(i)) for i in self.list_info_obs]
+        
+        self.accordion_sites.children = [widgets.HBox(children = [widgets.HTML(value=parse_dict(i)),
+                                                                  widgets.IntText(description = 'pch')
+                                                                  ])
+                                          for i in self.list_info_obs]
         i = 0
         for k in self.selected_obs.keys():
             self.accordion_sites.set_title(i, k)
