@@ -1,0 +1,52 @@
+EDGAR_dir: /store/empa/em05/input/EDGAR
+bg_by: months
+bg_by_site: false
+bg_fac: false
+bg_type: boundaries.11reg
+bot_up_file: /project/s1302/shenne/PARIS/HFO_inversions/code/invSettings/bot.up.uniform.csv
+cities: false
+cmask_file: /project/s1302/shenne/PARIS/CH4_inversions/Country_masks/country_EUROPE_EEZ_PARIS_gapfilled_fractional.nc
+edgar_version: 8.0_FT2022_GHG
+edgar_year: 2020
+frmt: png16m
+ftp_dir: /scratch/snx3000/shenne/tmp
+igr_method: fromAverage
+incl_bg: true
+incl_outer: true
+institute: Empa, Switzerland
+iterations: 4
+map_db: world.TM
+map_source: myRplots
+max_dist: 500.0
+maxit: 100
+model_component: true
+name: ''
+neg_frac: 0.0005
+obs_mod_unc_contrs:
+- mod
+plot: true
+pop_data_dir: /store/empa/em05/input/GIS/population
+positive: Thacker_complete
+project: HFO-Europe
+rescale_EDGAR: false
+sites:
+  JFJ:
+    '''y''': '46.5475'
+    ex_hours: '~'
+    flex_id: JFJ_5magl
+    ft_type: ncdf_monthly
+    id: JFJ
+    name: JFJ
+    rel_com: JFJ_5magl
+    sig_min: .na
+    sig_srr: .na
+    site_obs_fn: /project/s1302/shenne/PARIS/obs_for_ELRIS_20240604/JFJ_5magl_3hourly.nc
+    val_ts: false
+    x: '7.9867'
+tau_bg: 0.2
+ts_units: ppt
+u_apriori0: 3.0
+unc_gt0: 1.01
+unc_lt0: 0.5
+use_covariances: true
+use_lsm: false
