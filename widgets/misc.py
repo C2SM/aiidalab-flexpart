@@ -7,6 +7,7 @@ from pathlib import Path
 import yaml
 
 style = {"description_width": "initial"}
+
 path_to_default_codes = Path.cwd() / "utils" / "default_codes.yaml"
 
 
@@ -44,6 +45,11 @@ class Misc(widgets.VBox):
         self.account = widgets.Text(value="em05", description="Account", style=style)
         self.stash_address = widgets.Text(
             value="/store/empa/em05/", description="Stash address", style=style
+        )
+        self.resource_address = widgets.Text(
+            value="/users/{username}/resources/flexpart/", description="Resource address",
+            layout = widgets.Layout(width='50%'), 
+            style=style
         )
         self.partition = widgets.Text(
             value="normal", description="Partition", style=style
@@ -117,6 +123,7 @@ class Misc(widgets.VBox):
             self.account,
             self.partition,
             self.prepend_text,
+            self.resource_address,
             self.stash_address,
             widgets.HTML(value="<hr><b>Code selection</b>"),
             self.f_cosmo_code,
