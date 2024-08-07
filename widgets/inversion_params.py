@@ -40,20 +40,20 @@ class InversionParams(widgets.VBox):
         #  INPUT LOCATIONS
         ########################################
         self.ftp_dir = widgets.Text(
-            description="ftp_dir", value="/scratch/snx3000/shenne/tmp",
+            description="ftp.dir", value="/scratch/snx3000/shenne/tmp",
             layout = widgets.Layout(width='85%')
         )
         self.pop_data_dir = widgets.Text(
-            description="pop_data_dir", value="/store/empa/em05/input/GIS/population",
+            description="pop.data.dir", value="/store/empa/em05/input/GIS/population",
             layout = widgets.Layout(width='85%')
         )
         self.bot_up_file = widgets.Text(
-            description="bot_up_file",
+            description="bot.up.file",
             value="/project/s1302/shenne/PARIS/HFO_inversions/code/invSettings/bot.up.uniform.csv",
             layout = widgets.Layout(width='85%')
         )
         self.cmask_file = widgets.Text(
-            description="cmask_file",
+            description="cmask.file",
             value="/project/s1302/shenne/PARIS/CH4_inversions/Country_masks/country_EUROPE_EEZ_PARIS_gapfilled_fractional.nc",
             layout = widgets.Layout(width='85%')
         )
@@ -66,22 +66,53 @@ class InversionParams(widgets.VBox):
         input_loc = widgets.VBox(children=self.input_locations)
         #   INVERSION GRID
         #######################################
-        self.igr_method = widgets.Dropdown(
-            description="igr_method", options=["fromAverage", "load"]
-        )
-        self.inversion_grid = [self.igr_method]
+        self.igr_fn = widgets.Text(description = 'igr.fn',
+                                  value = "/home/hes134/projects/inversion/GEOmon/emission_grid_brunner.txt",
+                                  layout = widgets.Layout(width='60%'))
+        self.xrng =  widgets.FloatRangeSlider(description ='xrng',value = [-13.0, 26.4], min = -180, max = 180,
+                                              layout = widgets.Layout(width='60%'))
+        self.yrng = widgets.FloatRangeSlider(description ='yrng',value = [36.0, 70.0], min = -90, max = 90,
+                                             layout = widgets.Layout(width='60%') )
+        self.nn_grid_target = widgets.IntText(description = 'nn.grid.target',value = 700)
+        self.min_tau = widgets.IntText(description = 'min.tau',value = 86400)
+        self.igr_merge = widgets.IntSlider(description = 'igr.merge', value = 6, min = 0, max = 10)
+        self.remove_zero_only = widgets.Checkbox(description = 'remove.zero.only',value = True) 
+        self.remove_pure_ocean = widgets.Checkbox(description = 'remove.pure.ocean',value = True) 
+
+        self.fromaverage = [self.xrng,
+                            self.yrng]
+        fromaverage = widgets.VBox(children= self.fromaverage)
+        self.load = [self.igr_fn]
+        fromload = widgets.VBox(children=self.load)
+
+        def select_option_inv_grid(igr_method):
+            if igr_method == "fromAverage":
+                display(fromaverage)
+                return
+            elif igr_method == "load":
+                display(fromload)
+                return
+            else:
+                clear_output()
+        self.igr_method = widgets.interactive(select_option_inv_grid, igr_method=["fromAverage", "load"])
+        self.inversion_grid = [self.igr_method,
+                               self.nn_grid_target,
+                               self.min_tau,
+                               self.igr_merge,
+                               self.remove_zero_only,
+                               self.remove_pure_ocean]
         inv_grid = widgets.VBox(children=self.inversion_grid)
 
         #   APRIORI
         #######################################
         self.EDGAR_dir = widgets.Text(
-            description="EDGAR_dir", value="/store/empa/em05/input/EDGAR"
+            description="EDGAR.dir", value="/store/empa/em05/input/EDGAR"
         )
         self.edgar_version = widgets.Text(
-            description="edgar_version", value="8.0_FT2022_GHG"
+            description="edgar.version", value="8.0_FT2022_GHG"
         )
-        self.edgar_year = widgets.IntText(description="edgar_year", value=2020)
-        self.rescale_EDGAR = widgets.Checkbox(description="rescale_EDGAR", value=False)
+        self.edgar_year = widgets.IntText(description="edgar.year", value=2020)
+        self.rescale_EDGAR = widgets.Checkbox(description="rescale.EDGAR", value=False)
 
         self.apriori_edgar = [
             self.EDGAR_dir,
@@ -92,18 +123,18 @@ class InversionParams(widgets.VBox):
         edgar = widgets.VBox(children=self.apriori_edgar)
 
         self.apriori_dir = widgets.Text(
-            description="apriori_dir",
+            description="apriori.dir",
             value="/project/s1302/shenne/PARIS/HFO_inversions/apriori/population",
         )
         self.apriori_str = widgets.Text(
-            description="apriori_str", value="<para>_EUROPE_<year>.nc"
+            description="apriori.str", value="<para>_EUROPE_<year>.nc"
         )
         self.apriori_load = [self.apriori_dir, self.apriori_str]
         load = widgets.VBox(children=self.apriori_load)
 
-        self.apriori_lsm = widgets.Checkbox(description="apriori_lsm", value=True)
+        self.apriori_lsm = widgets.Checkbox(description="apriori.lsm", value=True)
         self.homo_by_country = widgets.Checkbox(
-            description="homo_by_country", value=False
+            description="homo.by.country", value=False
         )
         self.apriori_homo = [self.apriori_lsm, self.homo_by_country]
         homo = widgets.VBox(children=self.apriori_homo)
@@ -126,19 +157,19 @@ class InversionParams(widgets.VBox):
         #   APRIORI COVARIANCE
         ########################################
         self.u_apriori0 = widgets.FloatText(
-            description="u_apriori0",
+            description="u.apriori0",
             value=3,
         )
         self.max_dist = widgets.FloatText(
-            description="max_dist",
+            description="max.dist",
             value=500.0,
         )
         self.tau_bg = widgets.FloatText(
-            description="tau_bg",
+            description="tau.bg",
             value=60.0,
         )
         self.u_outer = widgets.FloatText(
-            description="tau_bg",
+            description="tau.bg",
             value=0.2,
         )
         self.apriori_covariance = [
@@ -151,14 +182,14 @@ class InversionParams(widgets.VBox):
 
         #   PLOT OPTIONS
         #########################################
-        self.zlim = widgets.Text(description="map_db", value="1.0, 1.0e+04")
+        self.zlim = widgets.Text(description="map.db", value="1.0, 1.0e+04")
         self.ts_units = widgets.Dropdown(
-            description="ts_units", options=["ppt", "ppb", "ppm"]
+            description="ts.units", options=["ppt", "ppb", "ppm"]
         )
         self.frmt = widgets.Dropdown(description="frmt", options=["png16m", "eps"])
-        self.map_db = widgets.Text(description="map_db", value="world.TM")
+        self.map_db = widgets.Text(description="map.db", value="world.TM")
 
-        self.map_source = widgets.Text(description="map_source", value="myRplots")
+        self.map_source = widgets.Text(description="map.source", value="myRplots")
 
         self.cities = widgets.Checkbox(description="cities", value=False)
         self.plot_options = [
@@ -173,19 +204,19 @@ class InversionParams(widgets.VBox):
 
         #    INVERSION SETTINGS
         #########################################
-        use_covariances = widgets.Checkbox(description="use_covariances", value=True)
+        use_covariances = widgets.Checkbox(description="use.covariances", value=True)
         positive = widgets.Text(description="positive", value="Thacker_complete")
         maxit = widgets.IntText(description="maxit", value=100)
-        neg_frac = widgets.FloatText(description="neg_frac", value=0.0005)
-        unc_lt0 = widgets.FloatText(description="unc_lt0", value=0.5)
-        unc_gt0 = widgets.FloatText(description="unc_gt0", value=1.01)
-        use_lsm = widgets.Checkbox(description="use_lsm", value=False)
-        incl_bg = widgets.Checkbox(description="incl_bg", value=True)
-        bg_by = widgets.Text(description="bg_by", value="months")
-        bg_type = widgets.Text(description="bg_type", value="boundaries.11reg")
-        bg_by_site = widgets.Checkbox(description="bg_by_site", value=False)
-        bg_fac = widgets.Checkbox(description="bg_fac", value=False)
-        incl_outer = widgets.Checkbox(description="incl_outer", value=True)
+        neg_frac = widgets.FloatText(description="neg.frac", value=0.0005)
+        unc_lt0 = widgets.FloatText(description="unc.lt0", value=0.5)
+        unc_gt0 = widgets.FloatText(description="unc.gt0", value=1.01)
+        use_lsm = widgets.Checkbox(description="use.lsm", value=False)
+        incl_bg = widgets.Checkbox(description="incl.bg", value=True)
+        bg_by = widgets.Text(description="bg.by", value="months")
+        bg_type = widgets.Text(description="bg.type", value="boundaries.11reg")
+        bg_by_site = widgets.Checkbox(description="bg.by.site", value=False)
+        bg_fac = widgets.Checkbox(description="bg.fac", value=False)
+        incl_outer = widgets.Checkbox(description="incl.outer", value=True)
         self.inversion_settings = [
             use_covariances,
             positive,
@@ -205,7 +236,7 @@ class InversionParams(widgets.VBox):
         #   MODEL-DATA-MISMATCH COVARIANCE
         ############################################
         self.obs_mod_unc_contrs = widgets.TagsInput(
-            description="obs_mod_unc_contrs",
+            description="obs.mod.unc.contrs",
             allowed_tags=["mod", "instr", "bg", "var"],
             value="mod",
             allow_duplicates=False,
@@ -216,7 +247,7 @@ class InversionParams(widgets.VBox):
         )
 
         self.u_model = widgets.Checkbox(
-            value=True, description="model_component", style=style
+            value=True, description="model.component", style=style
         )
         self.plot = widgets.Checkbox(value=True, description="plot", style=style)
         self.model_data_mismatch = [
@@ -276,6 +307,7 @@ class InversionParams(widgets.VBox):
             big_list += self.apriori_load
         elif self.x.children[0].value == "homo":
             big_list += self.apriori_homo
+
 
         sites_dict = {"sites": sens.available_obs_list}
         d = {x.description: x.value for x in big_list}

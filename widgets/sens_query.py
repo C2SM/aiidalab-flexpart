@@ -193,16 +193,16 @@ class SearchSens(widgets.VBox):
             d_ = {
                 "name": k,
                 "id": k,
-                "flex_id": filename[0] + "_" + filename[1],
-                "rel_com": filename[0] + "_" + filename[1],
-                "ft_type": "ncdf_monthly",
-                "site_obs_fn": v.attributes["remote_path"],
-                "val_ts": False,
-                "x": x["station_longitude"],
-                "y": x["station_latitude"],
-                "ex_hours": "~",
-                "sig_srr": ".na",
-                "sig_min": ".na",
+                "flex.id": filename[0] + "_" + filename[1],
+                "rel.com": filename[0] + "_" + filename[1],
+                "ft.type": "ncdf_monthly",
+                "site.obs.fn": v.attributes["remote_path"],
+                "val.ts": False,
+                "x": float(x["station_longitude"]),
+                "y": float(x["station_latitude"]),
+                "ex.hours": '~',
+                "sig.srr": ".na",
+                "sig.min": ".na",
             }
             self.list_info_obs.append(d_)
 
