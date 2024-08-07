@@ -22,9 +22,10 @@ class InversionParams(widgets.VBox):
         self.chunk = widgets.Dropdown(
             description="chunk", options=["year", "month"], style=style
         )
+        self.chunk.observe(self.change_chunk_w_options,names="value")
         self.chunk_w = widgets.Dropdown(
             description="chunk_w",
-            options=["year", "3year", "month", "3month"],
+            options=['year','3year'],
             style=style,
         )
         self.general_settings = [
@@ -39,18 +40,22 @@ class InversionParams(widgets.VBox):
         #  INPUT LOCATIONS
         ########################################
         self.ftp_dir = widgets.Text(
-            description="ftp_dir", value="/scratch/snx3000/shenne/tmp"
+            description="ftp_dir", value="/scratch/snx3000/shenne/tmp",
+            layout = widgets.Layout(width='85%')
         )
         self.pop_data_dir = widgets.Text(
-            description="pop_data_dir", value="/store/empa/em05/input/GIS/population"
+            description="pop_data_dir", value="/store/empa/em05/input/GIS/population",
+            layout = widgets.Layout(width='85%')
         )
         self.bot_up_file = widgets.Text(
             description="bot_up_file",
             value="/project/s1302/shenne/PARIS/HFO_inversions/code/invSettings/bot.up.uniform.csv",
+            layout = widgets.Layout(width='85%')
         )
         self.cmask_file = widgets.Text(
             description="cmask_file",
             value="/project/s1302/shenne/PARIS/CH4_inversions/Country_masks/country_EUROPE_EEZ_PARIS_gapfilled_fractional.nc",
+            layout = widgets.Layout(width='85%')
         )
         self.input_locations = [
             self.ftp_dir,
@@ -245,6 +250,13 @@ class InversionParams(widgets.VBox):
             "Plot options",
         ]
         super().__init__([tab])
+
+    def change_chunk_w_options(self,change=None):
+            value = change["new"]
+            if value == 'year':
+                self.chunk_w.options = ['year','3year']
+            else:
+                self.chunk_w.options = ['month','3month']
 
     def construct_dict(self):
 

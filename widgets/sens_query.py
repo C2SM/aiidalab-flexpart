@@ -49,8 +49,10 @@ def search_species():
             else:
                 available_species.append(re.sub("'", "", values[0]))
     s = set(available_species)
-    s.remove("Inert")
-    s.remove("inert")
+    if 'Inert' in s:
+        s.remove("Inert")
+    elif 'inert' in s:
+        s.remove("inert")
     return list(s)
 
 
@@ -105,6 +107,7 @@ class SearchSens(widgets.VBox):
         self.selected_obs = {}
         self.list_remotes = {}
         self.list_info_obs = []
+        self.site_extras = {}
 
         search_crit = widgets.VBox(
             [
@@ -203,19 +206,27 @@ class SearchSens(widgets.VBox):
             }
             self.list_info_obs.append(d_)
 
+        for i in self.list_info_obs:
+            self.site_extras[i['name']] =  [
+                        widgets.IntText(description="pch",value = 4),
+                        widgets.IntText(description="col",value = 1),
+                        widgets.IntText(description="lwd",value = 1),
+                        widgets.IntText(description="cex",value = 1),
+                        widgets.IntText(description="pos",value = 3)
+                    ]
         self.accordion_sites.children = [
             widgets.HBox(
                 children=[
                     widgets.HTML(value=parse_dict(i)),
-                    widgets.IntText(description="pch"),
+                    widgets.VBox(children = self.site_extras[i['name']])
                 ]
             )
             for i in self.list_info_obs
         ]
-        i = 0
-        for k in self.selected_obs.keys():
+     
+        for i,k in enumerate(self.selected_obs.keys()):
             self.accordion_sites.set_title(i, k)
-            i += 1
+          
 
     def accordions(self):
         icons = {True: "  ✅", False: "  ❌"}
