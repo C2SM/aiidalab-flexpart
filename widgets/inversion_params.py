@@ -12,7 +12,7 @@ class InversionParams(widgets.VBox):
 
         #   GENERAL
         ####################################
-        self.inv_name = widgets.Text(description="name", style=style)
+        self.inv_name = widgets.Text(description="run.str", style=style)
         self.project = widgets.Text(
             description="project", value="HFO-Europe", style=style
         )
@@ -95,13 +95,14 @@ class InversionParams(widgets.VBox):
             else:
                 clear_output()
         self.igr_method = widgets.interactive(select_option_inv_grid, igr_method=["fromAverage", "load"])
-        self.inversion_grid = [self.igr_method,
+  
+        self.inversion_grid = [
                                self.nn_grid_target,
                                self.min_tau,
                                self.igr_merge,
                                self.remove_zero_only,
                                self.remove_pure_ocean]
-        inv_grid = widgets.VBox(children=self.inversion_grid)
+        inv_grid = widgets.VBox(children=[self.igr_method]+self.inversion_grid)
 
         #   APRIORI
         #######################################
@@ -169,7 +170,7 @@ class InversionParams(widgets.VBox):
             value=60.0,
         )
         self.u_outer = widgets.FloatText(
-            description="tau.bg",
+            description="u.outer",
             value=0.2,
         )
         self.apriori_covariance = [
@@ -182,7 +183,7 @@ class InversionParams(widgets.VBox):
 
         #   PLOT OPTIONS
         #########################################
-        self.zlim = widgets.Text(description="map.db", value="1.0, 1.0e+04")
+        self.zlim = widgets.Text(description="zlim", value="[1.0, 1.0e+04]")
         self.ts_units = widgets.Dropdown(
             description="ts.units", options=["ppt", "ppb", "ppm"]
         )
@@ -243,18 +244,29 @@ class InversionParams(widgets.VBox):
             style=style,
         )
         self.iterations = widgets.IntText(
-            description="iterations", value=4, style=style
+            description="it.u.obs", value=4, style=style
         )
 
         self.u_model = widgets.Checkbox(
-            value=True, description="model.component", style=style
+            value=True, description="scale.u.model", style=style
         )
-        self.plot = widgets.Checkbox(value=True, description="plot", style=style)
+        self.plot = widgets.Checkbox(value=True, description="plot.obs.mod.unc", style=style)
+        self.dist_adj_method  = widgets.Dropdown(description = 'dist.adj.method',
+                                                 options = ['relative', 'rmsOnly', 'Stohl'])
+        self.tau_obs =  widgets.FloatText(description = 'tau.obs.default',value = 0.2)
+        #TODO inclue none value
+        self.covar_nn_lag = widgets.IntSlider(description ='covar.nn.lag',
+                                              value = 2, min = 1, max = 24,
+                                              )
+
         self.model_data_mismatch = [
             self.obs_mod_unc_contrs,
             self.iterations,
             self.u_model,
             self.plot,
+            self.dist_adj_method,
+            self.tau_obs,
+            self.covar_nn_lag
         ]
         model_mis = widgets.VBox(children=self.model_data_mismatch)
 
@@ -308,8 +320,22 @@ class InversionParams(widgets.VBox):
         elif self.x.children[0].value == "homo":
             big_list += self.apriori_homo
 
+        if self.igr_method.children[0].value == "fromAverage":
+            big_list += self.fromaverage
+        elif self.igr_method.children[0].value == "load":
+            big_list += self.load
+
+
 
         sites_dict = {"sites": sens.available_obs_list}
         d = {x.description: x.value for x in big_list}
+        #hardcoded dictionary
+        d.update({'Interactive':False,
+                  'main.dir':'',
+                  'init.dir':'',
+                  'data.dir':'',
+                  'igr.method':self.igr_method.children[0].value,
+                  'apriory.method':self.x.children[0].value,
+                  })
         d.update(sites_dict)
         return d
