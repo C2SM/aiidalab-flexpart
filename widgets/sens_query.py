@@ -269,8 +269,8 @@ class SearchSens(widgets.VBox):
                         # {"or": [{"like": f"%{l}%"} for l in reformated_dates]},
                     ]
                 },
-                # "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
-                "attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
+                 "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
+                #"attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
                 # "attributes.global_attributes.model_version": {"ilike": f"'{self.model_version.value}'"},
                 # "attributes.global_attributes.species": {
                 #    "ilike": f"{self.species.value}"

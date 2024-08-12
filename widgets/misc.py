@@ -47,8 +47,8 @@ class Misc(widgets.VBox):
             value="/store/empa/em05/", description="Stash address", style=style
         )
         self.resource_address = widgets.Text(
-            value="/users/{username}/resources/flexpart/", description="Resource address",
-            layout = widgets.Layout(width='50%'), 
+            value="/store/empa/em05/apps/flexpart/resources", description="Resource address",
+            layout = widgets.Layout(width='45%'), 
             style=style
         )
         self.partition = widgets.Text(
