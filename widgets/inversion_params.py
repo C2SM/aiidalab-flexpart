@@ -22,10 +22,10 @@ class InversionParams(widgets.VBox):
         self.chunk = widgets.Dropdown(
             description="chunk", options=["year", "month"], style=style
         )
-        self.chunk.observe(self.change_chunk_w_options,names="value")
+        self.chunk.observe(self.change_chunk_w_options, names="value")
         self.chunk_w = widgets.Dropdown(
             description="chunk_w",
-            options=['year','3year'],
+            options=["year", "3year"],
             style=style,
         )
         self.general_settings = [
@@ -40,22 +40,24 @@ class InversionParams(widgets.VBox):
         #  INPUT LOCATIONS
         ########################################
         self.ftp_dir = widgets.Text(
-            description="ftp.dir", value="/scratch/snx3000/shenne/tmp",
-            layout = widgets.Layout(width='85%')
+            description="ftp.dir",
+            value="/scratch/snx3000/shenne/tmp",
+            layout=widgets.Layout(width="85%"),
         )
         self.pop_data_dir = widgets.Text(
-            description="pop.data.dir", value="/store/empa/em05/input/GIS/population",
-            layout = widgets.Layout(width='85%')
+            description="pop.data.dir",
+            value="/store/empa/em05/input/GIS/population",
+            layout=widgets.Layout(width="85%"),
         )
         self.bot_up_file = widgets.Text(
             description="bot.up.file",
             value="/project/s1302/shenne/PARIS/HFO_inversions/code/invSettings/bot.up.uniform.csv",
-            layout = widgets.Layout(width='85%')
+            layout=widgets.Layout(width="85%"),
         )
         self.cmask_file = widgets.Text(
             description="cmask.file",
             value="/project/s1302/shenne/PARIS/CH4_inversions/Country_masks/country_EUROPE_EEZ_PARIS_gapfilled_fractional.nc",
-            layout = widgets.Layout(width='85%')
+            layout=widgets.Layout(width="85%"),
         )
         self.input_locations = [
             self.ftp_dir,
@@ -66,22 +68,47 @@ class InversionParams(widgets.VBox):
         input_loc = widgets.VBox(children=self.input_locations)
         #   INVERSION GRID
         #######################################
-        self.igr_fn = widgets.Text(description = 'igr.fn',
-                                  value = "/home/hes134/projects/inversion/GEOmon/emission_grid_brunner.txt",
-                                  layout = widgets.Layout(width='60%'))
-        self.xrng =  widgets.FloatRangeSlider(description ='xrng',value = [-13.0, 26.4], min = -180, max = 180,
-                                              layout = widgets.Layout(width='60%'))
-        self.yrng = widgets.FloatRangeSlider(description ='yrng',value = [36.0, 70.0], min = -90, max = 90,
-                                             layout = widgets.Layout(width='60%') )
-        self.nn_grid_target = widgets.IntText(description = 'nn.grid.target',value = 700)
-        self.min_tau = widgets.IntText(description = 'min.tau',value = 86400)
-        self.igr_merge = widgets.IntSlider(description = 'igr.merge', value = 6, min = 0, max = 10)
-        self.remove_zero_only = widgets.Checkbox(description = 'remove.zero.only',value = True) 
-        self.remove_pure_ocean = widgets.Checkbox(description = 'remove.pure.ocean',value = True) 
+        self.igr_fn = widgets.Text(
+            description="igr.fn",
+            value="/home/hes134/projects/inversion/GEOmon/emission_grid_brunner.txt",
+            layout=widgets.Layout(width="60%"),
+        )
+        self.xrng = widgets.FloatRangeSlider(
+            description="xrng",
+            value=[-13.0, 26.4],
+            min=-180,
+            max=180,
+            layout=widgets.Layout(width="60%"),
+        )
+        self.yrng = widgets.FloatRangeSlider(
+            description="yrng",
+            value=[36.0, 70.0],
+            min=-90,
+            max=90,
+            layout=widgets.Layout(width="60%"),
+        )
+        self.nn_grid_target = widgets.IntText(description="nn.grid.target", value=700)
+        self.min_tau = widgets.IntText(description="min.tau", value=86400)
+        self.igr_merge = widgets.IntSlider(
+            description="igr.merge", value=6, min=0, max=10
+        )
+        self.remove_zero_only = widgets.Checkbox(
+            description="remove.zero.only", value=True
+        )
+        self.remove_pure_ocean = widgets.Checkbox(
+            description="remove.pure.ocean", value=True
+        )
 
-        self.fromaverage = [self.xrng,
-                            self.yrng]
-        fromaverage = widgets.VBox(children= self.fromaverage)
+        self.fromaverage = [
+            self.xrng,
+            self.yrng,
+            self.nn_grid_target,
+            self.min_tau,
+            self.igr_merge,
+            self.remove_zero_only,
+            self.remove_pure_ocean,
+        ]
+        fromaverage = widgets.VBox(children=self.fromaverage)
         self.load = [self.igr_fn]
         fromload = widgets.VBox(children=self.load)
 
@@ -94,15 +121,12 @@ class InversionParams(widgets.VBox):
                 return
             else:
                 clear_output()
-        self.igr_method = widgets.interactive(select_option_inv_grid, igr_method=["fromAverage", "load"])
-  
-        self.inversion_grid = [
-                               self.nn_grid_target,
-                               self.min_tau,
-                               self.igr_merge,
-                               self.remove_zero_only,
-                               self.remove_pure_ocean]
-        inv_grid = widgets.VBox(children=[self.igr_method]+self.inversion_grid)
+
+        self.igr_method = widgets.interactive(
+            select_option_inv_grid, igr_method=["fromAverage", "load"]
+        )
+
+        inv_grid = widgets.VBox(children=[self.igr_method])
 
         #   APRIORI
         #######################################
@@ -243,21 +267,25 @@ class InversionParams(widgets.VBox):
             allow_duplicates=False,
             style=style,
         )
-        self.iterations = widgets.IntText(
-            description="it.u.obs", value=4, style=style
-        )
+        self.iterations = widgets.IntText(description="it.u.obs", value=4, style=style)
 
         self.u_model = widgets.Checkbox(
             value=True, description="scale.u.model", style=style
         )
-        self.plot = widgets.Checkbox(value=True, description="plot.obs.mod.unc", style=style)
-        self.dist_adj_method  = widgets.Dropdown(description = 'dist.adj.method',
-                                                 options = ['relative', 'rmsOnly', 'Stohl'])
-        self.tau_obs =  widgets.FloatText(description = 'tau.obs.default',value = 0.2)
-        #TODO inclue none value
-        self.covar_nn_lag = widgets.IntSlider(description ='covar.nn.lag',
-                                              value = 2, min = 1, max = 24,
-                                              )
+        self.plot = widgets.Checkbox(
+            value=True, description="plot.obs.mod.unc", style=style
+        )
+        self.dist_adj_method = widgets.Dropdown(
+            description="dist.adj.method", options=["relative", "rmsOnly", "Stohl"]
+        )
+        self.tau_obs = widgets.FloatText(description="tau.obs.default", value=0.2)
+        # TODO inclue none value
+        self.covar_nn_lag = widgets.IntSlider(
+            description="covar.nn.lag",
+            value=2,
+            min=1,
+            max=24,
+        )
 
         self.model_data_mismatch = [
             self.obs_mod_unc_contrs,
@@ -266,7 +294,7 @@ class InversionParams(widgets.VBox):
             self.plot,
             self.dist_adj_method,
             self.tau_obs,
-            self.covar_nn_lag
+            self.covar_nn_lag,
         ]
         model_mis = widgets.VBox(children=self.model_data_mismatch)
 
@@ -294,12 +322,12 @@ class InversionParams(widgets.VBox):
         ]
         super().__init__([tab])
 
-    def change_chunk_w_options(self,change=None):
-            value = change["new"]
-            if value == 'year':
-                self.chunk_w.options = ['year','3year']
-            else:
-                self.chunk_w.options = ['month','3month']
+    def change_chunk_w_options(self, change=None):
+        value = change["new"]
+        if value == "year":
+            self.chunk_w.options = ["year", "3year"]
+        else:
+            self.chunk_w.options = ["month", "3month"]
 
     def construct_dict(self):
 
@@ -307,7 +335,6 @@ class InversionParams(widgets.VBox):
             *self.inversion_settings,
             *self.general_settings,
             *self.input_locations,
-            *self.inversion_grid,
             *self.model_data_mismatch,
             *self.plot_options,
             *self.apriori_covariance,
@@ -325,17 +352,18 @@ class InversionParams(widgets.VBox):
         elif self.igr_method.children[0].value == "load":
             big_list += self.load
 
-
-
         sites_dict = {"sites": sens.available_obs_list}
         d = {x.description: x.value for x in big_list}
-        #hardcoded dictionary
-        d.update({'Interactive':False,
-                  'main.dir':'',
-                  'init.dir':'',
-                  'data.dir':'',
-                  'igr.method':self.igr_method.children[0].value,
-                  'apriory.method':self.x.children[0].value,
-                  })
+        # hardcoded dictionary
+        d.update(
+            {
+                "Interactive": False,
+                "main.dir": "",
+                "init.dir": "",
+                "data.dir": "",
+                "igr.method": self.igr_method.children[0].value,
+                "apriory.method": self.x.children[0].value,
+            }
+        )
         d.update(sites_dict)
         return d

@@ -44,12 +44,16 @@ class Misc(widgets.VBox):
         )
         self.account = widgets.Text(value="em05", description="Account", style=style)
         self.stash_address = widgets.Text(
-            value="/store/empa/em05/", description="Stash address", style=style
+            value="/store/empa/em05/",
+            description="Stash address",
+            layout=widgets.Layout(width="45%"),
+            style=style,
         )
         self.resource_address = widgets.Text(
-            value="/store/empa/em05/apps/flexpart/resources", description="Resource address",
-            layout = widgets.Layout(width='45%'), 
-            style=style
+            value="/store/empa/em05/apps/flexpart/resources",
+            description="Resource address",
+            layout=widgets.Layout(width="45%"),
+            style=style,
         )
         self.partition = widgets.Text(
             value="normal", description="Partition", style=style
