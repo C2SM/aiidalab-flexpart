@@ -49,9 +49,9 @@ def search_species():
             else:
                 available_species.append(re.sub("'", "", values[0]))
     s = set(available_species)
-    if 'Inert' in s:
+    if "Inert" in s:
         s.remove("Inert")
-    elif 'inert' in s:
+    elif "inert" in s:
         s.remove("inert")
     return list(s)
 
@@ -197,36 +197,35 @@ class SearchSens(widgets.VBox):
                 "rel.com": filename[0] + "_" + filename[1],
                 "ft.type": "ncdf_monthly",
                 "site.obs.fn": v.attributes["remote_path"],
-                "val.ts": False,
                 "x": float(x["station_longitude"]),
                 "y": float(x["station_latitude"]),
-                "ex.hours": '~',
-                "sig.srr": ".na",
-                "sig.min": ".na",
             }
             self.list_info_obs.append(d_)
 
         for i in self.list_info_obs:
-            self.site_extras[i['name']] =  [
-                        widgets.IntText(description="pch",value = 4),
-                        widgets.IntText(description="col",value = 1),
-                        widgets.IntText(description="lwd",value = 1),
-                        widgets.IntText(description="cex",value = 1),
-                        widgets.IntText(description="pos",value = 3)
-                    ]
+            self.site_extras[i["name"]] = [
+                widgets.IntText(description="pch", value=4),
+                widgets.IntText(description="col", value=1),
+                widgets.IntText(description="lwd", value=1),
+                widgets.IntText(description="cex", value=1),
+                widgets.IntText(description="pos", value=3),
+                widgets.Text(description="ex.hours", value="~"),
+                widgets.Text(description="sig.srr", value=".na"),
+                widgets.Text(description="sig.min", value=".na"),
+                widgets.Checkbox(description="val.ts", value=False),
+            ]
         self.accordion_sites.children = [
             widgets.HBox(
                 children=[
                     widgets.HTML(value=parse_dict(i)),
-                    widgets.VBox(children = self.site_extras[i['name']])
+                    widgets.VBox(children=self.site_extras[i["name"]]),
                 ]
             )
             for i in self.list_info_obs
         ]
-     
-        for i,k in enumerate(self.selected_obs.keys()):
+
+        for i, k in enumerate(self.selected_obs.keys()):
             self.accordion_sites.set_title(i, k)
-          
 
     def accordions(self):
         icons = {True: "  ✅", False: "  ❌"}
@@ -269,8 +268,8 @@ class SearchSens(widgets.VBox):
                         # {"or": [{"like": f"%{l}%"} for l in reformated_dates]},
                     ]
                 },
-                 "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
-                #"attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
+                "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
+                # "attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
                 # "attributes.global_attributes.model_version": {"ilike": f"'{self.model_version.value}'"},
                 # "attributes.global_attributes.species": {
                 #    "ilike": f"{self.species.value}"
