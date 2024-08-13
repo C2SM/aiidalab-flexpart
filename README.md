@@ -1,16 +1,22 @@
 # Aiida FLEXPART plugin
-An [AiiDA](http://aiida-core.readthedocs.io/) plugin for the Flexpart cosmo and ifs simulations.
+An [AiiDA](http://aiida-core.readthedocs.io/) plugin for FLEXPART cosmo and ifs simulations, and inversions.
 
-This plugin contains 4 types of calculations:
+This plugin contains 5 types of calculations:
 
 - `flexpart.cosmo`
 - `flexpart.ifs`
 - `flexpart.post`
-- `collect.sens`
+- `collect.sensitivities`
+- `inversion.calc`
 
-The workflow:
+A data plugin:
 
-- `flexpart.multi_dates`: A workflow that can be used to submit flexpart calculations for multiple days.
+- `netcdf.data`
+
+and 2 workflows:
+
+- `flexpart.multi_workflow`: A workflow that can be used to submit flexpart calculations for multiple days.
+- `inspect.workflow`
 
 
 - [AiiDA FLEXPART plugin](#aiida-flexpart-plugin)
