@@ -7,9 +7,18 @@ import static
 import re
 from aiida import orm
 from importlib import resources
+from aiida.orm import QueryBuilder,Group,Dict
 
 style = {"description_width": "initial"}
 style_calendar = resources.read_text(static, "style.css")
+
+def get_dictionary_group_element(group_name,name):
+    qb = QueryBuilder()
+    qb.append(Group,filters ={'label' :group_name},tag = 'g')
+    qb.append(Dict, project = ['attributes'], with_group='g')
+    for i in qb.all():
+        if next(iter(i[0])) == name:
+            return i[0][name]
 
 
 def store_dictionary(dict_: dict, group_label: str) -> None:
