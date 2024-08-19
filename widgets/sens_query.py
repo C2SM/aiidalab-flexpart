@@ -66,7 +66,7 @@ class SearchSens(widgets.VBox):
     def __init__(self):
 
         self.date_range = widgets.Text(
-            value="2020-01-01--2020-12-31",
+            value="2020-01-01--2021-01-01",
             description="Range_dates",
             style=style,
         )
@@ -193,12 +193,11 @@ class SearchSens(widgets.VBox):
             d_ = {
                 "name": k,
                 "id": k,
-                "flex.id": filename[0] + "_" + filename[1],
-                "rel.com": filename[0] + "_" + filename[1],
+                "flex.id": filename[0] + "-" + filename[1],
                 "ft.type": "ncdf_monthly",
                 "site.obs.fn": v.attributes["remote_path"],
-                "x": float(x["station_longitude"]),
-                "y": float(x["station_latitude"]),
+                "lon": float(x["station_longitude"]),
+                "lat": float(x["station_latitude"]),
             }
             self.list_info_obs.append(d_)
 
