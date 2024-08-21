@@ -41,7 +41,7 @@ class InversionParams(widgets.VBox):
         ########################################
         self.ftp_dir = widgets.Text(
             description="ftp.dir",
-            value="/scratch/snx3000/shenne/tmp",
+            value="/scratch/snx3000/lfernand/tmp",
             layout=widgets.Layout(width="85%"),
         )
         self.pop_data_dir = widgets.Text(
@@ -51,7 +51,7 @@ class InversionParams(widgets.VBox):
         )
         self.bot_up_file = widgets.Text(
             description="bot.up.file",
-            value="/project/s1302/shenne/PARIS/HFO_inversions/code/invSettings/bot.up.uniform.csv",
+            value="/users/shenne/progs/Rinversion/data/example.bot.up.file.csv",
             layout=widgets.Layout(width="85%"),
         )
         self.cmask_file = widgets.Text(

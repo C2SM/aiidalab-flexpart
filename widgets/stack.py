@@ -26,9 +26,9 @@ class VerticalStackWidget(ipw.VBox):
     items = tl.Tuple()
     item_class = None
 
-    def __init__(self, item_class, add_button_text="Add"):
+    def __init__(self, item_class, mode, add_button_text="Add"):
         self.item_class = item_class
-
+        self.mode = mode
         self.add_item_button = ipw.Button(description=add_button_text, button_style="")
         self.add_item_button.on_click(self.add_item)
 

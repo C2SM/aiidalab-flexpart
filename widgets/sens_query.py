@@ -7,6 +7,7 @@ from aiida.orm import QueryBuilder
 
 from utils import utils
 from settings import NETCDF
+from widgets import filter
 
 style = {"description_width": "initial"}
 
@@ -34,7 +35,6 @@ def search_locations(a_obs: list) -> list:
         s = re.split("_|-", i[0])
         available_locations.append(s[0] + "-" + s[1])
     return list(set(available_locations))
-
 
 def search_species():
     available_species = []
@@ -71,7 +71,7 @@ class SearchSens(widgets.VBox):
             style=style,
         )
         self.location = widgets.TagsInput(
-            allowed_tags=["LUT"],  # search_locations(["JFJ"]),
+            allowed_tags=["LUT"],  
             allow_duplicates=False,
             style=style,
         )
@@ -108,6 +108,7 @@ class SearchSens(widgets.VBox):
         self.list_remotes = {}
         self.list_info_obs = []
         self.site_extras = {}
+        self.site_filter = {}
 
         search_crit = widgets.VBox(
             [
@@ -213,11 +214,17 @@ class SearchSens(widgets.VBox):
                 widgets.Text(description="sig.min", value=".na"),
                 widgets.Checkbox(description="val.ts", value=False),
             ]
+            self.site_filter[i["name"]] = filter.ViewerWidget(mode = 'filter')
+        
         self.accordion_sites.children = [
-            widgets.HBox(
+            widgets.VBox(
                 children=[
-                    widgets.HTML(value=parse_dict(i)),
-                    widgets.VBox(children=self.site_extras[i["name"]]),
+                    widgets.HBox(
+                        children  = [
+                                widgets.HTML(value=parse_dict(i)),
+                                widgets.VBox(children=self.site_extras[i["name"]]),
+                        ]),
+                    self.site_filter[i["name"]]
                 ]
             )
             for i in self.list_info_obs

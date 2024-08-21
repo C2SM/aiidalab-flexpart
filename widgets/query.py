@@ -9,7 +9,7 @@ from widgets import filter
 
 style = {"description_width": "initial"}
 path_to_out = Path.cwd() / "config" / "outgrid.yaml"
-ad_q = filter.ViewerWidget()
+ad_q = filter.ViewerWidget(mode = 'params')
 
 
 class SearchCalculations(widgets.VBox):
