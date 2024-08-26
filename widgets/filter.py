@@ -51,9 +51,9 @@ class _BaseSelectionWidget(stack.HorizontalItemWidget):
 
         self.min = ipw.IntText(
             description="min",
-            value=450,
+            value=0,
         )
-        self.max = ipw.IntText(description="max", value=550)
+        self.max = ipw.IntText(description="max", value=0)
         self.vals = ipw.Text(description="vals", value="[]")
 
         params_conf = [
