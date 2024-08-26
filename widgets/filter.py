@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from . import stack
 import traitlets as tl
 import ipywidgets as ipw
@@ -25,7 +26,7 @@ class _BaseSelectionWidget(stack.HorizontalItemWidget):
     options = tl.Union([tl.Dict(), tl.List()], allow_none=True)
 
     def __init__(self, **kwargs):
-        self.mode = kwargs.get('mode')
+        self.mode = kwargs.get("mode")
         self._parameter_selection = ipw.Dropdown(
             options=fill_locations(),
             description="Parameter:",
@@ -34,8 +35,8 @@ class _BaseSelectionWidget(stack.HorizontalItemWidget):
         )
 
         self.filter_selection = ipw.Dropdown(
-            options=['TT', 'PP', 'WS', 'WD', 'PBLH', 'hour'],
-            description="Filter",
+            options=["TT", "PP", "WS", "WD", "PBLH", "hour"],
+            description="column",
             style={"description_width": "auto"},
             layout=ipw.Layout(width="100px"),
         )
@@ -48,32 +49,25 @@ class _BaseSelectionWidget(stack.HorizontalItemWidget):
             layout=ipw.Layout(width="150px"),
         )
 
-        self.min = ipw.IntText(description = 'min',
-                               value = 450,)
-        self.max = ipw.IntText(description = 'max',
-                               value = 550)
-        self.vals = ipw.Text(description = 'vals',
-                               value = '[]')
-        
+        self.min = ipw.IntText(
+            description="min",
+            value=450,
+        )
+        self.max = ipw.IntText(description="max", value=550)
+        self.vals = ipw.Text(description="vals", value="[]")
+
         params_conf = [
-                self._parameter_selection,
-                self._value,
-            ]
+            self._parameter_selection,
+            self._value,
+        ]
 
-        filter_conf = [
-                self.filter_selection,
-                self.min,
-                self.max,
-                self.vals
-            ]
+        filter_conf = [self.filter_selection, self.min, self.max, self.vals]
 
-        if self.mode == 'filter':
+        if self.mode == "filter":
             children = filter_conf
         else:
             children = params_conf
-        super().__init__(
-            children=children
-        )
+        super().__init__(children=children)
 
 
 class _BaseStackWidget(stack.VerticalStackWidget):
@@ -81,13 +75,7 @@ class _BaseStackWidget(stack.VerticalStackWidget):
     options = tl.Union([tl.Dict(), tl.List()], allow_none=True)
 
     def add_item(self, _):
-        self.items += (
-            self.item_class(
-                color="black",
-                factor=1.0,
-                mode = self.mode
-            ),
-        )
+        self.items += (self.item_class(color="black", factor=1.0, mode=self.mode),)
         tl.dlink((self, "options"), (self.items[-1], "options"))
         tl.dlink((self, "data"), (self.items[-1], "data"))
 
@@ -95,16 +83,16 @@ class _BaseStackWidget(stack.VerticalStackWidget):
 class ViewerWidget(ipw.VBox):
     def __init__(self, mode):
         self.mode = mode
-        if self.mode == 'params':
+        if self.mode == "params":
             self.parameters = _BaseStackWidget(
-                item_class=_BaseSelectionWidget, 
+                item_class=_BaseSelectionWidget,
                 add_button_text="Add parameter",
-                mode = 'params'
+                mode="params",
             )
         else:
             self.parameters = _BaseStackWidget(
-                item_class=_BaseSelectionWidget, 
+                item_class=_BaseSelectionWidget,
                 add_button_text="Add filter",
-                mode = 'filter'
+                mode="filter",
             )
         super().__init__([self.parameters])
