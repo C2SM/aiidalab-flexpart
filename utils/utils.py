@@ -195,7 +195,7 @@ def generate_outgrids_buttons(outgrid_nest: bool) -> list:
     return list_widgets
 
 
-def test_(group, list_):
+def get_element_dict_by_group(group:str, list_:list)->list:
     q = orm.QueryBuilder()
     q.append(orm.Group, filters={"label": group}, tag="g")
     q.append(
