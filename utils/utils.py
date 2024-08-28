@@ -7,15 +7,16 @@ import static
 import re
 from aiida import orm
 from importlib import resources
-from aiida.orm import QueryBuilder,Group,Dict
+from aiida.orm import QueryBuilder, Group, Dict
 
 style = {"description_width": "initial"}
 style_calendar = resources.read_text(static, "style.css")
 
-def get_dictionary_group_element(group_name,name):
+
+def get_dictionary_group_element(group_name, name):
     qb = QueryBuilder()
-    qb.append(Group,filters ={'label' :group_name},tag = 'g')
-    qb.append(Dict, project = ['attributes'], with_group='g')
+    qb.append(Group, filters={"label": group_name}, tag="g")
+    qb.append(Dict, project=["attributes"], with_group="g")
     for i in qb.all():
         if next(iter(i[0])) == name:
             return i[0][name]
@@ -194,8 +195,20 @@ def generate_outgrids_buttons(outgrid_nest: bool) -> list:
     return list_widgets
 
 
+def test_(group, list_):
+    q = orm.QueryBuilder()
+    q.append(orm.Group, filters={"label": group}, tag="g")
+    q.append(
+        orm.Dict,
+        filters={"attributes": {"or": [{"has_key": l} for l in list_]}},
+        project=["attributes"],
+        with_group="g",
+    )
+    return [x[0] for x in q.all()]
+
+
 def get_dicts_in_group(group_name: str) -> list:
-    # Finds all Dictionaries in a given group
+    # Returns dictionarie of an element in a given group
     q = orm.QueryBuilder()
     q.append(orm.Group, filters={"label": group_name}, tag="g")
     q.append(orm.Dict, project=["attributes"], with_group="g")
