@@ -41,7 +41,7 @@ class InversionParams(widgets.VBox):
         ########################################
         self.ftp_dir = widgets.Text(
             description="ftp.dir",
-            value="/scratch/snx3000/lfernand/tmp",
+            value="tmp",
             layout=widgets.Layout(width="85%"),
         )
         self.pop_data_dir = widgets.Text(
@@ -164,20 +164,22 @@ class InversionParams(widgets.VBox):
         self.apriori_homo = [self.apriori_lsm, self.homo_by_country]
         homo = widgets.VBox(children=self.apriori_homo)
 
-        def select_option(name):
-            if name == "EDGAR":
+        def select_option(apriori_method):
+            if apriori_method == "EDGAR":
                 display(edgar)
                 return
-            elif name == "load":
+            elif apriori_method == "load" or apriori_method == "load_nc":
                 display(load)
                 return
-            elif name == "homo":
+            elif apriori_method == "homo":
                 display(homo)
                 return
             else:
                 clear_output()
 
-        self.x = widgets.interactive(select_option, name=["EDGAR", "load", "homo"])
+        self.x = widgets.interactive(
+            select_option, apriori_method=["EDGAR", "load", "load_nc", "homo"]
+        )
 
         #   APRIORI COVARIANCE
         ########################################
@@ -230,7 +232,10 @@ class InversionParams(widgets.VBox):
         #    INVERSION SETTINGS
         #########################################
         use_covariances = widgets.Checkbox(description="use.covariances", value=True)
-        positive = widgets.Text(description="positive", value="Thacker_complete")
+        positive = widgets.Dropdown(
+            description="positive",
+            options=["Thacker_complete", "Stohl", "Thacker_xOnly", "none"],
+        )
         maxit = widgets.IntText(description="maxit", value=100)
         neg_frac = widgets.FloatText(description="neg.frac", value=0.0005)
         unc_lt0 = widgets.FloatText(description="unc.lt0", value=0.5)
@@ -238,7 +243,14 @@ class InversionParams(widgets.VBox):
         use_lsm = widgets.Checkbox(description="use.lsm", value=False)
         incl_bg = widgets.Checkbox(description="incl.bg", value=True)
         bg_by = widgets.Text(description="bg.by", value="months")
-        bg_type = widgets.Text(description="bg.type", value="boundaries.11reg")
+        bg_type = widgets.Dropdown(
+            description="bg.type",
+            options=[
+                "boundaries.11reg",
+                "single",
+                "boundaries",
+            ],
+        )
         bg_by_site = widgets.Checkbox(description="bg.by.site", value=False)
         bg_fac = widgets.Checkbox(description="bg.fac", value=False)
         incl_outer = widgets.Checkbox(description="incl.outer", value=True)
@@ -263,7 +275,7 @@ class InversionParams(widgets.VBox):
         self.obs_mod_unc_contrs = widgets.TagsInput(
             description="obs.mod.unc.contrs",
             allowed_tags=["mod", "instr", "bg", "var"],
-            value="mod",
+            value=["mod", "instr", "bg", "var"],
             allow_duplicates=False,
             style=style,
         )
@@ -315,7 +327,7 @@ class InversionParams(widgets.VBox):
             "Input locations",
             "Inversion grid",
             "Inversion settings",
-            "MODEL-DATA-MISMATCH COVARIANCE",
+            "Model-data-mismatch",
             "Apriori",
             "Apriori covariance",
             "Plot options",
@@ -362,7 +374,7 @@ class InversionParams(widgets.VBox):
                 "init.dir": "",
                 "data.dir": "",
                 "igr.method": self.igr_method.children[0].value,
-                "apriory.method": self.x.children[0].value,
+                "apriori.method": self.x.children[0].value,
             }
         )
         d.update(sites_dict)

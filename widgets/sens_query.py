@@ -36,18 +36,16 @@ def search_locations(a_obs: list) -> list:
         available_locations.append(s[0] + "-" + s[1])
     return list(set(available_locations))
 
+
 def search_species():
     available_species = []
-    qb = QueryBuilder()
-    qb.append(NETCDF, project="attributes.global_attributes.species")
-    for i in qb.all():
-        if i[0]:
-            values = i[0].split(";")
-            if len(values) > 1:
-                for j in range(len(values)):
-                    available_species.append(re.sub("'", "", values[j]))
-            else:
-                available_species.append(re.sub("'", "", values[0]))
+    for i in utils.get_global_attribute_family("species"):
+        values = i.split(";")
+        if len(values) > 1:
+            for j in range(len(values)):
+                available_species.append(re.sub("'", "", values[j]))
+        else:
+            available_species.append(re.sub("'", "", values[0]))
     s = set(available_species)
     if "Inert" in s:
         s.remove("Inert")
@@ -71,12 +69,12 @@ class SearchSens(widgets.VBox):
             style=style,
         )
         self.location = widgets.TagsInput(
-            allowed_tags=["LUT"],  
+            allowed_tags=["LUT"],
             allow_duplicates=False,
             style=style,
         )
         self.domain = widgets.Dropdown(
-            options=["EUROPE"],
+            options=utils.get_global_attribute_family("domain"),
             description="Domain",
             style=style,
         )
@@ -86,12 +84,12 @@ class SearchSens(widgets.VBox):
             style=style,
         )
         self.model = widgets.Dropdown(
-            options=["NAME", "FLEXPART"],
+            options=utils.get_global_attribute_family("model"),
             description="Model",
             style=style,
         )
         self.model_version = widgets.Dropdown(
-            options=["NAME III (version 7.2)", "FLEXPART IFS (version 9.1_Empa)"],
+            options=utils.get_global_attribute_family("model_version"),
             description="Model version",
             style=style,
         )
@@ -113,7 +111,7 @@ class SearchSens(widgets.VBox):
         search_crit = widgets.VBox(
             [
                 widgets.VBox(
-                    [self.species_title, self.species, self.time_step, self.domain],
+                    [self.species_title, self.species, self.time_step],
                 ),
                 self.info,
                 widgets.HTML(value="""<hr>"""),
@@ -121,11 +119,7 @@ class SearchSens(widgets.VBox):
                 self.location,
                 widgets.HTML(value="""<hr>"""),
                 widgets.GridBox(
-                    [
-                        self.date_range,
-                        self.model,
-                        self.model_version,
-                    ],
+                    [self.date_range, self.model, self.model_version, self.domain],
                     layout=widgets.Layout(grid_template_columns="repeat(2, 50%)"),
                 ),
             ]
@@ -209,22 +203,25 @@ class SearchSens(widgets.VBox):
                 widgets.IntText(description="lwd", value=1),
                 widgets.IntText(description="cex", value=1),
                 widgets.IntText(description="pos", value=3),
-                widgets.Text(description="ex.hours", value="~"),
                 widgets.Text(description="sig.srr", value=".na"),
                 widgets.Text(description="sig.min", value=".na"),
                 widgets.Checkbox(description="val.ts", value=False),
             ]
-            self.site_filter[i["name"]] = filter.ViewerWidget(mode = 'filter')
-        
+            self.site_filter[i["name"]] = filter.ViewerWidget(mode="filter")
+
         self.accordion_sites.children = [
             widgets.VBox(
                 children=[
                     widgets.HBox(
-                        children  = [
-                                widgets.HTML(value=parse_dict(i)),
-                                widgets.VBox(children=self.site_extras[i["name"]]),
-                        ]),
-                    self.site_filter[i["name"]]
+                        children=[
+                            widgets.HTML(value=parse_dict(i)),
+                            widgets.VBox(
+                                children=[widgets.HTML("<b>Plot options</b>")]
+                                + self.site_extras[i["name"]]
+                            ),
+                        ]
+                    ),
+                    self.site_filter[i["name"]],
                 ]
             )
             for i in self.list_info_obs
@@ -274,9 +271,11 @@ class SearchSens(widgets.VBox):
                         # {"or": [{"like": f"%{l}%"} for l in reformated_dates]},
                     ]
                 },
-                "attributes.global_attributes.domain": {"==": f"'{self.domain.value}'"},
-                # "attributes.global_attributes.model": {"==": f"'{self.model.value}'"},
-                # "attributes.global_attributes.model_version": {"ilike": f"'{self.model_version.value}'"},
+                "attributes.global_attributes.domain": {"==": f"{self.domain.value}"},
+                "attributes.global_attributes.model": {"==": f"{self.model.value}"},
+                "attributes.global_attributes.model_version": {
+                    "ilike": f"{self.model_version.value}"
+                },
                 # "attributes.global_attributes.species": {
                 #    "ilike": f"{self.species.value}"
                 # },
@@ -294,6 +293,7 @@ class SearchSens(widgets.VBox):
                     <th>Date</th>
                     <th>Name</th>
                     <th>Created</th>
+                    <th>Address</th>
                 </tr>"""
 
         dict_ = {}
@@ -303,7 +303,7 @@ class SearchSens(widgets.VBox):
             if m in dict_.keys():
                 html += f"""<tr>
                         <td>
-                            <a href=http://127.0.0.1:8888/apps/apps/FLEXPART_AiiDAlab/ncdump.ipynb?id={dict_[m][2]}
+                            <a href=./ncdump.ipynb?id={dict_[m][2]}
                                                         target="_blanm">
                                 {dict_[m][2]}
                             </a>
@@ -311,12 +311,14 @@ class SearchSens(widgets.VBox):
                         <td>{m}</td>
                         <td>{dict_[m][0]}</td>
                         <td>{dict_[m][1]}</td>
+                        <td>{dict_[m][3].replace(dict_[m][0],'')}</td>
                         </tr>"""
                 self.list_remotes[dict_[m][0]] = dict_[m][4]
             else:
                 html += f"""<tr>
                         <td><mark style='color: red;'>Missing</mark></td>
                         <td>{m}</td>
+                        <td><mark style='color: red;'>Missing</mark></td>
                         <td><mark style='color: red;'>Missing</mark></td>
                         <td><mark style='color: red;'>Missing</mark></td>
                         </tr>"""

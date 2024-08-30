@@ -7,10 +7,21 @@ import static
 import re
 from aiida import orm
 from importlib import resources
+from settings import NETCDF
 from aiida.orm import QueryBuilder, Group, Dict
 
 style = {"description_width": "initial"}
 style_calendar = resources.read_text(static, "style.css")
+
+
+def get_global_attribute_family(attribute: str) -> list:
+    set_elements = set()
+    qb = QueryBuilder()
+    qb.append(NETCDF, project="attributes.global_attributes." + attribute)
+    for i in qb.all():
+        if i[0] != None:
+            set_elements.add(i[0])
+    return list(set_elements)
 
 
 def get_dictionary_group_element(group_name, name):
@@ -195,7 +206,7 @@ def generate_outgrids_buttons(outgrid_nest: bool) -> list:
     return list_widgets
 
 
-def get_element_dict_by_group(group:str, list_:list)->list:
+def get_element_dict_by_group(group: str, list_: list) -> list:
     q = orm.QueryBuilder()
     q.append(orm.Group, filters={"label": group}, tag="g")
     q.append(
@@ -234,13 +245,17 @@ def fill(path_file: str) -> list:
                     options=dict_[k]["options"],
                     value=dict_[k]["value"],
                     description=k,
+                    tooltip=dict_[k]["tooltip"],
                     style=style,
                 )
             )
         else:
             list_widgets.append(
                 d[type(dict_[k]["value"])](
-                    value=dict_[k]["value"], description=k, style=style
+                    value=dict_[k]["value"],
+                    description=k,
+                    style=style,
+                    tooltip=dict_[k]["tooltip"],
                 )
             )
     return list_widgets
