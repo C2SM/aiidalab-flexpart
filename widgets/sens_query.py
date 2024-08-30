@@ -198,14 +198,14 @@ class SearchSens(widgets.VBox):
 
         for i in self.list_info_obs:
             self.site_extras[i["name"]] = [
-                widgets.IntText(description="pch", value=4),
-                widgets.IntText(description="col", value=1),
-                widgets.IntText(description="lwd", value=1),
-                widgets.IntText(description="cex", value=1),
-                widgets.IntText(description="pos", value=3),
-                widgets.Text(description="sig.srr", value=".na"),
-                widgets.Text(description="sig.min", value=".na"),
-                widgets.Checkbox(description="val.ts", value=False),
+                widgets.IntText(description="pch", value=4, style=style),
+                widgets.IntText(description="col", value=1, style=style),
+                widgets.IntText(description="lwd", value=1, style=style),
+                widgets.IntText(description="cex", value=1, style=style),
+                widgets.IntText(description="pos", value=3, style=style),
+                widgets.Text(description="sig.srr", value=".na", style=style),
+                widgets.Text(description="sig.min", value=".na", style=style),
+                widgets.Checkbox(description="val.ts", value=False, style=style),
             ]
             self.site_filter[i["name"]] = filter.ViewerWidget(mode="filter")
 
@@ -217,10 +217,13 @@ class SearchSens(widgets.VBox):
                             widgets.HTML(value=parse_dict(i)),
                             widgets.VBox(
                                 children=[widgets.HTML("<b>Plot options</b>")]
-                                + self.site_extras[i["name"]]
+                                + self.site_extras[i["name"]][:5]
+                                + [widgets.HTML("<hr>")]
+                                + self.site_extras[i["name"]][5:]
                             ),
                         ]
                     ),
+                    widgets.HTML("<hr>"),
                     self.site_filter[i["name"]],
                 ]
             )

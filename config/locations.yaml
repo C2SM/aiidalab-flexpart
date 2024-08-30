@@ -1,4 +1,4 @@
-BIR_75magl:
+BIR-75magl:
   longitude: 8.2519
   latitude: 58.3886
   level:
@@ -13,7 +13,7 @@ BIR_75magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-BRM_212magl:
+BRM-212magl:
   longitude: 8.1755
   latitude: 47.1896
   level:
@@ -28,7 +28,7 @@ BRM_212magl:
     IFS_EU_01: 2
     IFS_EU_02: 2
     IFS_GL_05: 1
-BSD_248magl:
+BSD-248magl:
   longitude: -1.1504
   latitude: 54.3586
   level:
@@ -43,7 +43,7 @@ BSD_248magl:
     IFS_EU_01: 2
     IFS_EU_02: 2
     IFS_GL_05: 2
-CBW_200magl:
+CBW-200magl:
   longitude: 4.9261
   latitude: 51.9703
   level:
@@ -58,7 +58,7 @@ CBW_200magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-CMN_500magl:
+CMN-20magl:
   longitude: 10.6999
   latitude: 44.1936
   level:
@@ -73,7 +73,7 @@ CMN_500magl:
     IFS_EU_01: 2
     IFS_EU_02: 2
     IFS_GL_05: 2
-CSP_10magl:
+CSP-10magl:
   longitude: -6.3677
   latitude: 52.1775
   level:
@@ -88,7 +88,7 @@ CSP_10magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-GAT_341magl:
+GAT-341magl:
   longitude: 11.4429
   latitude: 53.0657
   level:
@@ -103,7 +103,7 @@ GAT_341magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-HEI_30magl:
+HEI-30magl:
   longitude: 8.675
   latitude: 49.4172
   level:
@@ -118,7 +118,7 @@ HEI_30magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-HEL_110magl:
+HEL-110magl:
   longitude: 7.8833
   latitude: 54.1804
   level:
@@ -133,7 +133,7 @@ HEL_110magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-HFD_100magl:
+HFD-100magl:
   longitude: 0.2305
   latitude: 50.9768
   level:
@@ -148,7 +148,7 @@ HFD_100magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-HPB_131magl:
+HPB-131magl:
   longitude: 11.0246
   latitude: 47.8011
   level:
@@ -163,7 +163,7 @@ HPB_131magl:
     IFS_EU_01: 2
     IFS_EU_02: 2
     IFS_GL_05: 1
-HTM_150magl:
+HTM-150magl:
   longitude: 13.4189
   latitude: 56.0976
   level:
@@ -178,7 +178,7 @@ HTM_150magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-HUN_115magl:
+HUN-115magl:
   longitude: 16.6522
   latitude: 46.9558
   level:
@@ -193,7 +193,7 @@ HUN_115magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-JFJ_5magl:
+JFJ-5magl:
   longitude: 7.9851
   latitude: 46.5475
   level:
@@ -210,7 +210,7 @@ JFJ_5magl:
     IFS_GL_05: 2
     IFS_GL_1: 2
     cosmo1: 2
-KIT_200magl:
+KIT-200magl:
   longitude: 8.4249
   latitude: 49.0915
   level:
@@ -227,7 +227,7 @@ KIT_200magl:
     IFS_GL_05: 1
     IFS_GL_1: 1
     cosmo1: 1
-KRE_250magl:
+KRE-250magl:
   longitude: 15.08
   latitude: 49.572
   level:
@@ -242,7 +242,7 @@ KRE_250magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-LIN_98magl:
+LIN-98magl:
   longitude: 14.1226
   latitude: 52.1663
   level:
@@ -257,7 +257,7 @@ LIN_98magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-LUT_60magl:
+LUT-60magl:
   longitude: 6.3528
   latitude: 53.4036
   level:
@@ -272,7 +272,7 @@ LUT_60magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-MHD_10magl:
+MHD-10magl:
   longitude: -9.9046
   latitude: 53.3267
   level:
@@ -289,7 +289,7 @@ MHD_10magl:
     IFS_GL_05: 1
     IFS_GL_1: 1
     cosmo1: 1
-MLH_10magl:
+MLH-10magl:
   longitude: -7.3395
   latitude: 55.3718
   level:
@@ -304,7 +304,7 @@ MLH_10magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-NOR_100magl:
+NOR-100magl:
   longitude: 17.4794
   latitude: 60.0864
   level:
@@ -319,7 +319,7 @@ NOR_100magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-OPE_120magl:
+OPE-120magl:
   longitude: 5.5036
   latitude: 48.5619
   level:
@@ -334,7 +334,7 @@ OPE_120magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-OXK_163magl:
+OXK-163magl:
   longitude: 11.8083
   latitude: 50.03
   level:
@@ -349,7 +349,7 @@ OXK_163magl:
     IFS_EU_01: 2
     cosmo7: 2
     cosmo1: 2
-PAL_10magl:
+PAL-10magl:
   longitude: 24.1157
   latitude: 67.9733
   level:
@@ -364,7 +364,7 @@ PAL_10magl:
     IFS_EU_01: 2
     cosmo7: 1
     cosmo1: 1
-RGL_90magl:
+RGL-90magl:
   longitude: -2.5399
   latitude: 51.9975
   level:
@@ -379,7 +379,7 @@ RGL_90magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-SAC_100magl:
+SAC-100magl:
   longitude: 2.142
   latitude: 48.7227
   level:
@@ -394,7 +394,7 @@ SAC_100magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-SMR_125magl:
+SMR-125magl:
   longitude: 24.2947
   latitude: 61.8474
   level:
@@ -409,7 +409,7 @@ SMR_125magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-SSL_12magl:
+SSL-12magl:
   longitude: 7.9079
   latitude: 47.9136
   level:
@@ -424,7 +424,7 @@ SSL_12magl:
     IFS_EU_01: 2
     cosmo7: 2
     cosmo1: 2
-STE_252magl:
+STE-252magl:
   longitude: 8.4588
   latitude: 53.0431
   level:
@@ -439,7 +439,7 @@ STE_252magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-TAC_185magl:
+TAC-185magl:
   longitude: 1.1387
   latitude: 52.5188
   level:
@@ -454,7 +454,7 @@ TAC_185magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-TOB_12magl:
+TOB-12magl:
   longitude: 8.44639
   latitude: 50.22188
   level:
@@ -469,7 +469,7 @@ TOB_12magl:
     IFS_EU_01: 2
     cosmo7: 2
     cosmo1: 2
-TOH_147magl:
+TOH-147magl:
   longitude: 10.535
   latitude: 51.8088
   level:
@@ -484,7 +484,7 @@ TOH_147magl:
     IFS_EU_01: 2
     cosmo7: 1
     cosmo1: 2
-TRN_180magl:
+TRN-180magl:
   longitude: 2.1125
   latitude: 47.9647
   level:
@@ -499,7 +499,7 @@ TRN_180magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-TTA_222magl:
+TTA-222magl:
   longitude: -2.986
   latitude: 56.5551
   level:
@@ -514,7 +514,7 @@ TTA_222magl:
     IFS_EU_01: 2
     IFS_EU_02: 2
     IFS_GL_05: 2
-UTO_57magl:
+UTO-57magl:
   longitude: 21.3672
   latitude: 59.7839
   level:
@@ -529,7 +529,7 @@ UTO_57magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-VAL_10magl:
+VAL-10magl:
   longitude: -10.403
   latitude: 51.908
   level:
@@ -544,22 +544,22 @@ VAL_10magl:
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-WAO_20magl:
+WAO-20magl:
   longitude: 1.1219
   latitude: 52.9504
   level:
-    cosmo1: 10.0
-    cosmo7: 10.0
-    IFS_EU_01: 10.0
-    IFS_EU_02: 10.0
-    IFS_GL_05: 10.0
+    cosmo1: 20.0
+    cosmo7: 20.0
+    IFS_EU_01: 20.0
+    IFS_EU_02: 20.0
+    IFS_GL_05: 20.0
   level_type:
     cosmo1: 1
     cosmo7: 1
     IFS_EU_01: 1
     IFS_EU_02: 1
     IFS_GL_05: 1
-WES_14magl:
+WES-14magl:
   longitude: 8.308
   latitude: 54.9231
   level:
@@ -574,22 +574,22 @@ WES_14magl:
     IFS_EU_01: 1
     cosmo7: 1
     cosmo1: 1
-ZEP_10magl:
+ZEP-10magl:
   longitude: 11.8867
   latitude: 78.9072
   level:
     IFS_GL_05: 298.0
     IFS_EU_02: 298.0
     IFS_EU_01: 298.0
-    cosmo7: 15.0
-    cosmo1: 15.0
+    cosmo7: 10.0
+    cosmo1: 10.0
   level_type:
     IFS_GL_05: 2
     IFS_EU_02: 2
     IFS_EU_01: 2
     cosmo7: 1
     cosmo1: 1
-ZSF_3magl:
+ZSF-3magl:
   longitude: 10.97964
   latitude: 47.4165
   level:
