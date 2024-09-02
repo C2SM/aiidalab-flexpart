@@ -19,7 +19,7 @@ class Outgrid(widgets.VBox):
 
         # Add outgrid tab
         add_outgrids = add_outgrid.AddOutgrid()
-        add_outgrids.update_b.on_click(self.update_outgrids)
+        add_outgrids.update_button.on_click(self.update_outgrids)
         acc_out = widgets.Accordion(children=[add_outgrids])
         acc_out.set_title(0, "Add a new outgrid")
         acc_out.selected_index = None
@@ -39,7 +39,7 @@ class Outgrid(widgets.VBox):
 
     def selected_outgrid_nest(self):
         return self.out_n_loc.value
-    
+
     # TODO tooltips missing
     def update_outgrids(self, change=None):
         self.out_loc.options = utils.generate_outgrids_buttons(

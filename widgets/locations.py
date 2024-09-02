@@ -33,7 +33,7 @@ class Locations(widgets.VBox):
 
         # Adds accordion for adding new location
         add_locations = add_location.AddLocation()
-        add_locations.update_b.on_click(self.update_locations)
+        add_locations.update_button.on_click(self.update_locations)
         acc = widgets.Accordion(
             children=[
                 add_locations,
@@ -64,4 +64,6 @@ class Locations(widgets.VBox):
         self.locations_widget.children = utils.generate_locations()
 
     def fill(self):
-        return [x.description for x in self.locations_widget.children if x.value == True]
+        return [
+            x.description for x in self.locations_widget.children if x.value == True
+        ]

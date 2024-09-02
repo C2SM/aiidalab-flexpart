@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from aiida import orm
 from utils import make_query
@@ -27,10 +28,7 @@ class Presettings(widgets.VBox):
             indent=False,
         )
         self.delete_extras_b = widgets.Button(
-            value=False,
-            description="x",
-            button_style="danger",
-            layout={"width": "30px"},
+            value=False, button_style="danger", layout={"width": "35px"}, icon="trash"
         )
 
         def on_click_d(b):
