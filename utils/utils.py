@@ -15,30 +15,20 @@ style_calendar = resources.read_text(static, "style.css")
 
 
 def get_global_attribute_family(attribute: str) -> list:
-    set_elements = set()
-    qb = QueryBuilder()
-    qb.append(NETCDF, project="attributes.global_attributes." + attribute)
-    for i in qb.all():
-        if i[0] != None:
-            set_elements.add(i[0])
-    return list(set_elements)
+    # returns a list of all different values stored for a given global attribute
+    qb = QueryBuilder().append(
+        NETCDF, project="attributes.global_attributes." + attribute
+    )
+    return list({i[0] for i in qb.all() if i[0] != None})
 
 
-def get_dictionary_group_element(group_name, name):
+def get_dictionary_of_group_element(group_name: str, name: str) -> dict:
     qb = QueryBuilder()
     qb.append(Group, filters={"label": group_name}, tag="g")
     qb.append(Dict, project=["attributes"], with_group="g")
     for i in qb.all():
         if next(iter(i[0])) == name:
             return i[0][name]
-
-
-def store_dictionary(dict_: dict, group_label: str) -> None:
-    # utility function to store a dictionary under a given group.
-    d = orm.Dict(dict_)
-    d.store()
-    group = orm.Group.get(label=group_label)
-    group.add_nodes(d)
 
 
 def read_yaml_data(data_filename: str, names=None) -> dict:
@@ -54,14 +44,22 @@ def read_yaml_data(data_filename: str, names=None) -> dict:
     )
 
 
-def initialize_group(path_to_outgrids: str, group_name: str) -> None:
+def store_dictionary(dict_: dict, group_label: str) -> None:
+    # Stores a dictionary under a given group.
+    d = orm.Dict(dict_)
+    d.store()
+    group = orm.Group.get(label=group_label)
+    group.add_nodes(d)
+
+
+def initialize_group(path_to_yaml: str, group_name: str) -> None:
     # Creates a group (if it does not exist) and stores the dictionaries from
     # the given yaml file.
     q = orm.QueryBuilder().append(orm.Group, filters={"label": group_name})
     if not q.all():
         group = orm.Group(label=group_name)
         group.store()
-        d = read_yaml_data(path_to_outgrids)
+        d = read_yaml_data(path_to_yaml)
         for k in d.keys():
             store_dictionary({k: d[k]}, group_name)
 
@@ -137,8 +135,7 @@ def parse_description(dict_: dict) -> str:
     return string
 
 
-def reformat_locations(dict_, model):
-    """reformat locations"""
+def reformat_locations(dict_: dict, model: str) -> dict:
     for key in dict_.keys():
         if "longitude" in dict_[key]:
             dict_[key]["longitude_of_lower_left_corner"] = dict_[key]["longitude"]

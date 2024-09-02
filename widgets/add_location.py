@@ -8,11 +8,8 @@ style = {"description_width": "initial"}
 
 def str_to_dict(s: str) -> dict:
     if s:
-        d = {}
-        for i in s.split(","):
-            d[i.split(" ")[0]] = float(i.split(" ")[1])
-        return d
-    return None
+        return {i.split(" ")[0]: float(i.split(" ")[1]) for i in s.split(",")}
+    return
 
 
 output2 = widgets.Output()
@@ -24,10 +21,10 @@ class AddLocation(widgets.HBox):
         """<ul>
                <li><b>Release height</b>: in meters with respect to chosen release coordinate.<br>
                Different values for different input meteorologies can be given as a comma separated list<br>
-              (e.g.: cosmo1 100, cosmo7 50)</li>
+              (e.g.: cosmo1 100,cosmo7 50)</li>
                <li><b>Release coordinate</b>:1 for meters above ground, 2 for meters above sea level.<br>
                                     Different values for different input meteorologies can be given as a comma separated list<br>
-                                    (e.g.: cosmo1 2, cosmo7 1)</li>
+                                    (e.g.: cosmo1 2,cosmo7 1)</li>
             </ul>"""
     )
     warning_message = widgets.HTML("")
@@ -41,7 +38,7 @@ class AddLocation(widgets.HBox):
             style=style,
         )
         self.level_type = widgets.Text(description="Release coordinate", style=style)
-        self.update_b = widgets.Button(
+        self.update_button = widgets.Button(
             description="Add",
             button_style="info",
         )
@@ -73,7 +70,7 @@ class AddLocation(widgets.HBox):
                 utils.store_dictionary(new_loc, group_label="locations")
                 self.warning_message.value = ""
 
-        self.update_b.on_click(on_click)
+        self.update_button.on_click(on_click)
 
         super().__init__(
             children=[
@@ -84,7 +81,7 @@ class AddLocation(widgets.HBox):
                         self.latitude,
                         self.level,
                         self.level_type,
-                        self.update_b,
+                        self.update_button,
                         self.warning_message,
                     ]
                 ),

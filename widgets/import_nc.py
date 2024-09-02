@@ -79,7 +79,7 @@ class Import(widgets.VBox):
 
     def prepare_inspect(self):
         if not self.address.value:
-            self.warning_msg.value = "Empty address"
+            self.warning_msg.value = "<p style='color:red;'>Empty address</p>"
             return
         computer = orm.load_computer(self.computer.value)
         remote_path = orm.RemoteData(remote_path=self.address.value, computer=computer)

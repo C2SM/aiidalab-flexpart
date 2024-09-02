@@ -50,7 +50,7 @@ class AddOutgrid(widgets.HBox):
             description="Heights of levels", placeholder="(upper boundary)", style=style
         )
 
-        self.update_b = widgets.Button(
+        self.update_button = widgets.Button(
             description="Add",
             button_style="info",
         )
@@ -84,7 +84,7 @@ class AddOutgrid(widgets.HBox):
                 utils.store_dictionary(new_outgrid, "outgrid")
                 self.warning_message.value = ""
 
-        self.update_b.on_click(on_click)
+        self.update_button.on_click(on_click)
 
         super().__init__(
             children=[
@@ -99,7 +99,7 @@ class AddOutgrid(widgets.HBox):
                         self.grid_distance_x,
                         self.grid_distance_y,
                         self.heights_of_levels,
-                        self.update_b,
+                        self.update_button,
                         self.warning_message,
                     ]
                 ),
