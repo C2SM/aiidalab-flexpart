@@ -3,7 +3,6 @@ import ipywidgets as widgets
 from widgets import locations, outgrid
 from pathlib import Path
 from utils import utils
-import re
 
 style = {"description_width": "initial"}
 box_layout = widgets.Layout(box_layout="padding 200px")

@@ -30,7 +30,6 @@ class SearchCalculations(widgets.VBox):
             options=utils.get_names_in_group("locations"),
             description="Locations",
             description_tooltip='Multiple values can be selected with "Shift" and/or "ctrl"(or "command")',
-            value=["JFJ_5magl"],
             rows=12,
             style=style,
         )

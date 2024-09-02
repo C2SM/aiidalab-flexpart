@@ -2,7 +2,6 @@
 import ipywidgets as widgets
 import aiidalab_widgets_base as awb
 
-
 from aiida import orm
 
 from settings import *

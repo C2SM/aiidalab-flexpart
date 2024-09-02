@@ -18,6 +18,10 @@ def parse_dict(d_):
         html += f"<b>{k}: </b>{v}<br>"
     return html
 
+def range_inlet(inlet_height:str,rang:int)->list:
+    number = int(inlet_height[:-4])
+    return [str(i)+'magl' for i in range(number-rang,number+rang+1)]
+
 
 def search_locations(a_obs: list) -> list:
     # Search for observations that match the available
@@ -28,6 +32,7 @@ def search_locations(a_obs: list) -> list:
         NETCDF,
         filters={
             "attributes.filename": {"or": [{"like": f"{l}%"} for l in a_obs]},
+            #"attributes.inlet_height":{}
         },
         project="attributes.filename",
     )
@@ -165,7 +170,7 @@ class SearchSens(widgets.VBox):
         qb.append(
             NETCDF,
             filters={
-                "attributes.filename": {"ilike": f"%{self.time_step.value}%"},
+                "attributes.filename": {"ilike": f"%_{self.time_step.value}%"},
                 "attributes.global_attributes.species": {
                     "or": [{"like": f"'%{s}%'"} for s in self.species.value]
                 },
@@ -173,7 +178,7 @@ class SearchSens(widgets.VBox):
             project=["attributes.filename", "*"],
         )
         for i in qb.all():
-            self.available_obs_list[re.split("_|-", i[0])[0]] = i[1]
+            self.available_obs_list[re.split("_", i[0])[0]] = i[1]
         self.info.value += ", ".join(list(self.available_obs_list.keys()))
         self.info.value += "</p>"
         self.location.allowed_tags = search_locations(
@@ -183,7 +188,7 @@ class SearchSens(widgets.VBox):
     def accordions_sites(self):
         self.list_info_obs = []
         for k, v in self.selected_obs.items():
-            filename = v.attributes["filename"].split("_")
+            filename = v.attributes["filename"].split("_")#TODO !!
             x = v.attributes["global_attributes"]
             d_ = {
                 "name": k,
@@ -271,7 +276,6 @@ class SearchSens(widgets.VBox):
                 "attributes.filename": {
                     "and": [
                         {"or": [{"like": f"{n_location}%"}]},
-                        # {"or": [{"like": f"%{l}%"} for l in reformated_dates]},
                     ]
                 },
                 "attributes.global_attributes.domain": {"==": f"{self.domain.value}"},

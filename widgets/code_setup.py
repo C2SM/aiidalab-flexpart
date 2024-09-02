@@ -10,7 +10,9 @@ class CodeSetup(widgets.VBox):
     )
 
     def __init__(self):
-
+        # ComputationalResourcesDatabaseWidget(database_source = 
+        #"https://aiidateam.github.io/aiida-resource-registry/database.json"  <-- change?
+        #)
         comp_res = awb.ComputationalResourcesWidget()
         comp_res.code_select_dropdown.layout.visibility = "hidden"
 

@@ -178,7 +178,8 @@ class InversionParams(widgets.VBox):
                 clear_output()
 
         self.x = widgets.interactive(
-            select_option, apriori_method=["EDGAR", "load", "load_nc", "homo"]
+            select_option, 
+            apriori_method=["EDGAR", "load", "load_nc", "homo"],
         )
 
         #   APRIORI COVARIANCE
@@ -279,6 +280,7 @@ class InversionParams(widgets.VBox):
             allow_duplicates=False,
             style=style,
         )
+        self.title_obs_mod_unc_contrs = widgets.HTML('Unc. components:')
         self.iterations = widgets.IntText(description="it.u.obs", value=4, style=style)
 
         self.u_model = widgets.Checkbox(
@@ -288,9 +290,11 @@ class InversionParams(widgets.VBox):
             value=True, description="plot.obs.mod.unc", style=style
         )
         self.dist_adj_method = widgets.Dropdown(
-            description="dist.adj.method", options=["relative", "rmsOnly", "Stohl"]
+            description="dist.adj.method", 
+            options=["relative", "rmsOnly", "Stohl"],
+            style=style
         )
-        self.tau_obs = widgets.FloatText(description="tau.obs.default", value=0.2)
+        self.tau_obs = widgets.FloatText(description="tau.obs.default", style=style,value=0.2)
         # TODO inclue none value
         self.covar_nn_lag = widgets.IntSlider(
             description="covar.nn.lag",
@@ -308,7 +312,8 @@ class InversionParams(widgets.VBox):
             self.tau_obs,
             self.covar_nn_lag,
         ]
-        model_mis = widgets.VBox(children=self.model_data_mismatch)
+        model_mis = widgets.VBox(children=[self.title_obs_mod_unc_contrs]+
+                                 self.model_data_mismatch)
 
         ############################################
         tab = widgets.Tab()
