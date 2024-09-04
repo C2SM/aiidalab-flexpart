@@ -28,7 +28,7 @@ def search_import_labels():
         },
         project="attributes.time_label",
     )
-    return qb.all()
+    return list({i[0] for i in qb.all()})
 
 
 def range_inlet(inlet_height: str, rang: int) -> list:
@@ -106,7 +106,11 @@ class SearchSens(widgets.VBox):
             description="Time steps",
             style=style,
         )
-        self.time_label = widgets.Dropdown(description="import label", options=[])
+        self.time_label = widgets.Dropdown(
+            description="Import label",
+            options=['None']+search_import_labels(),
+            style=style)
+
         self.model = widgets.Dropdown(
             options=utils.get_global_attribute_family("model"),
             description="Model",
@@ -125,6 +129,7 @@ class SearchSens(widgets.VBox):
 
         self.time_step.observe(self.available_observations, names="value")
         self.species.observe(self.available_observations, names="value")
+        self.time_label.observe(self.available_observations, names="value")
         self.available_obs_list = {}
         self.selected_obs = {}
         self.list_remotes = {}
@@ -135,7 +140,11 @@ class SearchSens(widgets.VBox):
         search_crit = widgets.VBox(
             [
                 widgets.VBox(
-                    [self.species_title, self.species, self.time_step],
+                    [self.species_title, self.species, 
+                     widgets.HBox(
+                         children = [self.time_step, self.time_label]
+                                  )
+                                  ],
                 ),
                 self.info,
                 widgets.HTML(value="""<hr>"""),
@@ -179,26 +188,28 @@ class SearchSens(widgets.VBox):
 
     def filter_observations(self):
         self.selected_obs = {}
-        for i in [re.split("_|-", x)[0] for x in self.location.value]:
+        for i in self.location.value:
             if i in self.available_obs_list.keys():
                 self.selected_obs[i] = self.available_obs_list[i]
 
     def available_observations(self, change=None):
         self.info.value = '<p style="color:green;">Available: '
+        filter_dict = {
+                "attributes.filename": {"ilike": f"%\\_{self.time_step.value}%"},
+                "attributes.global_attributes.species": {
+                    "or": [{"like": f"'%{s}%'"} for s in self.species.value]
+                }}
+        if self.time_label.value!='None':
+           filter_dict.update({"attributes.time_label":self.time_label.value})
         qb = QueryBuilder()
         qb.append(
             NETCDF,
-            filters={
-                "attributes.filename": {"ilike": f"%_{self.time_step.value}%"},
-                "attributes.global_attributes.species": {
-                    "or": [{"like": f"'%{s}%'"} for s in self.species.value]
-                },
-            },
+            filters = filter_dict,
             project=["attributes.filename", "*"],
         )
         for i in qb.all():
-            name = re.split("_", i[0])
-            self.available_obs_list[name[0] + "-" + name[1]] = i[1]
+            name = re.split("_|-", i[0])
+            self.available_obs_list[name[0]+'-'+name[1]] = i[1]
         self.info.value += ", ".join(list(self.available_obs_list.keys()))
         self.info.value += "</p>"
         self.location.allowed_tags = search_locations(
@@ -208,12 +219,11 @@ class SearchSens(widgets.VBox):
     def accordions_sites(self):
         self.list_info_obs = []
         for k, v in self.selected_obs.items():
-            filename = v.attributes["filename"].split("_")  # TODO !!
             x = v.attributes["global_attributes"]
             d_ = {
-                "name": k,
-                "id": k,
-                "flex.id": filename[0] + "-" + filename[1],
+                "name": k.split("-")[0],
+                "id": k.split("-")[0],
+                "flex.id": k,
                 "ft.type": "ncdf_monthly",
                 "site.obs.fn": v.attributes["remote_path"],
                 "lon": float(x["station_longitude"]),
@@ -303,9 +313,6 @@ class SearchSens(widgets.VBox):
                 "attributes.global_attributes.model_version": {
                     "ilike": f"{self.model_version.value}"
                 },
-                # "attributes.global_attributes.species": {
-                #    "ilike": f"{self.species.value}"
-                # },
             },
         )
 
