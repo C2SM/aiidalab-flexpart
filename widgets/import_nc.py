@@ -33,6 +33,15 @@ class Import(widgets.VBox):
             description="Remote address",
             style=style,
         )
+        self.time_label = widgets.Text(
+            description="Import label",
+            style=style,
+        )
+        self.nc_type = widgets.RadioButtons(
+            options=["observations", "sensitivities"],
+            description="Type",
+            style=style,
+        )
         self.computer = widgets.Dropdown(
             description="Computer", options=computer_list(), style=style
         )
@@ -59,8 +68,22 @@ class Import(widgets.VBox):
             children=[
                 widgets.VBox(
                     children=[
-                        self.address,
-                        self.computer,
+                        widgets.HBox(
+                            children=[
+                                widgets.VBox(
+                                    children=[
+                                        self.address,
+                                        self.computer,
+                                    ]
+                                ),
+                                widgets.VBox(
+                                    children=[
+                                        self.time_label,
+                                    ]
+                                ),
+                            ]
+                        ),
+                        self.nc_type,
                         btn_submit_1,
                         self.warning_msg,
                         widgets.HTML(value="<hr>"),
@@ -83,6 +106,8 @@ class Import(widgets.VBox):
         computer = orm.load_computer(self.computer.value)
         remote_path = orm.RemoteData(remote_path=self.address.value, computer=computer)
         builder = INSPECT.get_builder()
+        builder.time_label = orm.Str(self.time_label.value)
+        builder.nc_type = orm.Str(self.nc_type.value)
         builder.remotes = {
             "a": remote_path,
         }
@@ -94,6 +119,7 @@ class Import(widgets.VBox):
         qb.append(COLLECT_SENS, tag="cs", filters={"attributes.exit_status": 0})
         qb.append(orm.RemoteStashFolderData, with_incoming="cs", project="*")
         builder = INSPECT.get_builder()
+        builder.nc_type = "sensitivities"
         directories_ = {f"test_{j}": i[0] for j, i in enumerate(qb.all())}
         if directories_:
             builder.remotes_cs = directories_

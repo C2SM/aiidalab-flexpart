@@ -18,21 +18,39 @@ def parse_dict(d_):
         html += f"<b>{k}: </b>{v}<br>"
     return html
 
-def range_inlet(inlet_height:str,rang:int)->list:
+
+def search_import_labels():
+    qb = QueryBuilder()
+    qb.append(
+        NETCDF,
+        filters={
+            "attributes.nc_type": "observations",
+        },
+        project="attributes.time_label",
+    )
+    return qb.all()
+
+
+def range_inlet(inlet_height: str, rang: int) -> list:
     number = int(inlet_height[:-4])
-    return [str(i)+'magl' for i in range(number-rang,number+rang+1)]
+    return [str(i) + "magl" for i in range(number - rang, number + rang + 1)]
 
 
 def search_locations(a_obs: list) -> list:
     # Search for observations that match the available
     # observations names.
+    complete_obs = []
+    for i in a_obs:
+        complete_obs += [
+            re.split("-", i)[0] + "-" + x for x in range_inlet(re.split("-", i)[1], 15)
+        ]
+
     available_locations = []
     qb = QueryBuilder()
     qb.append(
         NETCDF,
         filters={
-            "attributes.filename": {"or": [{"like": f"{l}%"} for l in a_obs]},
-            #"attributes.inlet_height":{}
+            "attributes.filename": {"or": [{"like": f"{l}%"} for l in complete_obs]},
         },
         project="attributes.filename",
     )
@@ -88,6 +106,7 @@ class SearchSens(widgets.VBox):
             description="Time steps",
             style=style,
         )
+        self.time_label = widgets.Dropdown(description="import label", options=[])
         self.model = widgets.Dropdown(
             options=utils.get_global_attribute_family("model"),
             description="Model",
@@ -178,7 +197,8 @@ class SearchSens(widgets.VBox):
             project=["attributes.filename", "*"],
         )
         for i in qb.all():
-            self.available_obs_list[re.split("_", i[0])[0]] = i[1]
+            name = re.split("_", i[0])
+            self.available_obs_list[name[0] + "-" + name[1]] = i[1]
         self.info.value += ", ".join(list(self.available_obs_list.keys()))
         self.info.value += "</p>"
         self.location.allowed_tags = search_locations(
@@ -188,7 +208,7 @@ class SearchSens(widgets.VBox):
     def accordions_sites(self):
         self.list_info_obs = []
         for k, v in self.selected_obs.items():
-            filename = v.attributes["filename"].split("_")#TODO !!
+            filename = v.attributes["filename"].split("_")  # TODO !!
             x = v.attributes["global_attributes"]
             d_ = {
                 "name": k,
