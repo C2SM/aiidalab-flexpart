@@ -199,8 +199,8 @@ class SearchSens(widgets.VBox):
                 "attributes.global_attributes.species": {
                     "or": [{"like": f"'%{s}%'"} for s in self.species.value]
                 }}
-        if self.time_label.value!='None':
-           filter_dict.update({"attributes.time_label":self.time_label.value})
+        #if self.time_label.value!='None':
+        filter_dict.update({"attributes.time_label":self.time_label.value})
         qb = QueryBuilder()
         qb.append(
             NETCDF,
