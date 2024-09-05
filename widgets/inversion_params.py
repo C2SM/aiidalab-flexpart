@@ -273,14 +273,12 @@ class InversionParams(widgets.VBox):
         inv_settings = widgets.VBox(children=self.inversion_settings)
         #   MODEL-DATA-MISMATCH COVARIANCE
         ############################################
-        self.obs_mod_unc_contrs = widgets.TagsInput(
+        self.obs_mod_unc_contrs = widgets.SelectMultiple(
             description="obs.mod.unc.contrs",
-            allowed_tags=["mod", "instr", "bg", "var"],
+            options=["mod", "instr", "bg", "var"],
             value=["mod", "instr", "bg", "var"],
-            allow_duplicates=False,
             style=style,
         )
-        self.title_obs_mod_unc_contrs = widgets.HTML('Unc. components:')
         self.iterations = widgets.IntText(description="it.u.obs", value=4, style=style)
 
         self.u_model = widgets.Checkbox(
@@ -312,8 +310,7 @@ class InversionParams(widgets.VBox):
             self.tau_obs,
             self.covar_nn_lag,
         ]
-        model_mis = widgets.VBox(children=[self.title_obs_mod_unc_contrs]+
-                                 self.model_data_mismatch)
+        model_mis = widgets.VBox(children=self.model_data_mismatch)
 
         ############################################
         tab = widgets.Tab()

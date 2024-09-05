@@ -74,7 +74,7 @@ def search_species():
 
 
 class SearchSens(widgets.VBox):
-    species_title = widgets.HTML(value="""<b>1. Observations</b><br>Species """)
+    species_title = widgets.HTML(value="""<b>1. Observations</b><br> """)
     locations_title = widgets.HTML(
         value="""<b>2. Locations</b><br>Choose from the list of locations where observations are available."""
     )
@@ -87,9 +87,10 @@ class SearchSens(widgets.VBox):
             description="Range_dates",
             style=style,
         )
-        self.location = widgets.TagsInput(
-            allowed_tags=["LUT"],
-            allow_duplicates=False,
+        self.location = widgets.SelectMultiple(
+            options=[""],
+            description = 'Location',
+            rows = 5,
             style=style,
         )
         self.domain = widgets.Dropdown(
@@ -104,11 +105,12 @@ class SearchSens(widgets.VBox):
         )
         self.time_label = widgets.Dropdown(
             description="Import label",
-            options=['None']+search_import_labels(),
+            options=search_import_labels(),
             style=style)
+        
         self.import_label_sensitivities = widgets.Dropdown(
             description="Import label",
-            options=['None']+search_import_labels(),
+            options=search_import_labels(),
             style=style)
 
         self.model = widgets.Dropdown(
@@ -121,9 +123,10 @@ class SearchSens(widgets.VBox):
             description="Model version",
             style=style,
         )
-        self.species = widgets.TagsInput(
-            allowed_tags=search_species(),
-            allow_duplicates=False,
+        self.species = widgets.SelectMultiple(
+            options=search_species(),
+            description = 'Species',
+            rows = 6,
             style=style,
         )
 
@@ -138,10 +141,10 @@ class SearchSens(widgets.VBox):
         self.site_filter = {}
 
         search_crit = widgets.VBox(
-            [
-                widgets.VBox(
-                    [self.species_title, self.species, 
-                     widgets.HBox(
+            [   self.species_title,
+                widgets.HBox(
+                    [ self.species, 
+                     widgets.VBox(
                          children = [self.time_step, self.time_label]
                                   )
                                   ],
@@ -199,8 +202,8 @@ class SearchSens(widgets.VBox):
                 "attributes.global_attributes.species": {
                     "or": [{"like": f"'%{s}%'"} for s in self.species.value]
                 }}
-        #if self.time_label.value!='None':
-        filter_dict.update({"attributes.time_label":self.time_label.value})
+        if self.time_label.value != 'None':
+            filter_dict.update({"attributes.time_label":self.time_label.value})
         qb = QueryBuilder()
         qb.append(
             NETCDF,
@@ -212,7 +215,7 @@ class SearchSens(widgets.VBox):
             self.available_obs_list[name[0]+'-'+name[1]] = i[1]
         self.info.value += ", ".join(list(self.available_obs_list.keys()))
         self.info.value += "</p>"
-        self.location.allowed_tags = search_locations(
+        self.location.options = search_locations(
             list(self.available_obs_list.keys())
         )
 
@@ -241,6 +244,7 @@ class SearchSens(widgets.VBox):
                 widgets.Text(description="sig.srr", value=".na", style=style),
                 widgets.Text(description="sig.min", value=".na", style=style),
                 widgets.Checkbox(description="val.ts", value=False, style=style),
+                widgets.Dropdown(description="bg.obs.fn",options=self.location.options,style=style)
             ]
             self.site_filter[i["name"]] = filter.ViewerWidget(mode="filter")
 
@@ -308,7 +312,7 @@ class SearchSens(widgets.VBox):
                         {"or": [{"like": f"{n_location}%"}]},
                     ]
                 },
-                "attributes.time_label":self.import_label_sensitivities.value,
+                #"attributes.time_label":self.import_label_sensitivities.value,
                 "attributes.global_attributes.domain": {"==": f"{self.domain.value}"},
                 "attributes.global_attributes.model": {"==": f"{self.model.value}"},
                 "attributes.global_attributes.model_version": {
