@@ -20,12 +20,8 @@ def parse_dict(d_):
 
 
 def search_import_labels():
-    qb = QueryBuilder()
-    qb.append(
+    qb = QueryBuilder().append(
         NETCDF,
-        filters={
-            "attributes.nc_type": "observations",
-        },
         project="attributes.time_label",
     )
     return list({i[0] for i in qb.all()})
@@ -110,6 +106,10 @@ class SearchSens(widgets.VBox):
             description="Import label",
             options=['None']+search_import_labels(),
             style=style)
+        self.import_label_sensitivities = widgets.Dropdown(
+            description="Import label",
+            options=['None']+search_import_labels(),
+            style=style)
 
         self.model = widgets.Dropdown(
             options=utils.get_global_attribute_family("model"),
@@ -152,7 +152,8 @@ class SearchSens(widgets.VBox):
                 self.location,
                 widgets.HTML(value="""<hr>"""),
                 widgets.GridBox(
-                    [self.date_range, self.model, self.model_version, self.domain],
+                    [self.date_range, self.model, self.model_version, self.domain,
+                     self.import_label_sensitivities],
                     layout=widgets.Layout(grid_template_columns="repeat(2, 50%)"),
                 ),
             ]
@@ -187,7 +188,6 @@ class SearchSens(widgets.VBox):
         )
 
     def filter_observations(self):
-        self.selected_obs = {}
         for i in self.location.value:
             if i in self.available_obs_list.keys():
                 self.selected_obs[i] = self.available_obs_list[i]
@@ -308,6 +308,7 @@ class SearchSens(widgets.VBox):
                         {"or": [{"like": f"{n_location}%"}]},
                     ]
                 },
+                "attributes.time_label":self.import_label_sensitivities.value,
                 "attributes.global_attributes.domain": {"==": f"{self.domain.value}"},
                 "attributes.global_attributes.model": {"==": f"{self.model.value}"},
                 "attributes.global_attributes.model_version": {
