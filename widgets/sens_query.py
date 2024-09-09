@@ -18,6 +18,9 @@ def parse_dict(d_):
         html += f"<b>{k}: </b>{v}<br>"
     return html
 
+def time_step_to_days(hours:str):
+    h = re.findall(r'\d+', hours)
+    return int(h[0])/24
 
 def search_import_labels():
     qb = QueryBuilder().append(
@@ -196,6 +199,7 @@ class SearchSens(widgets.VBox):
                 self.selected_obs[i] = self.available_obs_list[i]
 
     def available_observations(self, change=None):
+        self.available_obs_list = {}
         self.info.value = '<p style="color:green;">Available: '
         filter_dict = {
                 "attributes.filename": {"ilike": f"%\\_{self.time_step.value}%"},
@@ -244,7 +248,11 @@ class SearchSens(widgets.VBox):
                 widgets.Text(description="sig.srr", value=".na", style=style),
                 widgets.Text(description="sig.min", value=".na", style=style),
                 widgets.Checkbox(description="val.ts", value=False, style=style),
-                widgets.Dropdown(description="bg.obs.fn",options=self.location.options,style=style)
+                widgets.FloatText(description="meas.dt", 
+                             value=time_step_to_days(self.time_step.value), 
+                             style=style),
+                widgets.Dropdown(description="bg.obs.fn",options=self.location.options,
+                                 value = i['flex.id'] ,style=style)
             ]
             self.site_filter[i["name"]] = filter.ViewerWidget(mode="filter")
 
