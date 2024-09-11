@@ -14,13 +14,15 @@ class Presettings(widgets.VBox):
     )
     warning_text = widgets.HTML(value="⚠️<b>WARNING:</b> this action cannot be undone!")
 
-    def __init__(self, plugin, command_file, input_phy, release, basic):
+    def __init__(self, plugin, **kwargs):
 
         self.plugin = plugin
 
-        self.basic = basic
-        self.input_phy = input_phy
-        self.release = release
+        if 'parameters' in kwargs.keys():
+            self.objects = kwargs['parameters']
+        else:
+            self.objects = None
+
 
         self.save_settings_b = widgets.Checkbox(
             value=False,
@@ -47,7 +49,7 @@ class Presettings(widgets.VBox):
 
         self.name = widgets.Text(value="", description="Name", style=style)
         self.settings = widgets.ToggleButtons(
-            options=make_query.get_extra_(self.plugin, name=None)
+            options=make_query.get_extra_(self.plugin, name=None)+['TEST']
         )
         self.settings.observe(self.enable_settings, names="value")
 
@@ -76,33 +78,43 @@ class Presettings(widgets.VBox):
         super().__init__(children=self.children, layout=box_layout)
 
     def enable_settings(self, change=None):
-        # dict load
         value = change["new"]
         if value is not "Default":
-            prev_dict = make_query.get_extra_(self.plugin, value)
-
-            # basic
-            self.basic.outgrid.out_loc.value = list(prev_dict["outgrid"].keys())[0]
-            if prev_dict["outgrid_nest"] == "None":
-                self.basic.outgrid.out_n_loc.value = prev_dict["outgrid_nest"]
+            #prev_dict = make_query.get_extra_(self.plugin, value)
+            prev_dict = {'run.str':'supermairo'}
+            if 'basic' in self.objects.keys():
+                self.update_flexpart_settings(prev_dict)
+            elif 'params' in self.objects.keys():
+                self.update_inversion_settings(prev_dict)
             else:
-                self.basic.outgrid.out_n_loc.value = list(
+                pass
+        
+    def update_inversion_settings(self, prev_dict):
+        self.objects['params'].update(prev_dict)
+
+    def update_flexpart_settings(self, prev_dict):
+            # basic
+            self.objects['basic'].outgrid.out_loc.value = list(prev_dict["outgrid"].keys())[0]
+            if prev_dict["outgrid_nest"] == "None":
+                self.objects['basic'].outgrid.out_n_loc.value = prev_dict["outgrid_nest"]
+            else:
+                self.objects['basic'].outgrid.out_n_loc.value = list(
                     prev_dict["outgrid_nest"].keys()
                 )[0]
-            for x in self.basic.locations.locations_widget.children:
+            for x in self.objects['basic'].locations.locations_widget.children:
                 if x.description in prev_dict["locations"]:
                     x.value = True
                 else:
                     x.value = False
-            self.basic.release_chunk.value = prev_dict["command"]["release_chunk"]
-            self.basic.offline_integration_time.value = prev_dict[
+            self.objects['basic'].release_chunk.value = prev_dict["command"]["release_chunk"]
+            self.objects['basic'].offline_integration_time.value = prev_dict[
                 "offline_integration_time"
             ]
-            self.basic.integration_time.value = prev_dict["integration_time"]
-            self.basic.model_offline.value = ",".join(prev_dict["model_offline"])
-            self.basic.model.value = ",".join(prev_dict["model"])
+            self.objects['basic'].integration_time.value = prev_dict["integration_time"]
+            self.objects['basic'].model_offline.value = ",".join(prev_dict["model_offline"])
+            self.objects['basic'].model.value = ",".join(prev_dict["model"])
 
             # advance
-            self.command_file.update(prev_dict["command"])
-            self.input_phy.update(prev_dict["input_phy"])
+            self.objects['command_file'].update(prev_dict["command"])
+            self.objects['input_phy'].update(prev_dict["input_phy"])
             # release-----

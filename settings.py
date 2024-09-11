@@ -4,6 +4,7 @@ from aiida import plugins
 # Workflows
 WORKFLOW = plugins.WorkflowFactory("flexpart.multi_workflow")
 INSPECT = plugins.WorkflowFactory("inspect.workflow")
+INVERSION_WORKLFOW = plugins.WorkflowFactory("inversion.workflow")
 
 # Calculations
 COSMO = plugins.CalculationFactory("flexpart.cosmo")

@@ -381,3 +381,16 @@ class InversionParams(widgets.VBox):
         )
         d.update(sites_dict)
         return d
+    
+    def update(self, new_dict):
+        big_list = [
+            *self.inversion_settings,
+            *self.general_settings,
+            *self.input_locations,
+            *self.model_data_mismatch,
+            *self.plot_options,
+            *self.apriori_covariance,
+        ]
+        for wg in big_list:
+            if wg.description in new_dict.keys():
+                wg.value = new_dict[wg.description]
