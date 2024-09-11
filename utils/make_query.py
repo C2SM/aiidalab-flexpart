@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from aiida import orm
 import pandas as pd
 from settings import *
@@ -18,7 +19,7 @@ def make_dict_for_query(dict_):
     return query_dict
 
 
-def get_extra_(name):
+def get_extra_(plugin, name: str) -> list:
     """
     Convenient function to return extra information.
 
@@ -36,12 +37,12 @@ def get_extra_(name):
     qb = orm.QueryBuilder()
     if name:
         qb.append(
-            WORKFLOW,
+            plugin,
             project=["extras." + name],
             filters={"attributes.exit_status": 0, "extras": {"has_key": name}},
         )
         return qb.all()[0][0]
-    qb.append(WORKFLOW, project=["extras"], filters={"attributes.exit_status": 0})
+    qb.append(plugin, project=["extras"], filters={"attributes.exit_status": 0})
     name_list = []
     for dict_ in qb.all():
         for n in dict_[0].keys():
@@ -91,10 +92,12 @@ def all_in_query(
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
     qb.append(WORKFLOW, tag="w", project=["*"], filters={"attributes.exit_status": 0})
-    qb.append(FlexpartSimWorkflow,
-                with_incoming="w",
-                tag='child_w',
-                filters={"attributes.exit_status": 0})
+    qb.append(
+        FlexpartSimWorkflow,
+        with_incoming="w",
+        tag="child_w",
+        filters={"attributes.exit_status": 0},
+    )
     qb.append(
         [COSMO, IFS],
         with_incoming="child_w",
@@ -102,7 +105,7 @@ def all_in_query(
         filters={"attributes.exit_status": 0},
     )
     qb.append(POST, with_ancestors="calcs", tag="post")
- 
+
     # Outgrid and Outgrid Nest
     qb.append(
         orm.Dict,
@@ -161,7 +164,7 @@ def all_in_query(
         filters=command,
         project="attributes.simulation_date",
     )
-    if input_phy != 'None':
+    if input_phy != "None":
         qb.append(
             orm.Dict,
             with_outgoing="calcs",

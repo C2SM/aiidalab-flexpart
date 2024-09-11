@@ -14,9 +14,10 @@ class Presettings(widgets.VBox):
     )
     warning_text = widgets.HTML(value="⚠️<b>WARNING:</b> this action cannot be undone!")
 
-    def __init__(self, command_file, input_phy, release, basic):
+    def __init__(self, plugin, command_file, input_phy, release, basic):
 
-        self.command_file = command_file
+        self.plugin = plugin
+
         self.basic = basic
         self.input_phy = input_phy
         self.release = release
@@ -24,7 +25,6 @@ class Presettings(widgets.VBox):
         self.save_settings_b = widgets.Checkbox(
             value=False,
             description="Save current settings for future calculations",
-            disabled=False,
             indent=False,
         )
         self.delete_extras_b = widgets.Button(
@@ -34,7 +34,7 @@ class Presettings(widgets.VBox):
         def on_click_d(b):
             qb = orm.QueryBuilder()
             qb.append(
-                WORKFLOW,
+                self.plugin,
                 project=["id"],
                 filters={"extras": {"has_key": self.settings.value}},
             )
@@ -45,13 +45,9 @@ class Presettings(widgets.VBox):
 
         self.delete_extras_b.on_click(on_click_d)
 
-        self.name = widgets.Text(
-            value="", placeholder="", description="Name", disabled=False, style=style
-        )
+        self.name = widgets.Text(value="", description="Name", style=style)
         self.settings = widgets.ToggleButtons(
-            options=make_query.get_extra_(name=None),
-            description="",
-            button_style="",
+            options=make_query.get_extra_(self.plugin, name=None)
         )
         self.settings.observe(self.enable_settings, names="value")
 
@@ -70,7 +66,10 @@ class Presettings(widgets.VBox):
         acc.selected_index = None
 
         self.children = [
-            widgets.HBox(children=[self.save_settings_b, self.name]),
+            widgets.HBox(
+                children=[self.save_settings_b]
+                + [self.name] * (self.plugin != INVERSION)
+            ),
             acc,
         ]
 
@@ -80,7 +79,7 @@ class Presettings(widgets.VBox):
         # dict load
         value = change["new"]
         if value is not "Default":
-            prev_dict = make_query.get_extra_(value)
+            prev_dict = make_query.get_extra_(self.plugin, value)
 
             # basic
             self.basic.outgrid.out_loc.value = list(prev_dict["outgrid"].keys())[0]
