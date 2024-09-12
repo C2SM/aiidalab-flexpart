@@ -34,7 +34,8 @@ class InversionParams(widgets.VBox):
             self.institute,
         ]
         general = widgets.VBox(
-            children=self.general_settings + [self.chunk, self.chunk_w]
+            children=self.general_settings+[self.chunk, 
+                                            self.chunk_w]
         )
 
         #  INPUT LOCATIONS
@@ -344,30 +345,8 @@ class InversionParams(widgets.VBox):
             self.chunk_w.options = ["month", "3month"]
 
     def construct_dict(self):
-
-        big_list = [
-            *self.inversion_settings,
-            *self.general_settings,
-            *self.input_locations,
-            *self.model_data_mismatch,
-            *self.plot_options,
-            *self.apriori_covariance,
-        ]
-
-        if self.x.children[0].value == "EDGAR":
-            big_list += self.apriori_edgar
-        elif self.x.children[0].value == "load":
-            big_list += self.apriori_load
-        elif self.x.children[0].value == "homo":
-            big_list += self.apriori_homo
-
-        if self.igr_method.children[0].value == "fromAverage":
-            big_list += self.fromaverage
-        elif self.igr_method.children[0].value == "load":
-            big_list += self.load
-
         sites_dict = {"sites": sens.available_obs_list}
-        d = {x.description: x.value for x in big_list}
+        d = {x.description: x.value for x in self.create_attributes_list()}
         # hardcoded dictionary
         d.update(
             {
@@ -382,7 +361,7 @@ class InversionParams(widgets.VBox):
         d.update(sites_dict)
         return d
     
-    def update(self, new_dict):
+    def create_attributes_list(self):
         big_list = [
             *self.inversion_settings,
             *self.general_settings,
@@ -391,6 +370,31 @@ class InversionParams(widgets.VBox):
             *self.plot_options,
             *self.apriori_covariance,
         ]
-        for wg in big_list:
-            if wg.description in new_dict.keys():
-                wg.value = new_dict[wg.description]
+        if self.x.children[0].value == "EDGAR":
+            big_list += self.apriori_edgar
+        elif self.x.children[0].value == "load":
+            big_list += self.apriori_load
+        elif self.x.children[0].value == "homo":
+            big_list += self.apriori_homo
+
+        if self.igr_method.children[0].value == "fromAverage":
+            big_list += self.fromaverage
+        elif self.igr_method.children[0].value == "load":
+            big_list += self.load
+
+        return big_list+[self.igr_method.children[0],
+                         self.x.children[0],
+                        ]
+    
+    def update(self, new_dict):
+
+        new_dict_reformated = {
+    key.replace("_", "."): value for key, value in new_dict.items()
+}
+        new_dict_reformated['igr_method'] = new_dict_reformated['igr.method']
+        new_dict_reformated['apriori_method'] = new_dict_reformated['apriori.method']
+
+        for wg in self.create_attributes_list()+[self.chunk, 
+                                                 self.chunk_w]:
+            if wg.description in new_dict_reformated.keys():
+                wg.value = new_dict_reformated[wg.description]

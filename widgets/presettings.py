@@ -70,7 +70,7 @@ class Presettings(widgets.VBox):
         self.children = [
             widgets.HBox(
                 children=[self.save_settings_b]
-                + [self.name] * (self.plugin != INVERSION)
+                + [self.name] * (self.plugin != INVERSION_WORKLFOW)
             ),
             acc,
         ]
@@ -80,12 +80,11 @@ class Presettings(widgets.VBox):
     def enable_settings(self, change=None):
         value = change["new"]
         if value is not "Default":
-            #prev_dict = make_query.get_extra_(self.plugin, value)
-            prev_dict = {'run.str':'supermairo'}
+            prev_dict = make_query.get_extra_(self.plugin, value)
             if 'basic' in self.objects.keys():
                 self.update_flexpart_settings(prev_dict)
             elif 'params' in self.objects.keys():
-                self.update_inversion_settings(prev_dict)
+                self.update_inversion_settings(prev_dict['inv_params'])
             else:
                 pass
         
