@@ -3,6 +3,7 @@ from IPython.display import clear_output
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
+from settings import *
 
 from utils import utils, make_query
 from widgets import filter
@@ -21,7 +22,7 @@ class SearchCalculations(widgets.VBox):
             style=style,
         )
         self.presettings = widgets.Dropdown(
-            options=make_query.get_extra_(None),
+            options=make_query.get_extra_(WORKFLOW,name=None),
             description="Presettings",
             description_tooltip="Query for a specific presetting",
             style=style,
@@ -151,7 +152,7 @@ class SearchCalculations(widgets.VBox):
         release_dict = {}
         # create the df
         if self.presettings.value != "Default":
-            dict_from_extra = make_query.get_extra_(self.presettings.value)
+            dict_from_extra = make_query.get_extra_(WORKFLOW,self.presettings.value)
             model = ",".join(dict_from_extra["model"])
             model_offline = ",".join(dict_from_extra["model_offline"])
 
