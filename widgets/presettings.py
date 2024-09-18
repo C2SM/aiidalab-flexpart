@@ -49,7 +49,7 @@ class Presettings(widgets.VBox):
 
         self.name = widgets.Text(value="", description="Name", style=style)
         self.settings = widgets.ToggleButtons(
-            options=make_query.get_extra_(self.plugin, name=None)+['TEST']
+            options=make_query.get_extra_(self.plugin, name=None)
         )
         self.settings.observe(self.enable_settings, names="value")
 
