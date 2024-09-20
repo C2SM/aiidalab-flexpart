@@ -78,7 +78,7 @@ class AddOutgrid(widgets.HBox):
                         "number_of_grid_points_y": self.number_of_grid_points_y.value,
                         "grid_distance_x": self.grid_distance_x.value,
                         "grid_distance_y": self.grid_distance_y.value,
-                        "heights_of_levels": self.heights_of_levels.value,
+                        "heights_of_levels": eval(self.heights_of_levels.value),
                     }
                 }
                 utils.store_dictionary(new_outgrid, "outgrid")
