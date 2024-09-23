@@ -1,7 +1,20 @@
-# Aiida FLEXPART plugin
-An [AiiDA](http://aiida-core.readthedocs.io/) plugin for FLEXPART cosmo and ifs simulations, and inversions.
+# Regional Inverse Modelling AiiDAlab App
 
-This plugin contains 5 types of calculations:
+- [AiiDA FLEXPART app](#aiida-FLEXPART-app)
+  - [Installation](#installation)
+    - [Computers setup](#computers-setup)
+    - [Codes Setup](#codes-setup)
+    - [Enable caching](#enable-caching)
+  - [Workflow](#workflow)
+    - [Structure](#structure)
+    - [Running the workflow launcher](#workflow-launcher)
+    - [Monitoring the workflow](#monitoring-the-workflow)
+  - [Development guide](#development-guide)
+
+# Aiida FLEXPART app
+
+An [AiiDAlab](https://www.aiidalab.net/) app to run FLEXPART COSMO/IFS simulations and inversions.
+The app uses the aiida-flexpart plugin:
 
 - `flexpart.cosmo`
 - `flexpart.ifs`
@@ -13,26 +26,11 @@ A data plugin:
 
 - `netcdf.data`
 
-and 2 workflows:
+and 3 workflows:
 
 - `flexpart.multi_workflow`: A workflow that can be used to submit flexpart calculations for multiple days.
 - `inspect.workflow`
-
-
-- [AiiDA FLEXPART plugin](#aiida-flexpart-plugin)
-  - [Installation](#installation)
-    - [Computers setup](#computers-setup)
-    - [Codes Setup](#codes-setup)
-    - [Enable caching](#enable-caching)
-  - [Workflow](#workflow)
-    - [Structure](#structure)
-    - [Running the workflow launcher](#workflow-launcher)
-    - [Monitoring the workflow](#monitoring-the-workflow)
-  - [Flexpart Aiidalab app](#flexpart-aiidalab-app)
-    - [Running the workflow](#running-the-workflow)
-    - [Quering](#quering)
-  - [Development guide](#development-guide)
-
+- `inversion.workflow`
 
 
 ## Installation
@@ -204,14 +202,30 @@ To check the status of terminated jobs use:
 verdi process list -a
 ```
 
-## Flexpart Aiidalab app
-
-Check [Aiidalab user guide](https://aiidalab.readthedocs.io/en/latest/usage/index.html) for details on how to use and configure Aiida lab.
-
-```hs
-docker run -p 8888:8888 aiidalab/full-stack
-```
-> [!NOTE]<br>
-> NOTE
-
 ## Development guide
+
+* [`config/`](config/): Yaml files with default inputs
+  * [`command.yaml`](config/command.yaml): COMMAND file inputs
+  * [`input_phy.yaml`](config/input_phy.yaml): INPUT_PHY file inputs
+  * [`location_groups.yaml`](config/location_groups.yaml): Groups of locations
+  * [`locations.yaml`](config/locations.yaml): List of default locations
+  * [`meteo_inputs.yaml`](config/meteo_inputs.yaml): 
+  * [`models.yaml`](config/models.yaml): Model and offline model lists
+  * [`outgrid.yaml`](config/outgrid.yaml): Default outgrids
+  * [`releases.yaml`](config/releases.yaml): RELEASES file inputs
+* [`img/`](img/): Empa logo
+* [`static/`](static/): CSS style file
+* [`utils/`](utils/): 
+  * [`default_codes.yaml`](utils/default_codes.yaml): 
+  * [`make_query.py`](utils/make_query.py): 
+  * [`utils.py`](utils/utils.py): 
+* [`widgets/`](widgets/): 
+* [`info.ipynb`](info.ipynb): Guide to set up and configure the app for first time users
+* [`inversion_query.ipynb`](inversion_query.ipynb): Inversion results search page
+* [`main.ipynb`](main.ipynb): FLEXPART simulation submision page
+* [`ncdump.ipynb`](ncdump.ipynb): Displays NetCDF file as a ncdump
+* [`plot.ipynb`](main.ipynb): Plot .png files from FLEXPART recovered results
+* [`query.ipynb`](query.ipynb): Search page for FELXPART results and submitting sensitivity collection calc
+* [`sens_query.ipynb`](sens_query.ipynb): page for importing NetCDF files, and submitting inversions
+* [`settings.py`](settings.py): Plugins used in the app
+

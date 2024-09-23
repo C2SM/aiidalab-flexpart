@@ -8,7 +8,7 @@ style = {"description_width": "initial"}
 
 def str_to_dict(s: str) -> dict:
     if s:
-        return {i.split(" ")[0]: float(i.split(" ")[1]) for i in s.split(",")}
+        return {i.split(" ")[0]: int(i.split(" ")[1]) for i in s.split(",")}
     return
 
 

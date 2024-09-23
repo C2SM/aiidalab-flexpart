@@ -72,7 +72,7 @@ def search_species():
     if "Inert" in s:
         s.remove("Inert")
     elif "inert" in s:
-        s.remove("inert")
+        s.remove("inert")   
     return list(s)
 
 
@@ -194,6 +194,7 @@ class SearchSens(widgets.VBox):
         )
 
     def filter_observations(self):
+        self.selected_obs = {}
         for i in self.location.value:
             if i in self.available_obs_list.keys():
                 self.selected_obs[i] = self.available_obs_list[i]
@@ -286,13 +287,14 @@ class SearchSens(widgets.VBox):
         for i in self.location.value:
             html, is_complete = self.search(i)
             children = [html]
-            if is_complete:
+            #TODO
+            """ if is_complete:
                 children.append(
                     widgets.Button(
                         description="Run missing",
                         button_style="info",
                     )
-                )
+                )"""
             list_locations[widgets.VBox(children=children)] = (is_complete, i)
         self.acc.children = list(list_locations.keys())
         i = 0
@@ -320,7 +322,7 @@ class SearchSens(widgets.VBox):
                         {"or": [{"like": f"{n_location}%"}]},
                     ]
                 },
-                #"attributes.time_label":self.import_label_sensitivities.value,
+                "attributes.time_label":self.import_label_sensitivities.value,
                 "attributes.global_attributes.domain": {"==": f"{self.domain.value}"},
                 "attributes.global_attributes.model": {"==": f"{self.model.value}"},
                 "attributes.global_attributes.model_version": {

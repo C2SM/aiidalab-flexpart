@@ -90,6 +90,7 @@ class Presettings(widgets.VBox):
         
     def update_inversion_settings(self, prev_dict):
         self.objects['params'].update(prev_dict)
+        #self.objects['locations']
 
     def update_flexpart_settings(self, prev_dict):
             # basic
