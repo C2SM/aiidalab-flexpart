@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import ipywidgets as widgets
 from IPython.display import clear_output
 import pandas as pd
@@ -10,7 +11,7 @@ from widgets import filter
 
 style = {"description_width": "initial"}
 path_to_out = Path.cwd() / "config" / "outgrid.yaml"
-ad_q = filter.ViewerWidget(mode = 'params')
+ad_q = filter.ViewerWidget(mode="params")
 
 
 class SearchCalculations(widgets.VBox):
@@ -22,7 +23,7 @@ class SearchCalculations(widgets.VBox):
             style=style,
         )
         self.presettings = widgets.Dropdown(
-            options=make_query.get_extra_(WORKFLOW,name=None),
+            options=make_query.get_extra_(WORKFLOW, name=None),
             description="Presettings",
             description_tooltip="Query for a specific presetting",
             style=style,
@@ -92,6 +93,7 @@ class SearchCalculations(widgets.VBox):
         self.w_options = []
         self.w_checkboxes = []
         self.items_checkboxes = widgets.VBox()
+        self.download_link = widgets.HTML()
         self.check_all = widgets.Checkbox(description="Check all", style=style)
 
         search_crit = widgets.HBox(
@@ -116,8 +118,12 @@ class SearchCalculations(widgets.VBox):
             with self.info_out:
                 clear_output()
                 self.search()
-                self.items_checkboxes.children = [self.check_all] + self.w_checkboxes
+                self.items_checkboxes.children = (
+                    [self.check_all] + self.w_checkboxes + [self.download_link]
+                )
                 self.check_all.observe(self.check_all_boxes, names="value")
+                for i in self.w_checkboxes:
+                    i.observe(self.check_all_boxes, names="value")
 
         button.on_click(on_click)
 
@@ -152,7 +158,7 @@ class SearchCalculations(widgets.VBox):
         release_dict = {}
         # create the df
         if self.presettings.value != "Default":
-            dict_from_extra = make_query.get_extra_(WORKFLOW,self.presettings.value)
+            dict_from_extra = make_query.get_extra_(WORKFLOW, self.presettings.value)
             model = ",".join(dict_from_extra["model"])
             model_offline = ",".join(dict_from_extra["model_offline"])
 
@@ -167,10 +173,10 @@ class SearchCalculations(widgets.VBox):
                 ]
             query_dict = make_query.make_dict_for_query(dict_from_extra["command"])
             input_phy_dict = make_query.make_dict_for_query(
-                    dict_from_extra["input_phy"]
-                )
-            if 'IFS' in model:
-                input_phy_dict  ='None'
+                dict_from_extra["input_phy"]
+            )
+            if "IFS" in model:
+                input_phy_dict = "None"
             release_dict = make_query.make_dict_for_query(dict_from_extra["release"])
 
         # fill the dataframe with the values returned by the query

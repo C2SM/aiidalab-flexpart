@@ -206,3 +206,26 @@ def all_in_query(
     df = df.drop_duplicates(subset=["w_hash", "date", "location"])
 
     return df
+
+
+def cosmo_results():
+    qb = orm.QueryBuilder()
+    qb.append(WORKFLOW, tag="w", filters={"attributes.exit_status": 0})
+    qb.append(
+        FlexpartSimWorkflow,
+        with_incoming="w",
+        tag="child_w",
+        filters={"attributes.exit_status": 0},
+    )
+    qb.append(
+        [COSMO, IFS],
+        with_incoming="child_w",
+        tag="calcs",
+        filters={"attributes.exit_status": 0},
+    )
+    qb.append(
+        orm.RemoteStashFolderData,
+        with_incoming="calcs",
+        project="attributes.target_basepath",
+    )
+    df = pd.DataFrame(qb.all(), columns=["date", "address"])

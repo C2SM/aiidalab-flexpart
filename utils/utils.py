@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import ipywidgets as widgets
+import pandas as pd
 import yaml
 import pathlib
 import datetime
 import static
+import base64
 import re
 from aiida import orm
 from importlib import resources
@@ -256,6 +258,15 @@ def fill(path_file: str) -> list:
                 )
             )
     return list_widgets
+
+
+def download_button(fname: str, data: pd.DataFrame) -> str:
+    payload = base64.b64encode(data.to_csv(index=False).encode()).decode()
+    return f"""<a download="{fname}"
+                  href="data:text/csv;base64,{payload}"
+                  target="_blank">
+                        Download .csv
+                </a>"""
 
 
 def generate_html_calendar(range_date, a_dates):
