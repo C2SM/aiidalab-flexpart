@@ -2,13 +2,13 @@
 
 - [AiiDA FLEXPART app](#aiida-FLEXPART-app)
   - [Installation](#installation)
-    - [Computers setup](#computers-setup)
-    - [Codes Setup](#codes-setup)
     - [Enable caching](#enable-caching)
   - [Workflow](#workflow)
     - [Structure](#structure)
-    - [Running the workflow launcher](#workflow-launcher)
-    - [Monitoring the workflow](#monitoring-the-workflow)
+  - [In the terminal](#in-the-terminal)
+    - [Checking codes and computers]()
+    - [Deleting groups]()
+    - [Monitoring processes]()
   - [Development guide](#development-guide)
 
 # Aiida FLEXPART app
@@ -48,57 +48,6 @@ Additional packages for Aiidalab:
 pip install aiidalab-widgets-base
 ```
 (it can also be installed through Aiidalab web)
-
-### Computers setup
-It is necessary to setup two different configurations of Daint. The configuration files are in `/config` by the names of `computer-daint.yaml` and `computer-daint-direct.yaml`. To set up the computers:
-
-```hs
-verdi computer setup --config NAME.yaml
-```
-followed by:
-
-```hs
-verdi computer configure core.ssh COMPUTER-NAME
-```
-refer to the `daint-configure.yaml` for answering the questions asked by Aiida after runnign the above line.
-
-Finally, test the computer with:
-```hs
-verdi computer test COMPUTER-NAME
-```
-
-After the setup of both computers, daint and daint-direct, you can check the configuration of each by:
-```hs
-verdi computer list
-```
-Should display:
-```
-Report: List of configured computers
-Report: Use 'verdi computer show COMPUTERLABEL' to display more detailed information
-* daint
-* daint-direct-106
-* localhost
-```
-### Codes setup
-Use the following line with all the <i>.yaml</i> files in `/config` that start with <i>code_</i>
-```hs
-verdi code create core.code.installed --config NAME.yaml
-```
-Similarly as with the computers, one can check the list of all the installed codes by:
-```hs
-verdi code list
-```
-Should display:
-```
-Full label                           Pk  Entry point
----------------------------------  ----  -------------------
-flexpart_cosmo@daint                  1  core.code.installed
-flexpart_ifs@daint                    2  core.code.installed
-post-processing@daint                 3  core.code.installed
-check-cosmo-data@daint-direct-106     4  core.code.installed
-check-ifs-data@daint-direct-106       5  core.code.installed
-```
-<b>Note</b> that the pk numbers may differ.
 
 ### Enable caching
 Make sure caching is enabled by typing:<br>
@@ -176,26 +125,64 @@ And from the collect sensitivities calcjob:
 - `<LOCATION>_<DOMAIN>_<YYYYMM>.nc`
 - `aiida.out`
 
-### Running the workflow with the launcher
 
-The workflow can be triggered directly through a verdi command that launchs the script `example_workflow_combi.py`. The calculation inputs are
-in several yaml files in `/example/inputs/`. The script reads directly from the yaml files. Some parameters, however, need to be
-settled from the launcher script, e.g., simulation_dates, model, model_offline, etc.
+## In the terminal
+### Checking codes and computers
+```hs
+verdi computer list
+```
+Should display:
+```
+Report: List of configured computers
+Report: Use 'verdi computer show COMPUTERLABEL' to display more detailed information
+* daint
+* daint-direct-106
+* localhost
+```
 
 ```hs
-cd aiida-flexpart/examples
-verdi run example_workflow_combi.py --code flexpart-cosmo@daint
+verdi computer show <PK>
 ```
-### Monitoring the workflow
 
-The worflow can be monitored using
+```hs
+verdi code list
+```
+Should display:
+```
+Full label                           Pk  Entry point
+---------------------------------  ----  -------------------
+flexpart_cosmo@daint                  1  core.code.installed
+flexpart_ifs@daint                    2  core.code.installed
+post-processing@daint                 3  core.code.installed
+check-cosmo-data@daint-direct-106     4  core.code.installed
+check-ifs-data@daint-direct-106       5  core.code.installed
+```
+
+```hs
+verdi code show <PK>
+```
+
+### Deleting groups
+
+```hs
+verdi group list
+```
+
+```hs
+verdi group delete <PK>
+```
+
+### Monitoring processes
+
+The worflow can be monitored through the terminal using
 
 ```hs
 verdi process list
 ```
  or
+
 ```hs
-verdi process status PK
+verdi process report <PK>
 ```
 To check the status of terminated jobs use:
 ```hs
@@ -213,6 +200,7 @@ verdi process list -a
   * [`models.yaml`](config/models.yaml): Model and offline model lists
   * [`outgrid.yaml`](config/outgrid.yaml): Default outgrids
   * [`releases.yaml`](config/releases.yaml): RELEASES file inputs
+  * [`stash_files.yaml`](config/stash_files.yaml): List of files to stash for each calculations
 * [`img/`](img/): Empa logo
 * [`static/`](static/): CSS style file
 * [`utils/`](utils/): 

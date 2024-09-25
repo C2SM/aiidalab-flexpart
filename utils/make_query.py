@@ -87,11 +87,14 @@ def all_in_query(
         "model",
         "date",
         "RemoteStash",
+        "flexpart_stash",
         "FolderData_PK",
     ]
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
-    qb.append(WORKFLOW, tag="w", project=["*"], filters={"attributes.exit_status": 0})
+    qb.append(WORKFLOW, tag="w", project=["*"], 
+              filters={"attributes.exit_status": 0}
+              )
     qb.append(
         FlexpartSimWorkflow,
         with_incoming="w",
@@ -183,6 +186,7 @@ def all_in_query(
 
     # Post-processing data
     qb.append(orm.RemoteStashFolderData, with_incoming="post", project="*")
+    qb.append(orm.RemoteStashFolderData, with_incoming="calcs", project="*")
     qb.append(orm.FolderData, with_incoming="post", project="id")
 
     if outgrid_nest != "None":

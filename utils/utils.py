@@ -14,6 +14,7 @@ from aiida.orm import QueryBuilder, Group, Dict
 
 style = {"description_width": "initial"}
 style_calendar = resources.read_text(static, "style.css")
+path_to_default_codes = pathlib.Path.cwd() /'utils'/ "default_codes.yaml"
 
 
 def get_global_attribute_family(attribute: str) -> list:
@@ -23,6 +24,15 @@ def get_global_attribute_family(attribute: str) -> list:
     )
     return list({i[0] for i in qb.all() if i[0] != None})
 
+def update_codes(d:dict)->None:
+    with open(path_to_default_codes, 'r') as f:
+        current_dict = yaml.safe_load(f)
+    if current_dict:
+        current_dict.update(d)
+    else:
+        current_dict = d
+    with open(path_to_default_codes, 'w') as f:
+        yaml.dump(current_dict, f)
 
 def get_dictionary_of_group_element(group_name: str, name: str) -> dict:
     qb = QueryBuilder()
@@ -260,14 +270,13 @@ def fill(path_file: str) -> list:
     return list_widgets
 
 
-def download_button(fname: str, data: pd.DataFrame) -> str:
+def download_button(fname: str, data: pd.DataFrame, button_text:str) -> str:
     payload = base64.b64encode(data.to_csv(index=False).encode()).decode()
     return f"""<a download="{fname}"
                   href="data:text/csv;base64,{payload}"
                   target="_blank">
-                        Download .csv
+                        {button_text}
                 </a>"""
-
 
 def generate_html_calendar(range_date, a_dates):
     months = {

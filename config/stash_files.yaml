@@ -1,0 +1,19 @@
+COSMO:
+  - 'aiida.out'
+  - 'header*'
+  - 'partposit_inst'
+  - 'grid_time_*.nc'
+IFS:
+  - 'aiida.out'
+  - 'header*'
+  - 'partposit_inst'
+  - 'grid_time_*.nc'
+POST:
+  - 'aiida.out'
+  - 'boundary_sensitivity_*.nc'
+  - 'grid_time_*.nc'
+COLLECTION:
+  - 'aiida.out'
+  - '*.nc'
+INVERSION:
+  - '*'

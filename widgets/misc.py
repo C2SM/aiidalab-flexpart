@@ -115,8 +115,7 @@ class Misc(widgets.VBox):
                 self.f_cosmo_code.description: self.f_cosmo_code.value,
                 self.collect_sens_code.description: self.collect_sens_code.value,
             }
-            with open(path_to_default_codes, "w") as f:
-                yaml.dump(d, f)
+            utils.update_codes(d)
 
         button.on_click(on_click)
 

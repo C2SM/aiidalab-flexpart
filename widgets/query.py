@@ -122,8 +122,6 @@ class SearchCalculations(widgets.VBox):
                     [self.check_all] + self.w_checkboxes + [self.download_link]
                 )
                 self.check_all.observe(self.check_all_boxes, names="value")
-                for i in self.w_checkboxes:
-                    i.observe(self.check_all_boxes, names="value")
 
         button.on_click(on_click)
 
@@ -193,7 +191,7 @@ class SearchCalculations(widgets.VBox):
         )
         # make remotes
         self.remotes = df[
-            ["w_hash", "RemoteStash", "date", "location", "model", "outgrid"]
+            ["w_hash", "RemoteStash", "date", "location", "model", "outgrid", "flexpart_stash"]
         ]
         self.w_options = df["w_hash"].unique()
         self.w_checkboxes = [
