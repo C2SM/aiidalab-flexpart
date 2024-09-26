@@ -2,14 +2,17 @@
 
 - [AiiDA FLEXPART app](#aiida-FLEXPART-app)
   - [Installation](#installation)
-    - [Enable caching](#enable-caching)
   - [Workflow](#workflow)
     - [Structure](#structure)
   - [In the terminal](#in-the-terminal)
     - [Checking codes and computers]()
     - [Deleting groups]()
     - [Monitoring processes]()
+    - [Generating provenance graphs]()
+    - [Enable caching]()
   - [Development guide](#development-guide)
+    - [Repository contents]()
+    - [Installing container]()
 
 # Aiida FLEXPART app
 
@@ -34,32 +37,22 @@ and 3 workflows:
 
 
 ## Installation
-Install the plugins with:
-```hs
-pip install -e .
-```
-Install [Aiida shell](https://aiida-shell.readthedocs.io/en/latest/):
-```
-pip install aiida-shell
-```
-Additional packages for Aiidalab:
+
+Install Docker in your local machine and start a new container with:
 
 ```hs
-pip install aiidalab-widgets-base
+docker run -p 8888:8888 aiidalab/full-stack
 ```
-(it can also be installed through Aiidalab web)
+Check [Aiidalab user guide](https://aiidalab.readthedocs.io/en/latest/usage/index.html) for more details on how to use and configure AiiDAlab.
+Once inside AiiDAlab, the app can be Downloaded from the app list in the <b>App Store</b>.
 
-### Enable caching
-Make sure caching is enabled by typing:<br>
+If installation was succesfull the app should look like this:
 
-```
-verdi config list caching
-```
-if False, enable it with:
+<img title="main_window" style='width:70%' src="/home/jovyan/apps/FLEXPART_AiiDAlab/img/main_window.png"><br>
 
-```hs
-verdi config set caching.default_enabled True
-```
+Make sure to check the first-time user's guide inside <u>Submit FLEXPART-COSMO/IFS simulations</u>
+
+<img title="guide" style='width:70%' src="/home/jovyan/apps/FLEXPART_AiiDAlab/img/guide.png"><br>
 
 ## Workflow
 
@@ -189,6 +182,26 @@ To check the status of terminated jobs use:
 verdi process list -a
 ```
 
+### Generating provenance graphs
+
+```hs
+verdi node graph generate <PK>
+```
+
+The graph will be stored in the current directory, go to File manager to view or donwload.
+
+### Enable caching
+Make sure caching is enabled by typing:<br>
+
+```
+verdi config list caching
+```
+if False, enable it with:
+
+```hs
+verdi config set caching.default_enabled True
+```
+
 ## Development guide
 
 * [`config/`](config/): Yaml files with default inputs
@@ -216,4 +229,49 @@ verdi process list -a
 * [`query.ipynb`](query.ipynb): Search page for FELXPART results and submitting sensitivity collection calc
 * [`sens_query.ipynb`](sens_query.ipynb): page for importing NetCDF files, and submitting inversions
 * [`settings.py`](settings.py): Plugins used in the app
+* [`setup.cfg`](setup.cfg): 
+
+
+### Setting up the enviroment
+
+Install Docker in your local machine and start a new container with:
+
+```hs
+docker run -p 8888:8888 aiidalab/full-stack
+```
+
+Inside the container, navigate to `/app` and clone the repository.
+
+```hs
+cd app
+git clone https://github.com/C2SM/aiidalab-flexpart.git
+```
+Necessary intallations to run the aiidalab flexpart app:
+
+```hs
+pip install aiidalab_widgets_base
+pip install aiida-shell
+```
+
+The next step is to install aiida-flexpart plugin, which can be done in two ways: Using pip to install the plugin directly (recommended if changes to the plugin are not intended):
+
+```hs
+pip install aiida-flexpart
+```
+Alternatively, if one whises to make changes in the AiiDA flexpart plugin as well, navigate to `/work` and copy the following code. 
+
+```hs
+git clone https://github.com/aiidaplugins/aiida-flexpart.git
+cd aiida-flexpart
+pip install -e .
+```
+
+For the changes in this repository to be effective, merge to the main branch and push a tag. 
+
+
+
+
+
+
+
 
