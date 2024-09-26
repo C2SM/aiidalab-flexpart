@@ -1,5 +1,5 @@
 
-<img title="provenance" style='width:20%' src="/home/jovyan/apps/FLEXPART_AiiDAlab/img/provenance.png">
+<img title="provenance" style='width:20%' src="/img/provenance.png">
 
 
 # Regional Inverse Modelling AiiDAlab App
