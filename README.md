@@ -31,11 +31,11 @@ Once inside AiiDAlab, the app can be Downloaded from the app list in the <b>App 
 
 If installation was succesfull the app should look like this:
 
-<img title="main_window" style='width:70%' src="/home/jovyan/apps/FLEXPART_AiiDAlab/img/main_window.png"><br>
+<img title="main_window" style='width:70%' src="/img/main_window.png"><br>
 
 Make sure to check the first-time user's guide inside <u>Submit FLEXPART-COSMO/IFS simulations</u>
 
-<img title="guide" style='width:70%' src="/home/jovyan/apps/FLEXPART_AiiDAlab/img/guide.png"><br>
+<img title="guide" style='width:70%' src="/img/guide.png"><br>
 
 ## Inversion workflow overview
 ### Plugins
