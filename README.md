@@ -1,10 +1,14 @@
+
+<img title="provenance" style='width:20%' src="/home/jovyan/apps/FLEXPART_AiiDAlab/img/provenance.png">
+
+
 # Regional Inverse Modelling AiiDAlab App
 
-- [AiiDA FLEXPART app](#aiida-FLEXPART-app)
   - [Installation](#installation)
-  - [Workflow](#workflow)
-    - [Structure](#structure)
-  - [In the terminal](#in-the-terminal)
+  - [Overview](#workflow)
+    - [Plugins](#installation)
+    - [Wrokflow structure](#installation)
+  - [Using the terminal](#in-the-terminal)
     - [Checking codes and computers]()
     - [Deleting groups]()
     - [Monitoring processes]()
@@ -12,29 +16,8 @@
     - [Enable caching]()
   - [Development guide](#development-guide)
     - [Repository contents]()
-    - [Installing container]()
-
-# Aiida FLEXPART app
-
-An [AiiDAlab](https://www.aiidalab.net/) app to run FLEXPART COSMO/IFS simulations and inversions.
-The app uses the aiida-flexpart plugin:
-
-- `flexpart.cosmo`
-- `flexpart.ifs`
-- `flexpart.post`
-- `collect.sensitivities`
-- `inversion.calc`
-
-A data plugin:
-
-- `netcdf.data`
-
-and 3 workflows:
-
-- `flexpart.multi_workflow`: A workflow that can be used to submit flexpart calculations for multiple days.
-- `inspect.workflow`
-- `inversion.workflow`
-
+    - [Getting ready]()
+  - [Contact](#contact)
 
 ## Installation
 
@@ -54,11 +37,31 @@ Make sure to check the first-time user's guide inside <u>Submit FLEXPART-COSMO/I
 
 <img title="guide" style='width:70%' src="/home/jovyan/apps/FLEXPART_AiiDAlab/img/guide.png"><br>
 
-## Workflow
+## Inversion workflow overview
+### Plugins
 
-### Structure
+An [AiiDAlab](https://www.aiidalab.net/) app to run FLEXPART COSMO/IFS simulations and inversions.
+The app uses the aiida-flexpart plugin:
 
-The following is the workflow structure. It will loop over all the given dates. If model offline is not none, integration_time_offline should be greater than zero. The available models for cosmo are: <i>cosmo7, cosmo1</i> and <i>kenda1</i>. And the ECMWF models: <i>IFS_GL_05, IFS_GL_1, IFS_EU_02</i> and <i>IFS_EU_01</i>. Both, model and model offline can be set as a list of the previous.
+- `flexpart.cosmo`: FLEXPART COSMO transport model plugin
+- `flexpart.ifs`: FLEXPART IFS transport model plugin
+- `flexpart.post`: Post-processing plugin of the transport model relsults
+- `collect.sensitivities`
+- `inversion.calc`
+
+A data plugin:
+
+- `netcdf.data`: NetCDF data plugin
+
+and 3 workflows:
+
+- `flexpart.multi_workflow`: A workflow that can be used to submit FLEXPART calculations for multiple days
+- `inspect.workflow`: Workflow for importing external NetCDF files (obesrvations or sensitivities)
+- `inversion.workflow`: Workflow to submit invesions
+
+### Workflow structure
+
+The following is the workflow structure for the transport model. It will loop over all the given dates. If model offline is not none, integration_time_offline should be greater than zero. The available models for cosmo are: <i>cosmo7, cosmo1</i> and <i>kenda1</i>. And the ECMWF models: <i>IFS_GL_05, IFS_GL_1, IFS_EU_02</i> and <i>IFS_EU_01</i>. Both, model and model offline can be set as a list of the previous.
 
 ```mermaid
    graph TD;
@@ -104,22 +107,10 @@ Next:
 
 ```
 
-#### Storage
-Results will be stashed in `/store/empa/em05/{username}/aiida_stash` directory, and will include the following:
-
-- `header*`
-- `partposit_inst*`
-- `grid_time_*.nc`
-- `aiida.out`
-- `boundary_sensitivity_*.nc` (post-processsing only)
-
-And from the collect sensitivities calcjob:
-
-- `<LOCATION>_<DOMAIN>_<YYYYMM>.nc`
-- `aiida.out`
-
-
 ## In the terminal
+
+More info in [AiiDA](https://aiida.readthedocs.io/projects/aiida-core/en/latest/topics/cli.html)
+
 ### Checking codes and computers
 ```hs
 verdi computer list

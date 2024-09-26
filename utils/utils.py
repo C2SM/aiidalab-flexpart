@@ -11,6 +11,7 @@ from aiida import orm
 from importlib import resources
 from settings import NETCDF
 from aiida.orm import QueryBuilder, Group, Dict
+import aiidalab_widgets_base as awb
 
 style = {"description_width": "initial"}
 style_calendar = resources.read_text(static, "style.css")
@@ -269,6 +270,18 @@ def fill(path_file: str) -> list:
             )
     return list_widgets
 
+def codes_list():
+    return [
+        awb.ComputationalResourcesWidget._full_code_label(c[0])
+        for c in orm.QueryBuilder().append(orm.Code).all()
+    ]
+
+def fix_values(name):
+    try:
+        d = read_yaml_data(path_to_default_codes, names=[name])[name]
+    except:
+        return "None"
+    return d if d in codes_list() else "None"
 
 def download_button(fname: str, data: pd.DataFrame, button_text:str) -> str:
     payload = base64.b64encode(data.to_csv(index=False).encode()).decode()

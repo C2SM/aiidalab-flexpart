@@ -11,28 +11,12 @@ style = {"description_width": "initial"}
 path_to_default_codes = Path.cwd() / "utils" / "default_codes.yaml"
 
 
-def codes_list():
-    return [
-        awb.ComputationalResourcesWidget._full_code_label(c[0])
-        for c in orm.QueryBuilder().append(orm.Code).all()
-    ]
-
-
 def computer_list():
     return [
         c[0].label
         for c in orm.QueryBuilder().append(orm.Computer).all()
         if c[0].label != "localhost"
     ]
-
-
-def fix_values(name):
-    try:
-        d = utils.read_yaml_data(path_to_default_codes, names=[name])[name]
-    except:
-        return "None"
-    return d if d in codes_list() else "None"
-
 
 class Misc(widgets.VBox):
     def __init__(self):
@@ -69,38 +53,38 @@ class Misc(widgets.VBox):
         )
         self.f_cosmo_code = widgets.Dropdown(
             description="cosmo",
-            options=codes_list() + ["None"],
-            value=fix_values("cosmo"),
+            options=utils.codes_list() + ["None"],
+            value=utils.fix_values("cosmo"),
             style=style,
         )
         self.f_ifs_code = widgets.Dropdown(
             description="ifs",
-            options=codes_list() + ["None"],
-            value=fix_values("ifs"),
+            options=utils.codes_list() + ["None"],
+            value=utils.fix_values("ifs"),
             style=style,
         )
         self.f_post_code = widgets.Dropdown(
             description="post",
-            options=codes_list() + ["None"],
-            value=fix_values("post"),
+            options=utils.codes_list() + ["None"],
+            value=utils.fix_values("post"),
             style=style,
         )
         self.ifs_m_code = widgets.Dropdown(
             description="ifs_meteo",
-            options=codes_list() + ["None"],
-            value=fix_values("ifs_meteo"),
+            options=utils.codes_list() + ["None"],
+            value=utils.fix_values("ifs_meteo"),
             style=style,
         )
         self.cosmo_m_code = widgets.Dropdown(
             description="cosmo_meteo",
-            options=codes_list() + ["None"],
-            value=fix_values("cosmo_meteo"),
+            options=utils.codes_list() + ["None"],
+            value=utils.fix_values("cosmo_meteo"),
             style=style,
         )
         self.collect_sens_code = widgets.Dropdown(
             description="collect_sens",
-            options=codes_list() + ["None"],
-            value=fix_values("collect_sens"),
+            options=utils.codes_list() + ["None"],
+            value=utils.fix_values("collect_sens"),
             style=style,
         )
 
