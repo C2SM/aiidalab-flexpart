@@ -20,14 +20,12 @@ class CodeSetup(widgets.VBox):
             value=utils.fix_values(plugin_name),
             style={"description_width": "initial"},
         )
-
         self.stash_address = widgets.Text(
             description="Stash Address",
             value=utils.fix_values("stash_address"),
             style={"description_width": "initial"},
             layout=widgets.Layout(width="40%"),
         )
-        # self.codes.observe()
         self.default_button = widgets.Button(
             description="Save as default", button_style="info"
         )
@@ -49,7 +47,9 @@ class CodeSetup(widgets.VBox):
             self.new_code_title,
             widgets.HBox(
                 children=[comp_res] * new_code
-                + [self.codes, self.default_button, self.stash_address] * (not new_code)
+                + [self.codes,
+                   self.stash_address,
+                   self.default_button] * (not new_code)
             ),
         ]
 

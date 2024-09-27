@@ -1,10 +1,9 @@
-c: 9b39bd2a-e751-4eeb-a2dc-4bd2b638e90a
 collect_sens: collect-sensitivities@daint
 cosmo: flexpart_cosmo@daint
 cosmo_meteo: check-cosmo-data@daint-direct-106
 ifs: flexpart_ifs@daint
 ifs_meteo: check-ifs-data@daint-direct-106
-inversion: open_grid-7.2@localhost
+inversion: inversion@daint
 post: post-processing@daint
 null: neb-7.2@localhost
-g: collect-sensitivities@daint
+stash_address: /store/empa/em05/lfernand/aiida_stash

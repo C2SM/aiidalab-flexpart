@@ -322,7 +322,7 @@ class SearchSens(widgets.VBox):
                         {"or": [{"like": f"{n_location}%"}]},
                     ]
                 },
-                "attributes.time_label":self.import_label_sensitivities.value,
+                #"attributes.time_label":self.import_label_sensitivities.value,
                 "attributes.global_attributes.domain": {"==": f"{self.domain.value}"},
                 "attributes.global_attributes.model": {"==": f"{self.model.value}"},
                 "attributes.global_attributes.model_version": {

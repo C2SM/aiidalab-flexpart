@@ -4,6 +4,7 @@ import aiidalab_widgets_base as awb
 from aiida import orm
 from utils import utils
 from pathlib import Path
+from widgets import code_setup
 import yaml
 
 style = {"description_width": "initial"}
@@ -81,12 +82,6 @@ class Misc(widgets.VBox):
             value=utils.fix_values("cosmo_meteo"),
             style=style,
         )
-        self.collect_sens_code = widgets.Dropdown(
-            description="collect_sens",
-            options=utils.codes_list() + ["None"],
-            value=utils.fix_values("collect_sens"),
-            style=style,
-        )
 
         button = widgets.Button(description="Make default", button_style="info")
 
@@ -97,7 +92,6 @@ class Misc(widgets.VBox):
                 self.cosmo_m_code.description: self.cosmo_m_code.value,
                 self.ifs_m_code.description: self.ifs_m_code.value,
                 self.f_cosmo_code.description: self.f_cosmo_code.value,
-                self.collect_sens_code.description: self.collect_sens_code.value,
             }
             utils.update_codes(d)
 
@@ -118,7 +112,6 @@ class Misc(widgets.VBox):
             self.f_ifs_code,
             self.ifs_m_code,
             self.f_post_code,
-            self.collect_sens_code,
             button,
         ]
 

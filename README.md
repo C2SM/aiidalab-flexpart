@@ -1,7 +1,3 @@
-
-<img title="provenance" style='width:40%' src="/img/provenance.png">
-
-
 # Regional Inverse Modelling AiiDAlab App
 
   - [Installation](#installation)
