@@ -296,6 +296,10 @@ We refer to [Box,Hbox and VBox](https://ipywidgets.readthedocs.io/en/stable/exam
 
 For changes in the querybuilder check: [AiiDA database](https://aiida.readthedocs.io/projects/aiida-core/en/latest/topics/database.html). The query for the FLEXPART simulations can be found in `uitls/make_query.py`, and for the inversion in `inversion_query.ipynb`
 
+## Contact
+
+lucas.fernandez@empa.ch
+
 
 
 

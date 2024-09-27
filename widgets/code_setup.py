@@ -6,11 +6,6 @@ import pathlib
 path_to_default_codes = pathlib.Path.cwd() /'utils'/ "default_codes.yaml"
 
 class CodeSetup(widgets.VBox):
-    new_code_title = widgets.HTML(
-        value="""<hr><b>Create new codes</b><br>
-                       Click on the button below to create and setup new codes
-                       and or computers.""",
-    )
 
     def __init__(self, plugin_name: str, new_code=False):
 
@@ -26,6 +21,16 @@ class CodeSetup(widgets.VBox):
             value=utils.read_yaml_data(path_to_default_codes, names=['stash_address'])['stash_address'],
             style={"description_width": "initial"},
             layout=widgets.Layout(width="40%"),
+        )
+        self.account = widgets.Text(
+            description="account",
+            value = 'em05',
+            style = {"description_width": "initial"},
+        )
+        self.wall_time = widgets.IntText(
+            description="wall time",
+            value = 1800,
+            style = {"description_width": "initial"},
         )
         self.default_button = widgets.Button(
             description="Save as default", button_style="info"
@@ -45,12 +50,10 @@ class CodeSetup(widgets.VBox):
         self.default_button.on_click(on_click)
 
         self.children = [
-            self.new_code_title,
-            widgets.HBox(
+            widgets.VBox(
                 children=[comp_res] * new_code
-                + [self.codes,
-                   self.stash_address,
-                   self.default_button] * (not new_code)
+                + [widgets.HBox(children=[self.codes,self.stash_address,self.default_button]*(not new_code) )]
+                + [widgets.HBox(children=[self.account,self.wall_time]*(not new_code) )]
             ),
         ]
 

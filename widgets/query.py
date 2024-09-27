@@ -11,6 +11,7 @@ from widgets import filter
 
 style = {"description_width": "initial"}
 path_to_out = Path.cwd() / "config" / "outgrid.yaml"
+models_path = Path.cwd() / "config" / "models.yaml"
 ad_q = filter.ViewerWidget(mode="params")
 
 
@@ -36,35 +37,13 @@ class SearchCalculations(widgets.VBox):
             style=style,
         )
         self.model = widgets.Dropdown(
-            options=[
-                "cosmo7",
-                "cosmo2",
-                "cosmo1",
-                "kenda1",
-                "cosmo7,cosmo1",
-                "cosmo7,cosmo2",
-                "cosmo7,kenda1",
-                "IFS_GL_1",
-                "IFS_GL_05",
-                "IFS_EU_02",
-                "IFS_EU_01",
-                "IFS_GL_1,IFS_EU_02",
-                "IFS_GL_05,IFS_EU_01",
-            ],
+            options=utils.read_yaml_data(models_path)["models"],
             description="Model",
             ensure_option=True,
             style=style,
         )
         self.model_offline = widgets.Dropdown(
-            options=[
-                "IFS_GL_1",
-                "IFS_GL_05",
-                "IFS_EU_02",
-                "IFS_EU_01",
-                "IFS_GL_1,IFS_EU_02",
-                "IFS_GL_05,IFS_EU_01",
-                "None",
-            ],
+            options=utils.read_yaml_data(models_path)["models_offline"],
             description="Model offline",
             ensure_option=True,
             style=style,
@@ -108,7 +87,7 @@ class SearchCalculations(widgets.VBox):
                 ),
             ]
         )
-        button = widgets.Button(description="Search", button_style="info")
+        self.button = widgets.Button(description="Search", button_style="info")
         self.results = widgets.HTML()
         self.info_out = widgets.Output()
         self.remotes = pd.DataFrame()
@@ -123,7 +102,7 @@ class SearchCalculations(widgets.VBox):
                 )
                 self.check_all.observe(self.check_all_boxes, names="value")
 
-        button.on_click(on_click)
+        self.button.on_click(on_click)
 
         tabs = widgets.Tab(
             children=[
@@ -136,7 +115,7 @@ class SearchCalculations(widgets.VBox):
         self.bar = widgets.HTML("<hr>")
 
         super().__init__(
-            [tabs, button, self.results, self.info_out, self.bar, self.items_checkboxes]
+            [tabs, self.button, self.results, self.info_out, self.bar, self.items_checkboxes]
         )
 
     def check_all_boxes(self, change=None):
