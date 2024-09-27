@@ -2,7 +2,8 @@
 import ipywidgets as widgets
 import aiidalab_widgets_base as awb
 from utils import utils
-
+import pathlib
+path_to_default_codes = pathlib.Path.cwd() /'utils'/ "default_codes.yaml"
 
 class CodeSetup(widgets.VBox):
     new_code_title = widgets.HTML(
@@ -22,7 +23,7 @@ class CodeSetup(widgets.VBox):
         )
         self.stash_address = widgets.Text(
             description="Stash Address",
-            value=utils.fix_values("stash_address"),
+            value=utils.read_yaml_data(path_to_default_codes, names=['stash_address'])['stash_address'],
             style={"description_width": "initial"},
             layout=widgets.Layout(width="40%"),
         )

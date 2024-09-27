@@ -4,15 +4,17 @@
   - [Overview](#workflow)
     - [Plugins](#installation)
     - [Wrokflow structure](#installation)
-  - [Using the terminal](#in-the-terminal)
-    - [Checking codes and computers]()
-    - [Deleting groups]()
-    - [Monitoring processes]()
-    - [Generating provenance graphs]()
-    - [Enable caching]()
+  - [Using the terminal](#using-the-terminal)
+    - [Checking codes and computers](#checking-codes-and-computers)
+    - [Deleting groups](#deleting-groups)
+    - [Monitoring processes](#monitoring-processes)
+    - [Generating provenance graphs](#generating-provenance-graphs)
+    - [Enable caching](#enable-caching)
   - [Development guide](#development-guide)
-    - [Repository contents]()
-    - [Getting ready]()
+    - [Repository contents](#repositori-content)
+    - [Setting up the enviroment](#setting-up-the-enviroment)
+    - [Changing widgets layout](#changing-widgets-layout)
+    - [Changing the query](#changing-the-query)
   - [Contact](#contact)
 
 ## Installation
@@ -103,31 +105,30 @@ Next:
 
 ```
 
-## In the terminal
+## Using the terminal
 
 More info in [AiiDA](https://aiida.readthedocs.io/projects/aiida-core/en/latest/topics/cli.html)
 
 ### Checking codes and computers
+
+To see the list of computers, type in the terminal:
+
 ```hs
 verdi computer list
 ```
-Should display:
-```
-Report: List of configured computers
-Report: Use 'verdi computer show COMPUTERLABEL' to display more detailed information
-* daint
-* daint-direct-106
-* localhost
-```
+
+To see the configuration of a specific computer:
 
 ```hs
-verdi computer show <PK>
+verdi computer show <NAME>
 ```
+Similarly, to check the installed codes:
 
 ```hs
 verdi code list
 ```
-Should display:
+Example of result:
+
 ```
 Full label                           Pk  Entry point
 ---------------------------------  ----  -------------------
@@ -137,6 +138,7 @@ post-processing@daint                 3  core.code.installed
 check-cosmo-data@daint-direct-106     4  core.code.installed
 check-ifs-data@daint-direct-106       5  core.code.installed
 ```
+To see the code configuration:
 
 ```hs
 verdi code show <PK>
@@ -144,9 +146,22 @@ verdi code show <PK>
 
 ### Deleting groups
 
+Check [AiiDA: organizing data](https://aiida.readthedocs.io/projects/aiida-core/en/latest/howto/data.html#organizing-data) for more information about groups.
+This app defines two groups: one for locations and another one for the outgrids:
+
 ```hs
 verdi group list
 ```
+Should display:
+
+```hs
+  PK  Label      Type string    User
+----  ---------  -------------  ---------------
+  12  locations  core           aiida@localhost
+  13  outgrid    core           aiida@localhost
+```
+
+To delete a group:
 
 ```hs
 verdi group delete <PK>
@@ -175,7 +190,8 @@ verdi process list -a
 verdi node graph generate <PK>
 ```
 
-The graph will be stored in the current directory, go to File manager to view or donwload.
+The graph in .pdf format will be stored in the working directory, go to <b>File manager</b> to view or donwload.
+Check [Visualizing graphs](https://aiida.readthedocs.io/projects/aiida-core/en/latest/howto/visualising_graphs.html) for more information about provenance graphs. To create more artistic graphs, check [aiida-graph-render](https://github.com/ltalirz/aiida-graph-render).
 
 ### Enable caching
 Make sure caching is enabled by typing:<br>
@@ -191,6 +207,7 @@ verdi config set caching.default_enabled True
 
 ## Development guide
 
+### Repositori content
 * [`config/`](config/): Yaml files with default inputs
   * [`command.yaml`](config/command.yaml): COMMAND file inputs
   * [`input_phy.yaml`](config/input_phy.yaml): INPUT_PHY file inputs
@@ -204,11 +221,28 @@ verdi config set caching.default_enabled True
 * [`img/`](img/): Empa logo
 * [`static/`](static/): CSS style file
 * [`utils/`](utils/): 
-  * [`default_codes.yaml`](utils/default_codes.yaml): 
-  * [`make_query.py`](utils/make_query.py): 
-  * [`utils.py`](utils/utils.py): 
-* [`widgets/`](widgets/): 
-* [`info.ipynb`](info.ipynb): Guide to set up and configure the app for first time users
+  * [`default_codes.yaml`](utils/default_codes.yaml): temporal sotrage of default codes and stsh address
+  * [`make_query.py`](utils/make_query.py): FLEXPART querybuilder funtions
+  * [`utils.py`](utils/utils.py): utility fucntions
+* [`widgets/`](widgets/): scripts with the widgets for different inputs
+  * [`add_location.py/`](widgets/add_location.py): 
+  * [`add_outgrid.py/`](widgets/add_outgrid.py): 
+  * [`basic.py/`](widgets/basic.py): basic inputs for FLEXPART simulations
+  * [`code_setup.py/`](widgets/code_setup.py): code and stash address resources
+  * [`command.py/`](widgets/command.py): 
+  * [`filter.py/`](widgets/filter.py): 
+  * [`import_nc.py/`](widgets/import_nc.py): widgets and builder for importing external .nc flies
+  * [`input_phy.py/`](widgets/input_phy.py): 
+  * [`inversion_params.py/`](widgets/inversion_params.py): widgets for step 2 inversion inputs
+  * [`locations.py/`](widgets/locations.py): 
+  * [`misc.py/`](widgets/misc.py): miscelaneous widgets for computational resources
+  * [`outgrid.py/`](widgets/outgrid.py): 
+  * [`presetings.py/`](widgets/presetings.py): 
+  * [`query.py/`](widgets/query.py): FLEXPART results query
+  * [`releases.py/`](widgets/releases.py): 
+  * [`sens_query.py/`](widgets/sens_query.py): observations and sensibilities query widgets
+  * [`stack.py/`](widgets/stack.py):
+* [`info.ipynb`](info.ipynb): Markdown guide to set up and configure the app for first time users
 * [`inversion_query.ipynb`](inversion_query.ipynb): Inversion results search page
 * [`main.ipynb`](main.ipynb): FLEXPART simulation submision page
 * [`ncdump.ipynb`](ncdump.ipynb): Displays NetCDF file as a ncdump
@@ -216,7 +250,7 @@ verdi config set caching.default_enabled True
 * [`query.ipynb`](query.ipynb): Search page for FELXPART results and submitting sensitivity collection calc
 * [`sens_query.ipynb`](sens_query.ipynb): page for importing NetCDF files, and submitting inversions
 * [`settings.py`](settings.py): Plugins used in the app
-* [`setup.cfg`](setup.cfg): 
+* [`setup.cfg`](setup.cfg): app setup file
 
 
 ### Setting up the enviroment
@@ -253,8 +287,14 @@ cd aiida-flexpart
 pip install -e .
 ```
 
-For the changes in this repository to be effective, merge to the main branch and push a tag. 
+### Changing widgets layout
 
+We refer to [Box,Hbox and VBox](https://ipywidgets.readthedocs.io/en/stable/examples/Widget%20List.html#controller) for a guide on how to change the layout structure of the widgets. 
+
+
+### Changing the query 
+
+For changes in the querybuilder check: [AiiDA database](https://aiida.readthedocs.io/projects/aiida-core/en/latest/topics/database.html). The query for the FLEXPART simulations can be found in `uitls/make_query.py`, and for the inversion in `inversion_query.ipynb`
 
 
 

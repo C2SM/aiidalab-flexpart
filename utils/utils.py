@@ -281,7 +281,7 @@ def fix_values(name):
         d = read_yaml_data(path_to_default_codes, names=[name])[name]
     except:
         return "None"
-    return d 
+    return d if d in codes_list() else 'None'
 
 def download_button(fname: str, data: pd.DataFrame, button_text:str) -> str:
     payload = base64.b64encode(data.to_csv(index=False).encode()).decode()
