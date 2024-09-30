@@ -1,6 +1,7 @@
-# Regional Inverse Modelling AiiDAlab App
+# Regional Inverse Modelling
 
   - [Installation](#installation)
+    - [Setting up the enviroment](#setting-up-the-enviroment)
   - [Overview](#workflow)
     - [Plugins](#installation)
     - [Wrokflow structure](#installation)
@@ -34,6 +35,41 @@ If installation was succesfull the app should look like this:
 Make sure to check the first-time user's guide inside <u>Submit FLEXPART-COSMO/IFS simulations</u>
 
 <img title="guide" style='width:70%' src="/img/guide.png"><br>
+
+For an easy and quick CSCS connection, install the following app from the <b>App Sotre</b>:
+
+<b>MFA for CSCS</b>
+
+Additionally, to monitor the processes we recommend to install: <b>AiiDAlab Base Widgets</b> 
+
+### Setting up the enviroment
+
+To make changes in the app follow the next steps.
+Inside the container, navigate to `/app` and clone the repository.
+
+```hs
+cd app
+git clone https://github.com/C2SM/aiidalab-flexpart.git
+```
+Necessary intallations to run the aiidalab flexpart app:
+
+```hs
+pip install aiidalab_widgets_base
+pip install aiida-shell
+```
+
+The next step is to install aiida-flexpart plugin, which can be done in two ways: Using pip to install the plugin directly (recommended if changes to the plugin are not intended):
+
+```hs
+pip install aiida-flexpart
+```
+Alternatively, if one whises to make changes in the AiiDA flexpart plugin as well, navigate to `/work` and copy the following code. 
+
+```hs
+git clone https://github.com/aiidaplugins/aiida-flexpart.git
+cd aiida-flexpart
+pip install -e .
+```
 
 ## Inversion workflow overview
 ### Plugins
@@ -252,40 +288,6 @@ verdi config set caching.default_enabled True
 * [`settings.py`](settings.py): Plugins used in the app
 * [`setup.cfg`](setup.cfg): app setup file
 
-
-### Setting up the enviroment
-
-Install Docker in your local machine and start a new container with:
-
-```hs
-docker run -p 8888:8888 aiidalab/full-stack
-```
-
-Inside the container, navigate to `/app` and clone the repository.
-
-```hs
-cd app
-git clone https://github.com/C2SM/aiidalab-flexpart.git
-```
-Necessary intallations to run the aiidalab flexpart app:
-
-```hs
-pip install aiidalab_widgets_base
-pip install aiida-shell
-```
-
-The next step is to install aiida-flexpart plugin, which can be done in two ways: Using pip to install the plugin directly (recommended if changes to the plugin are not intended):
-
-```hs
-pip install aiida-flexpart
-```
-Alternatively, if one whises to make changes in the AiiDA flexpart plugin as well, navigate to `/work` and copy the following code. 
-
-```hs
-git clone https://github.com/aiidaplugins/aiida-flexpart.git
-cd aiida-flexpart
-pip install -e .
-```
 
 ### Changing widgets layout
 
