@@ -18,7 +18,7 @@ ad_q = filter.ViewerWidget(mode="params")
 class SearchCalculations(widgets.VBox):
     def __init__(self):
         self.date_range = widgets.Text(
-            value="2020-01-01--2020-12-31",
+            value="2020-10-01--2020-12-31",
             description="Dates",
             description_tooltip="range of dates to query",
             style=style,
@@ -73,7 +73,8 @@ class SearchCalculations(widgets.VBox):
         self.w_checkboxes = []
         self.items_checkboxes = widgets.VBox()
         self.download_link = widgets.HTML()
-        self.check_all = widgets.Checkbox(description="Check all", style=style)
+        self.w_check_all = widgets.Checkbox(description="Check all", style=style, value=False)
+        self.w_check_all.observe(self.check_all_boxes, names="value")
 
         search_crit = widgets.HBox(
             [
@@ -98,9 +99,8 @@ class SearchCalculations(widgets.VBox):
                 clear_output()
                 self.search()
                 self.items_checkboxes.children = (
-                    [self.check_all] + self.w_checkboxes + [self.download_link]
-                )
-                self.check_all.observe(self.check_all_boxes, names="value")
+                    [self.w_check_all] + self.w_checkboxes + [self.download_link]
+                )                
 
         self.button.on_click(on_click)
 
@@ -115,13 +115,60 @@ class SearchCalculations(widgets.VBox):
         self.bar = widgets.HTML("<hr>")
 
         super().__init__(
-            [tabs, self.button, self.results, self.info_out, self.bar, self.items_checkboxes]
+            [tabs, self.button, self.results, self.info_out, 
+             self.bar, self.items_checkboxes]
         )
 
     def check_all_boxes(self, change=None):
         value = change["new"]
         for i in self.w_checkboxes:
             i.value = value
+        
+        if value:
+            self.fill_model_output_df()
+        else:
+            self.download_link.value = ""
+
+    def fill_model_output_df(self, change=None):
+        """ Reformat and filter q.remotes
+            to create q.full_remotes dataframe
+            containing the selected results only
+        """
+        self.full_remotes = pd.DataFrame()
+        for i in self.w_checkboxes:
+            if i.value == True:
+                group_name = i.description
+                self.full_remotes = pd.concat([self.full_remotes, self.remotes.loc[self.remotes['w_hash'] == group_name]],
+                ignore_index = True)
+        if self.full_remotes.empty:
+            self.download_link.value = ""
+            return 
+        
+        self.full_remotes['date'] = self.full_remotes['date'].str[:10]
+        self.full_remotes['id'] = \
+                    self.full_remotes['date'].replace('-','_', regex=True) + \
+                    self.full_remotes['location'].replace('-','_', regex=True) 
+            
+        self.full_remotes['date'] = pd.to_datetime(self.full_remotes['date'])
+        self.full_remotes.sort_values(by='date', inplace = True)
+        self.full_remotes['label']=self.presettings.value
+        self.full_remotes['post_stash_address']=[i.target_basepath for i in self.full_remotes.RemoteStash]
+        self.full_remotes['flexpart_stash_address']=[i.target_basepath for i in self.full_remotes.flexpart_stash]
+
+        self.download_link.value = utils.download_button('flexpart_raw_results.csv',
+                    self.full_remotes[['date',
+                        'flexpart_stash_address',
+                        'label',
+                        'location']],
+                        'Download .csv table of flexpart raw result locations' )
+        self.download_link.value += '<br>'
+        self.download_link.value += utils.download_button('postprocessed_results.csv',
+                    self.full_remotes[['date',
+                        'post_stash_address',
+                        'label',
+                        'location']],
+                        'Download .csv table of post-processed result locations' )
+
 
     def search(self):
         self.results.value = "searching..."
@@ -137,8 +184,7 @@ class SearchCalculations(widgets.VBox):
         if self.presettings.value != "Default":
             dict_from_extra = make_query.get_extra_(WORKFLOW, self.presettings.value)
             model = ",".join(dict_from_extra["model"])
-            model_offline = ",".join(dict_from_extra["model_offline"])
-
+            model_offline = ",".join(dict_from_extra["model_offline"])            
             self.location.value = list(dict_from_extra["locations"].keys())
             self.model.value = model
             self.model_offline.value = model_offline
@@ -174,8 +220,10 @@ class SearchCalculations(widgets.VBox):
         ]
         self.w_options = df["w_hash"].unique()
         self.w_checkboxes = [
-            widgets.Checkbox(description=f"{i}", style=style) for i in self.w_options
+            widgets.Checkbox(description=f"{i}", style=style, value=False) for i in self.w_options
         ]
+        for w_checkbox in self.w_checkboxes: 
+            w_checkbox.observe(self.fill_model_output_df, names='value')
 
         # make calendar
         df_for_calendar = df[["date", "FolderData_PK", "w_hash"]]

@@ -137,18 +137,6 @@ def all_in_query(
         },
         project="attributes.list",
     )
-    if model_offline != "None":
-        qb.append(
-            orm.List,
-            with_outgoing="w",
-            edge_filters={"label": {"like": "model_offline"}},
-            filters={
-                "attributes.list": {
-                    "and": [{"contains": [i]} for i in model_offline.split(",")]
-                }
-            },
-            # project="attributes.list",
-        )
 
     # Command, Release and Input_phy
     filter_commad_dict = {
@@ -188,6 +176,20 @@ def all_in_query(
     qb.append(orm.RemoteStashFolderData, with_incoming="post", project="*")
     qb.append(orm.RemoteStashFolderData, with_incoming="calcs", project="*")
     qb.append(orm.FolderData, with_incoming="post", project="id")
+
+    if model_offline != "None":
+        qb.append(
+            orm.List,
+            with_outgoing="w",
+            edge_filters={"label": {"like": "model_offline"}},
+            filters={
+                "attributes.list": {
+                    "and": [{"contains": [i]} for i in model_offline.split(",")]
+                }
+            },
+            project="attributes.list",
+        )
+        columns += ["model_offline"]
 
     if outgrid_nest != "None":
         qb.append(
