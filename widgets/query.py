@@ -152,21 +152,21 @@ class SearchCalculations(widgets.VBox):
         self.full_remotes['date'] = pd.to_datetime(self.full_remotes['date'])
         self.full_remotes.sort_values(by='date', inplace = True)
         self.full_remotes['label']=self.presettings.value
-        self.full_remotes['post_stash_address']=[i.target_basepath for i in self.full_remotes.RemoteStash]
-        self.full_remotes['flexpart_stash_address']=[i.target_basepath for i in self.full_remotes.flexpart_stash]
+        self.full_remotes['stash_address_post']=[i.target_basepath for i in self.full_remotes.stash_post]
+        self.full_remotes['stash_address_main']=[i.target_basepath for i in self.full_remotes.stash_main]
+
+        columns_raw  = ['date', 'label', 'location', 'stash_address_main']
+        if 'stash_offline' in self.full_remotes.columns:
+            self.full_remotes['stash_address_offline']=[i.target_basepath for i in self.full_remotes.stash_offline]            
+            columns_raw += ['stash_address_offline']
+        columns_post = ['date', 'label', 'location', 'stash_address_post']
 
         self.download_link.value = utils.download_button('flexpart_raw_results.csv',
-                    self.full_remotes[['date',
-                        'flexpart_stash_address',
-                        'label',
-                        'location']],
+                    self.full_remotes[columns_raw],
                         'Download .csv table of flexpart raw result locations' )
         self.download_link.value += '<br>'
         self.download_link.value += utils.download_button('postprocessed_results.csv',
-                    self.full_remotes[['date',
-                        'post_stash_address',
-                        'label',
-                        'location']],
+                    self.full_remotes[columns_post],
                         'Download .csv table of post-processed result locations' )
 
 
@@ -214,10 +214,13 @@ class SearchCalculations(widgets.VBox):
             input_phy=input_phy_dict,
             release=release_dict,
         )
-        # make remotes
-        self.remotes = df[
-            ["w_hash", "RemoteStash", "date", "location", "model", "outgrid", "flexpart_stash"]
-        ]
+        # make remotes        
+        columns_df = ["w_hash", "stash_post", "date", "location", "model", "outgrid", "stash_main"]
+        if self.model_offline.value != 'None':
+            columns_df += ["stash_offline"]
+
+        self.remotes = df[columns_df]
+            
         self.w_options = df["w_hash"].unique()
         self.w_checkboxes = [
             widgets.Checkbox(description=f"{i}", style=style, value=False) for i in self.w_options

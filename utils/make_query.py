@@ -86,13 +86,15 @@ def all_in_query(
         "location",
         "model",
         "date",
-        "RemoteStash",
-        "flexpart_stash",
+        "stash_main",
+        "stash_post",
         "FolderData_PK",
     ]
+
     # Append calcjobs and workflow
     qb = orm.QueryBuilder()
-    qb.append(WORKFLOW, tag="w", project=["*"], 
+    qb.append(WORKFLOW, tag="w", 
+              project=["*"],                            #   find all workflows that fulfill the following appends 
               filters={"attributes.exit_status": 0}
               )
     qb.append(
@@ -104,10 +106,17 @@ def all_in_query(
     qb.append(
         [COSMO, IFS],
         with_incoming="child_w",
-        tag="calcs",
+        tag="flex_main",
         filters={"attributes.exit_status": 0},
     )
-    qb.append(POST, with_ancestors="calcs", tag="post")
+    if model_offline != "None":
+        qb.append(
+            [COSMO, IFS],
+            with_ancestors="flex_main",
+            tag="flex_off",
+            filters={"attributes.exit_status": 0},
+        )
+    qb.append(POST, with_ancestors="flex_main", tag="post", filters={"attributes.exit_status": 0})
 
     # Outgrid and Outgrid Nest
     qb.append(
@@ -150,21 +159,22 @@ def all_in_query(
 
     qb.append(
         orm.Dict,
-        with_outgoing="calcs",
+        with_outgoing="flex_main",
         edge_filters={"label": {"like": "model_settings__command"}},
         filters=command,
         project="attributes.simulation_date",
     )
+
     if input_phy != "None":
         qb.append(
             orm.Dict,
-            with_outgoing="calcs",
+            with_outgoing="flex_main",
             edge_filters={"label": {"like": "model_settings__input_phy"}},
             filters=input_phy,
         )
     qb.append(
         orm.Dict,
-        with_outgoing="calcs",
+        with_outgoing="flex_main",
         edge_filters={"label": {"like": "model_settings__release_settings"}},
         filters={
             "attributes.list_of_species": {"contains": ["24"]},
@@ -172,9 +182,10 @@ def all_in_query(
         },
     )
 
+
     # Post-processing data
-    qb.append(orm.RemoteStashFolderData, with_incoming="post", project="*")
-    qb.append(orm.RemoteStashFolderData, with_incoming="calcs", project="*")
+    qb.append(orm.RemoteStashFolderData, with_incoming="flex_main", project="*")
+    qb.append(orm.RemoteStashFolderData, with_incoming="post", project="*")    
     qb.append(orm.FolderData, with_incoming="post", project="id")
 
     if model_offline != "None":
@@ -189,7 +200,8 @@ def all_in_query(
             },
             project="attributes.list",
         )
-        columns += ["model_offline"]
+        qb.append(orm.RemoteStashFolderData, with_incoming="flex_off", project="*")
+        columns += ["model_offline", "stash_offline"]
 
     if outgrid_nest != "None":
         qb.append(
@@ -201,8 +213,10 @@ def all_in_query(
         )
         columns += ["outgrid_n"]
 
+
+    q_result = qb.all()    
     # Dataframe construct
-    df = pd.DataFrame(qb.all(), columns=columns)
+    df = pd.DataFrame(q_result, columns=columns)
     df["location"] = df["location"].map(lambda x: list(x.keys())[0])
     df["outgrid"] = df["outgrid"].map(lambda x: list(x.keys())[0])
     df["model"] = df["model"].map(lambda x: ",".join(x))
